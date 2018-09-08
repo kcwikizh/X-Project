@@ -1,0 +1,40 @@
+apply plugin: 'java'
+
+group = 'org.kcwiki'
+version = '0.1.0'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+tasks.withType(JavaCompile) {  
+    options.encoding = "UTF-8"  
+} 
+
+jar {
+    manifest {
+        attributes(
+                "Manifest-Version": 1.0,
+                "Main-Class": "")
+    }
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    into('assets') {
+        from 'assets'
+    }
+}
+
+//添加 Maven 仓库
+repositories {
+    mavenCentral()
+}
+
+//添加依赖
+dependencies {
+    compile group: 'commons-collections', name: 'commons-collections', version: '3.2'
+    testCompile group: 'junit', name: 'junit', version: '4.+'
+}
+
+allprojects {
+   task allTask << {
+      println project.name
+   }
+}
