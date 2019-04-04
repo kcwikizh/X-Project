@@ -8,7 +8,7 @@ package kcwiki.x.enshuhelper.database.entity;
 import java.util.Date;
 /**
  *
- * @author x5171
+ * @author iHaru
  */
 public class UserDataEntity {
     private long id;

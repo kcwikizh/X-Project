@@ -11,7 +11,7 @@ import org.springframework.context.annotation.PropertySource;
 
 /**
  *
- * @author x5171
+ * @author iHaru
  */
 @Configuration
 @PropertySource(value={"classpath:configuration/appconfig/appconfig.properties"})

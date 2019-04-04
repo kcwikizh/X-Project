@@ -9,7 +9,7 @@ import kcwiki.x.enshuhelper.web.controller.types.HttpRepStatus;
 
 /**
  *
- * @author x5171
+ * @author iHaru
  */
 public class BaseMessageEntity {
     private int code;

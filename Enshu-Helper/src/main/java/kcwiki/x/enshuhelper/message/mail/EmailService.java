@@ -27,7 +27,7 @@ import org.springframework.stereotype.Component;
 
 /**
  *
- * @author x5171
+ * @author iHaru
  * http://www.baeldung.com/spring-email
  */
 @Component

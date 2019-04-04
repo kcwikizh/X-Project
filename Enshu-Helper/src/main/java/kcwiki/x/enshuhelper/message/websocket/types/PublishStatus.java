@@ -9,7 +9,7 @@ import kcwiki.x.enshuhelper.types.EnumBase;
 
 /**
  *
- * @author x5171
+ * @author iHaru
  */
 public enum PublishStatus implements EnumBase{
     SUCCESS(0),

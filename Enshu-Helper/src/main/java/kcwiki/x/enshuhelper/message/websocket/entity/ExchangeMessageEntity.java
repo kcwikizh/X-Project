@@ -9,7 +9,7 @@ import kcwiki.x.enshuhelper.message.websocket.types.ExchangeMessageTypes;
 
 /**
  *
- * @author x5171
+ * @author iHaru
  */
 public class ExchangeMessageEntity extends BaseMessageEntity {
     private ExchangeMessageTypes exchangeMessageTypes;

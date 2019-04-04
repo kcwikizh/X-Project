@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  *
- * @author x5171
+ * @author iHaru
  */
 @RestController
 @RequestMapping(value = {"/"}, produces = "application/json;charset=UTF-8")

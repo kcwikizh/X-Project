@@ -22,7 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  *
- * @author x5171
+ * @author iHaru
  */
 public class BaseHttpClient {
     private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(BaseHttpClient.class);

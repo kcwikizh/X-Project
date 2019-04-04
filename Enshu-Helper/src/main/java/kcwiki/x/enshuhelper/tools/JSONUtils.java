@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author x5171
+ * @author iHaru
  */
 public class JSONUtils {
     static final Logger LOG = LoggerFactory.getLogger(JSONUtils.class);

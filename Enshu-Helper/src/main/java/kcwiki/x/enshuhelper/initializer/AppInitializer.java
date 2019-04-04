@@ -31,7 +31,7 @@ import static kcwiki.x.enshuhelper.tools.ConstantValue.WEBROOT;
 
 /**
  *
- * @author x5171
+ * @author iHaru
  */
 @Component
 public class AppInitializer {

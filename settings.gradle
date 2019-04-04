@@ -4,6 +4,10 @@ rootProject.name = 'KcwikiXProject'
 // of the project. That is, every directory containing a "build.gradle" will
 // be automatically the subproject of this project.
 include 'KcwikiDB','KanColleScanner','WeChatWiki','Enshu-Helper','XControlCenter','XControlledModule'
+include 'MessageTransferStation','RetweetServer'
+
+includeBuild '../Haru-Framework'
+
 
 def subDirs = rootDir.listFiles(new FileFilter() {
     public boolean accept(File file) {

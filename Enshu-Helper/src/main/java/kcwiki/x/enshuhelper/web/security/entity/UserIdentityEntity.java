@@ -7,7 +7,7 @@ package kcwiki.x.enshuhelper.web.security.entity;
 
 /**
  *
- * @author x5171
+ * @author iHaru
  */
 public class UserIdentityEntity {
     

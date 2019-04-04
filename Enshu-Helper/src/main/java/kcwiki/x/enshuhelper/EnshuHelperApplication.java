@@ -19,7 +19,7 @@ import org.springframework.context.ApplicationContext;
 
 /**
  *
- * @author x5171
+ * @author iHaru
  */
 @SpringBootApplication
 //@MapperScan("kcwiki.x.enshuhelper.database.dao")  

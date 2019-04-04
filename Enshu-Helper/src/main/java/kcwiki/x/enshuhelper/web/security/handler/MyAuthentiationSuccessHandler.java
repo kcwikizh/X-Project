@@ -22,7 +22,7 @@ import org.springframework.stereotype.Component;
 
 /**
  *
- * @author x5171
+ * @author iHaru
  */
 @Component("myAuthenctiationSuccessHandler")
 public class MyAuthentiationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {

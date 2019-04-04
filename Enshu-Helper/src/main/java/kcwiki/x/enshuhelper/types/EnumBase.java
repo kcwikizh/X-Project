@@ -7,7 +7,7 @@ package kcwiki.x.enshuhelper.types;
 
 /**
  *
- * @author x5171
+ * @author iHaru
  */
 public interface EnumBase {
     int getCode();

@@ -15,7 +15,7 @@ import kcwiki.x.enshuhelper.web.controller.entity.BaseResponse;
 
 /**
  *
- * @author x5171
+ * @author iHaru
  */
 @RestController
 @RequestMapping(value = {"/Settings","/settings"}, produces = "application/json;charset=UTF-8")

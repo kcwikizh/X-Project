@@ -11,7 +11,7 @@ import kcwiki.x.enshuhelper.exception.types.ServiceTypes;
 
 /**
  *
- * @author x5171
+ * @author iHaru
  */
 
 public class BaseException extends RuntimeException {

@@ -7,7 +7,7 @@ package kcwiki.x.enshuhelper.web.controller;
 
 /**
  *
- * @author x5171
+ * @author iHaru
  */
 public class Greeting {
     

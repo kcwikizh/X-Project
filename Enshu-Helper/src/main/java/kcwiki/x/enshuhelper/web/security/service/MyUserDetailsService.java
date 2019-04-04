@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 
 /**
  *
- * @author x5171
+ * @author iHaru
  */
 @Component
 public class MyUserDetailsService implements UserDetailsService {

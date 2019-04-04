@@ -15,7 +15,7 @@ import org.springframework.web.socket.server.HandshakeInterceptor;
 
 /**
  * WebSocket 拦截器，用于将用户信息从session中存入map，方便后面websocket请求时从map中找到指定的用户session信息
- * @author x5171
+ * @author iHaru
  *
  */
 public class AdministratorInterceptor implements HandshakeInterceptor {

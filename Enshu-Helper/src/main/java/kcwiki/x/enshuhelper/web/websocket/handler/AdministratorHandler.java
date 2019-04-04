@@ -19,7 +19,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 /**
  *
- * @author x5171
+ * @author iHaru
  */
 @Component
 public class AdministratorHandler extends TextWebSocketHandler {

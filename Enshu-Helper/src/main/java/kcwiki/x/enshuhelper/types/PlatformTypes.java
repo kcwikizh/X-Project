@@ -7,7 +7,7 @@ package kcwiki.x.enshuhelper.types;
 
 /**
  *
- * @author x5171
+ * @author iHaru
  */
 
 public enum PlatformTypes {

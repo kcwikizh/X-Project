@@ -10,7 +10,7 @@ import kcwiki.x.enshuhelper.web.controller.entity.BaseResponse;
 
 /**
  *
- * @author x5171
+ * @author iHaru
  */
 public class QueryResponse extends BaseResponse {
     private List<MatchInfo> matchlist;

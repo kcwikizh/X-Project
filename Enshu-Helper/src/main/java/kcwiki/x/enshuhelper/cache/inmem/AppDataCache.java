@@ -16,7 +16,7 @@ import org.springframework.context.ApplicationContext;
 
 /**
  *
- * @author x5171
+ * @author iHaru
  */
 public class AppDataCache {
     public static boolean isAppInit = false;

@@ -20,7 +20,7 @@ import org.springframework.web.util.WebUtils;
 
 /**
  *
- * @author x5171
+ * @author iHaru
  */
 @RestController
 @RequestMapping(value = {"/47b080","/e3afed"}, produces = "application/json;charset=UTF-8")

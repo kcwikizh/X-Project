@@ -7,7 +7,7 @@ package kcwiki.x.enshuhelper.web.controller.entity;
 
 /**
  *
- * @author x5171
+ * @author iHaru
  */
 public class AdminUser {
     private String username;

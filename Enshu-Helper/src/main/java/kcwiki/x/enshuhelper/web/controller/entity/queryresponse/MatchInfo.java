@@ -7,7 +7,7 @@ package kcwiki.x.enshuhelper.web.controller.entity.queryresponse;
 
 /**
  *
- * @author x5171
+ * @author iHaru
  */
 public class MatchInfo {
     private long memberid;

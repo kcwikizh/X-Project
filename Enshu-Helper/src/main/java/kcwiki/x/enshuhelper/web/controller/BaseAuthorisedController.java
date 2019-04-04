@@ -30,7 +30,7 @@ import org.springframework.web.util.WebUtils;
 
 /**
  *
- * @author x5171
+ * @author iHaru
  */
 @Component
 public class BaseAuthorisedController {
