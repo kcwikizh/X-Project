@@ -1,5 +1,7 @@
 package kcwiki.msgtransfer.websocket.handler;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import kcwiki.msgtransfer.core.TransferController;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.iharu.proto.websocket.WebsocketProto;
@@ -16,6 +18,9 @@ public class TransferHandler
   extends DefaultWebsocketHandler
 {
     private static final Logger LOG = LoggerFactory.getLogger(TransferHandler.class);
+    
+    private static final Map<String, WebSocketSession> USERS = new ConcurrentHashMap();
+    
     @Autowired
     TransferController transferController;
   
@@ -23,21 +28,25 @@ public class TransferHandler
     protected void handleTextMessage(WebSocketSession session, TextMessage message)
     {
         String payload = message.getPayload();
-            LOG.info("incoming msg: {}", payload);
-            try{
-                WebsocketProto websocketProto = proto2object(session, payload);
-                if (websocketProto == null) {
+         LOG.info("incoming msg: {}", payload);
+        try{
+            WebsocketProto websocketProto = proto2object(session, payload);
+            if (websocketProto == null) 
                     return;
-                }
-                transferController.ReTransfer(websocketProto);
-            } catch (Exception ex) {
+            transferController.ReTransfer2S(websocketProto);
+        } catch (Exception ex) {
                 LOG.error(ExceptionUtils.getStackTrace(ex));
-            }
+        }
     }
   
     @Override
-    protected Logger getImplLogger()
+    protected Logger GetImplLogger()
     {
         return LOG;
+    }
+    
+    @Override
+    protected Map GetUsers() {
+        return USERS;
     }
 }

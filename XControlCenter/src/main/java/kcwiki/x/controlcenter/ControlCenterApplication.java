@@ -9,6 +9,7 @@ import de.codecentric.boot.admin.server.config.AdminServerProperties;
 import de.codecentric.boot.admin.server.config.EnableAdminServer;
 import de.codecentric.boot.admin.server.domain.entities.InstanceRepository;
 import de.codecentric.boot.admin.server.notify.CompositeNotifier;
+import de.codecentric.boot.admin.server.notify.LoggingNotifier;
 import de.codecentric.boot.admin.server.notify.Notifier;
 import de.codecentric.boot.admin.server.notify.RemindingNotifier;
 import de.codecentric.boot.admin.server.notify.filter.FilteringNotifier;
@@ -20,13 +21,18 @@ import java.util.Collections;
 import java.util.List;
 import kcwiki.x.controlcenter.admin.CustomEndpoint;
 import kcwiki.x.controlcenter.admin.CustomNotifier;
+import org.iharu.web.controller.DefaultGlobalController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.boot.Banner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpHeaders;
@@ -36,14 +42,23 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
+/**
+ * http://codecentric.github.io/spring-boot-admin/2.1.4/
+ */
 @Configuration
 @EnableAutoConfiguration
 @EnableAdminServer
+@ComponentScan(basePackages = {"org.iharu", "kcwiki.x.controlcenter"}, excludeFilters={
+  @ComponentScan.Filter(type=FilterType.ASSIGNABLE_TYPE, value=DefaultGlobalController.class)})
 public class ControlCenterApplication {
-    private static final Logger log = LoggerFactory.getLogger(ControlCenterApplication.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ControlCenterApplication.class);
 
     public static void main(String[] args) {
-        SpringApplication.run(ControlCenterApplication.class, args);
+        SpringApplication application = new SpringApplication(ControlCenterApplication.class);
+        application.setBannerMode(Banner.Mode.OFF);
+        application.setLogStartupInfo(false);
+        application.setRegisterShutdownHook(false);
+        ApplicationContext ctx = application.run(args);
     }
 
     @Profile("insecure")
@@ -71,10 +86,13 @@ public class ControlCenterApplication {
     // tag::configuration-spring-security[]
     @Configuration
     public static class SecuritySecureConfig extends WebSecurityConfigurerAdapter {
+        private static final Logger LOG = LoggerFactory.getLogger(SecuritySecureConfig.class);
         private final String adminContextPath;
 
         public SecuritySecureConfig(AdminServerProperties adminServerProperties) {
             this.adminContextPath = adminServerProperties.getContextPath();
+            LOG.info("adminContextPath: {}", this.adminContextPath);
+            LOG.info("{}/{}", this.adminContextPath, "url");
         }
 
         @Override
@@ -85,18 +103,18 @@ public class ControlCenterApplication {
             successHandler.setDefaultTargetUrl(adminContextPath + "/");
 
             http.authorizeRequests()
-                .antMatchers(adminContextPath + "/assets/**").permitAll() // <1>
+                .antMatchers(adminContextPath + "/assets/**").permitAll() 
                 .antMatchers(adminContextPath + "/login").permitAll()
-                .anyRequest().authenticated() // <2>
+                .anyRequest().authenticated() 
                 .and()
-            .formLogin().loginPage(adminContextPath + "/login").successHandler(successHandler).and() // <3>
+            .formLogin().loginPage(adminContextPath + "/login").successHandler(successHandler).and() 
             .logout().logoutUrl(adminContextPath + "/logout").and()
-            .httpBasic().and() // <4>
+            .httpBasic().and() 
             .csrf()
-                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())  // <5>
+                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())  
                 .ignoringAntMatchers(
-                    adminContextPath + "/instances",   // <6>
-                    adminContextPath + "/actuator/**"  // <7>
+                    adminContextPath + "/instances",   
+                    adminContextPath + "/actuator/**"  
                 );
             // @formatter:on
         }
@@ -108,7 +126,7 @@ public class ControlCenterApplication {
     public InstanceExchangeFilterFunction auditLog() {
         return (instance, request, next) -> {
             if (HttpMethod.DELETE.equals(request.method()) || HttpMethod.POST.equals(request.method())) {
-                log.info("{} for {} on {}", request.method(), instance.getId(), request.url());
+                LOG.info("{} for {} on {}", request.method(), instance.getId(), request.url());
             }
             return next.exchange(request);
         };
@@ -130,7 +148,7 @@ public class ControlCenterApplication {
     public HttpHeadersProvider customHttpHeadersProvider() {
         return  instance -> {
             HttpHeaders httpHeaders = new HttpHeaders();
-            httpHeaders.add("X-CUSTOM", "My Custom Value");
+            httpHeaders.add("X-CUSTOM", "SBA");
             return httpHeaders;
         };
     }

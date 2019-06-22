@@ -6,8 +6,8 @@
 package kcwiki.x.enshuhelper.aspect;
 
 import kcwiki.x.enshuhelper.database.service.LogService;
-import kcwiki.x.enshuhelper.types.LogTypes;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.iharu.type.LogType;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.AfterThrowing;
@@ -37,6 +37,7 @@ public class LogAspect {
             + "or execution(* kcwiki.x.enshuhelper.core..*.*(..))"
             + "or execution(* kcwiki.x.enshuhelper.database..*.*(..))"
             + "or execution(* kcwiki.x.enshuhelper.httpclient..*.*(..))"
+            + "or execution(* kcwiki.x.enshuhelper.message..*.*(..))"
             + "or execution(* kcwiki.x.enshuhelper.web..*.*(..))")
     public void pointCut(){}
     
@@ -59,7 +60,7 @@ public class LogAspect {
     public void afterThrowing(JoinPoint joinPoint,Throwable error){
         LOG.error("[Aspect-LogActions] Method Signature:{}", joinPoint.getSignature());
         LOG.error("[Aspect-LogActions] Exception:{}", ExceptionUtils.getStackTrace(error));
-        logService.addLog(LogTypes.ERROR, joinPoint.getSignature().toLongString(), error);
+        logService.addLog(LogType.ERROR, joinPoint.getSignature().toLongString(), error);
     }
     
 //    @Around("pointCut()")

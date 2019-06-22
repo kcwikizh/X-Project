@@ -6,7 +6,7 @@
 package kcwiki.x.enshuhelper.database.service;
 
 import kcwiki.x.enshuhelper.database.dao.UtilsDao;
-import kcwiki.x.enshuhelper.initializer.AppConfigs;
+import kcwiki.x.enshuhelper.initializer.AppConfig;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,7 +20,7 @@ public class UtilsService {
     static final org.slf4j.Logger LOG = LoggerFactory.getLogger(UtilsService.class);
     
     @Autowired
-    private AppConfigs appConfigs;
+    private AppConfig appConfig;
     @Autowired
     private UtilsDao utilsDao;
     
@@ -46,7 +46,7 @@ public class UtilsService {
     }
     
     public boolean existTable(String tablename) {
-        int result = utilsDao.existTable(appConfigs.getDatabase_name(), tablename);
+        int result = utilsDao.existTable(appConfig.getDatabase_name(), tablename);
         return result>0;
     }
     

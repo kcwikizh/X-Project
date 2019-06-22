@@ -11,6 +11,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 
+/**
+ * https://www.baeldung.com/spring-boot-shutdown
+ * https://github.com/spring-projects/spring-boot/issues/4657
+*/
 @SpringBootApplication
 @ComponentScan(basePackages={"org.iharu", "kcwiki.msgtransfer"})
 public class MessageTransferStationApplication

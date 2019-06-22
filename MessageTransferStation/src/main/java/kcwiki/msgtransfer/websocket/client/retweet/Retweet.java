@@ -1,19 +1,12 @@
 package kcwiki.msgtransfer.websocket.client.retweet;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import java.io.IOException;
-import java.util.logging.Level;
 import javax.annotation.PostConstruct;
 import kcwiki.msgtransfer.cache.inmem.AppDataCache;
 import kcwiki.msgtransfer.core.TransferController;
 import kcwiki.msgtransfer.initializer.AppConfig;
-import kcwiki.msgtransfer.websocket.client.BaseClientCallBack;
-import kcwiki.msgtransfer.websocket.client.BaseWebsocketClient;
+import org.iharu.websocket.client.BaseClientCallBack;
+import org.iharu.websocket.client.BaseWebsocketClient;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.iharu.proto.websocket.WebsocketProto;
-import org.iharu.type.ResultType;
-import org.iharu.type.websocket.WebsocketMessageType;
-import org.iharu.util.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +22,7 @@ public class Retweet
     @Autowired
     private AppConfig appConfig;
     @Autowired
-    TransferController transferController;
+    private TransferController transferController;
   
     private final String name = "xproject-retweet";
     private String url;
@@ -65,14 +58,8 @@ public class Retweet
     private void procress(String payload)
     {
         LOG.info("msg coming: {}", payload);
-        JsonNode jsonNode;
-        try {
-            jsonNode = JsonUtils.json2jsonnode(payload);
-            transferController.ReTransfer(new WebsocketProto(WebsocketMessageType.NON_SYSTEM, ResultType.SUCCESS, jsonNode));
-            transferController.TransformAndReTransfer(name, jsonNode);
-        } catch (IOException ex) {
-            LOG.error(ExceptionUtils.getStackTrace(ex));
-        }
+        transferController.ReTransfer2C(name, payload);
+        transferController.TransformAndReTransfer2C(name, payload);
     }
   
     @Override

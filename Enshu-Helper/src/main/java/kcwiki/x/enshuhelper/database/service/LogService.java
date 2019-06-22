@@ -8,11 +8,11 @@ package kcwiki.x.enshuhelper.database.service;
 import java.util.Date;
 import kcwiki.x.enshuhelper.database.dao.LogDao;
 import kcwiki.x.enshuhelper.database.entity.log.LogEntity;
-import kcwiki.x.enshuhelper.exception.BaseException;
-import kcwiki.x.enshuhelper.initializer.AppConfigs;
+import org.iharu.type.LogType;
+import kcwiki.x.enshuhelper.initializer.AppConfig;
 import static kcwiki.x.enshuhelper.tools.ConstantValue.LINESEPARATOR;
-import kcwiki.x.enshuhelper.types.LogTypes;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.iharu.exception.BaseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,20 +24,20 @@ import org.springframework.stereotype.Service;
 public class LogService {
     
     @Autowired
-    private AppConfigs appConfigs;
+    private AppConfig appConfig;
     @Autowired
     private LogDao logDao;
     
-    public boolean addLog(LogTypes msgTypes, String msg) {
+    public boolean addLog(LogType msgTypes, String msg) {
         LogEntity logEntity = new LogEntity();
         logEntity.setType(msgTypes);
         logEntity.setTimestamp(new Date());
         logEntity.setMessage(msg);
-        logDao.addLogMsg(appConfigs.getDatabase_tables_systemlog(), logEntity);
+        logDao.addLogMsg(appConfig.getDatabase_tables_systemlog(), logEntity);
         return true;
     }
     
-    public boolean addLog(LogTypes msgTypes, String signature, Throwable ex) {
+    public boolean addLog(LogType msgTypes, String signature, Throwable ex) {
         LogEntity logEntity = new LogEntity();
         logEntity.setType(msgTypes);
         logEntity.setTimestamp(new Date());
@@ -46,7 +46,7 @@ public class LogService {
             BaseException baseException = (BaseException) ex;
             String rs = ExceptionUtils.getStackTrace(ex);
             rs = String.format("%s%s%s%s%s", 
-                    baseException.getServiceType().getName(), 
+                    baseException.getModule(), 
                     LINESEPARATOR,
                     baseException.getMessage(), 
                     LINESEPARATOR, 
@@ -55,7 +55,7 @@ public class LogService {
         }else {
             logEntity.setException(ExceptionUtils.getStackTrace(ex));
         }
-        logDao.addLogMsg(appConfigs.getDatabase_tables_systemlog(), logEntity);
+        logDao.addLogMsg(appConfig.getDatabase_tables_systemlog(), logEntity);
         return true;
     }
     

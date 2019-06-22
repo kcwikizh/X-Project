@@ -7,30 +7,31 @@ package kcwiki.x.enshuhelper.initializer;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 
 /**
  *
  * @author iHaru
  */
 @Configuration
-@PropertySource(value={"classpath:configuration/appconfig/appconfig.properties"})
-public class AppConfigs {
-    @Value("${global.useproxy}")
+//@PropertySource(value={"classpath:configuration/appconfig/appconfig.properties"})
+public class AppConfig {
+    @Value("${myprops.system.root}")
+    private String system_root;
+    @Value("${myprops.global.useproxy}")
     private boolean allow_use_proxy;
-    @Value("${global.proxyhost}")
+    @Value("${myprops.global.proxyhost}")
     private String proxy_host;
-    @Value("${global.proxyport}")
+    @Value("${myprops.global.proxyport}")
     private int proxy_port;
-    @Value("${global.debug}")
+    @Value("${myprops.global.debug}")
     private boolean debug;
-    @Value("${global.folder.privatedata}")
+    @Value("${myprops.global.folder.privatedata}")
     private String folder_privatedata;
-    @Value("${global.folder.publish}")
+    @Value("${myprops.global.folder.publish}")
     private String folder_publish;
-    @Value("${global.folder.workspace}")
+    @Value("${myprops.global.folder.workspace}")
     private String folder_workspace;
-    @Value("${kcwiki.api.servers}")
+    @Value("${myprops.global.kcwiki.api.servers}")
     private String kcwiki_api_servers;
     @Value("${myprops.database.name}")
     private String database_name;
@@ -40,21 +41,13 @@ public class AppConfigs {
     private String database_tables_systemparams;
     @Value("${myprops.database.tables.systemlog}")
     private String database_tables_systemlog;
-    @Value("${mail.serverhost}")
-    private String mail_server_host;
-    @Value("${mail.serverport}")
-    private int mail_server_port;
-    @Value("${mail.username}")
-    private String mail_server_username;
-    @Value("${mail.password}")
-    private String mail_server_password;
-    @Value("${mail.from}")
+    @Value("${myprops.mail.from}")
     private String mail_sender;
-    @Value("${mail.to}")
+    @Value("${myprops.mail.to}")
     private String[] mail_recipient;
-    @Value("${mail.title}")
+    @Value("${myprops.mail.title}")
     private String mail_title;
-    @Value("${message.notice}")
+    @Value("${myprops.message.notice}")
     private String message_notice;
 
     /**
@@ -156,118 +149,6 @@ public class AppConfigs {
     }
 
     /**
-     * @return the mail_server_host
-     */
-    public String getMail_server_host() {
-        return mail_server_host;
-    }
-
-    /**
-     * @param mail_server_host the mail_server_host to set
-     */
-    public void setMail_server_host(String mail_server_host) {
-        this.mail_server_host = mail_server_host;
-    }
-
-    /**
-     * @return the mail_server_port
-     */
-    public int getMail_server_port() {
-        return mail_server_port;
-    }
-
-    /**
-     * @param mail_server_port the mail_server_port to set
-     */
-    public void setMail_server_port(int mail_server_port) {
-        this.mail_server_port = mail_server_port;
-    }
-
-    /**
-     * @return the mail_server_username
-     */
-    public String getMail_server_username() {
-        return mail_server_username;
-    }
-
-    /**
-     * @param mail_server_username the mail_server_username to set
-     */
-    public void setMail_server_username(String mail_server_username) {
-        this.mail_server_username = mail_server_username;
-    }
-
-    /**
-     * @return the mail_server_password
-     */
-    public String getMail_server_password() {
-        return mail_server_password;
-    }
-
-    /**
-     * @param mail_server_password the mail_server_password to set
-     */
-    public void setMail_server_password(String mail_server_password) {
-        this.mail_server_password = mail_server_password;
-    }
-
-    /**
-     * @return the mail_sender
-     */
-    public String getMail_sender() {
-        return mail_sender;
-    }
-
-    /**
-     * @param mail_sender the mail_sender to set
-     */
-    public void setMail_sender(String mail_sender) {
-        this.mail_sender = mail_sender;
-    }
-
-    /**
-     * @return the mail_recipient
-     */
-    public String[] getMail_recipient() {
-        return mail_recipient;
-    }
-
-    /**
-     * @param mail_recipient the mail_recipient to set
-     */
-    public void setMail_recipient(String[] mail_recipient) {
-        this.setMail_recipient(mail_recipient);
-    }
-
-    /**
-     * @return the mail_title
-     */
-    public String getMail_title() {
-        return mail_title;
-    }
-
-    /**
-     * @param mail_title the mail_title to set
-     */
-    public void setMail_title(String mail_title) {
-        this.mail_title = mail_title;
-    }
-
-    /**
-     * @return the message_notice
-     */
-    public String getMessage_notice() {
-        return message_notice;
-    }
-
-    /**
-     * @param message_notice the message_notice to set
-     */
-    public void setMessage_notice(String message_notice) {
-        this.message_notice = message_notice;
-    }
-
-    /**
      * @return the kcwiki_api_servers
      */
     public String getKcwiki_api_servers() {
@@ -293,6 +174,20 @@ public class AppConfigs {
      */
     public void setDatabase_name(String database_name) {
         this.database_name = database_name;
+    }
+
+    /**
+     * @return the database_tables_userdata
+     */
+    public String getDatabase_tables_userdata() {
+        return database_tables_userdata;
+    }
+
+    /**
+     * @param database_tables_userdata the database_tables_userdata to set
+     */
+    public void setDatabase_tables_userdata(String database_tables_userdata) {
+        this.database_tables_userdata = database_tables_userdata;
     }
 
     /**
@@ -324,18 +219,74 @@ public class AppConfigs {
     }
 
     /**
-     * @return the database_tables_userdata
+     * @return the mail_sender
      */
-    public String getDatabase_tables_userdata() {
-        return database_tables_userdata;
+    public String getMail_sender() {
+        return mail_sender;
     }
 
     /**
-     * @param database_tables_userdata the database_tables_userdata to set
+     * @param mail_sender the mail_sender to set
      */
-    public void setDatabase_tables_userdata(String database_tables_userdata) {
-        this.database_tables_userdata = database_tables_userdata;
+    public void setMail_sender(String mail_sender) {
+        this.mail_sender = mail_sender;
     }
-    
+
+    /**
+     * @return the mail_recipient
+     */
+    public String[] getMail_recipient() {
+        return mail_recipient;
+    }
+
+    /**
+     * @param mail_recipient the mail_recipient to set
+     */
+    public void setMail_recipient(String[] mail_recipient) {
+        this.mail_recipient = mail_recipient;
+    }
+
+    /**
+     * @return the mail_title
+     */
+    public String getMail_title() {
+        return mail_title;
+    }
+
+    /**
+     * @param mail_title the mail_title to set
+     */
+    public void setMail_title(String mail_title) {
+        this.mail_title = mail_title;
+    }
+
+    /**
+     * @return the message_notice
+     */
+    public String getMessage_notice() {
+        return message_notice;
+    }
+
+    /**
+     * @param message_notice the message_notice to set
+     */
+    public void setMessage_notice(String message_notice) {
+        this.message_notice = message_notice;
+    }
+
+    /**
+     * @return the system_root
+     */
+    public String getSystem_root() {
+        return system_root;
+    }
+
+    /**
+     * @param system_root the system_root to set
+     */
+    public void setSystem_root(String system_root) {
+        this.system_root = system_root;
+    }
+
     
 }

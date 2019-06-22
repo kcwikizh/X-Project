@@ -5,9 +5,13 @@
  */
 package kcwiki.x.enshuhelper.message.websocket;
 
-import kcwiki.x.enshuhelper.message.websocket.entity.ExchangeMessageEntity;
-import kcwiki.x.enshuhelper.message.websocket.types.ExchangeMessageTypes;
-import kcwiki.x.enshuhelper.web.controller.types.HttpRepStatus;
+import com.fasterxml.jackson.core.type.TypeReference;
+import kcwiki.x.enshuhelper.message.websocket.entity.ExchangeProto;
+import kcwiki.x.enshuhelper.message.websocket.entity.UserData;
+import kcwiki.x.enshuhelper.message.websocket.types.EnshuDataType;
+import static org.iharu.type.ResultType.FAIL;
+import static org.iharu.type.ResultType.SUCCESS;
+import org.iharu.util.JsonUtils;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -23,54 +27,61 @@ public class MessageInterceptor {
     @Autowired
     MessageProcessor messageProcessor;
     
-    public ExchangeMessageEntity filter(ExchangeMessageEntity _exchangeMessageEntity) {
-        LOG.trace("exchangeMessageEntity - {}", _exchangeMessageEntity);
-        String payload = _exchangeMessageEntity.getPayload();
-        ExchangeMessageEntity exchangeMessageEntity = new ExchangeMessageEntity();
-        exchangeMessageEntity.setPayload(payload);
-        switch(_exchangeMessageEntity.getExchangeMessageTypes()) {
+    public ExchangeProto filter(ExchangeProto proto) {
+        ExchangeProto rsproto = new ExchangeProto();
+        rsproto.setProto_code(FAIL);
+        String payload = proto.getProto_payload();
+        UserData userData = JsonUtils.json2objectWithoutThrowException(payload, new TypeReference<UserData>(){});
+        if(userData == null){
+            rsproto.setModule_type(EnshuDataType.PayloadError);
+            rsproto.setProto_payload(rsproto.getProto_payload());
+            return rsproto;
+        }
+        UserData rsdata = new UserData();
+        rsdata.setQq(userData.getQq());
+        rsdata.setQqgroup(userData.getQqgroup());
+        rsproto.setModule_type(EnshuDataType.SystemInfo);
+        switch(proto.getModule_type()) {
             default:
-                exchangeMessageEntity.setStatus(HttpRepStatus.FAILURE);
-                exchangeMessageEntity.setCode(HttpRepStatus.FAILURE.getCode());
-                exchangeMessageEntity.setInfo("未知信息。");
-                exchangeMessageEntity.setExchangeMessageTypes(ExchangeMessageTypes.BaseProtocol);
+                rsproto.setModule_type(EnshuDataType.PayloadError);
+                rsproto.setProto_payload(rsproto.getProto_payload());
                 break;
             case EnshuHelperRegister:
-                int rs = messageProcessor.enshuHelperRegister(payload);
-                exchangeMessageEntity.setExchangeMessageTypes(ExchangeMessageTypes.EnshuHelperRegister);
-                exchangeMessageEntity.setStatus(HttpRepStatus.FAILURE);
-                exchangeMessageEntity.setCode(HttpRepStatus.FAILURE.getCode());
+                int rs = messageProcessor.enshuHelperRegister(userData);
                 if(rs == -1) {
-                    exchangeMessageEntity.setInfo("出现未知错误，无法新增用户信息。");
-                    return exchangeMessageEntity;
+                    rsdata.setComments("出现未知错误，无法新增用户信息。");
+                    rsproto.setProto_payload(JsonUtils.object2json(rsdata));
+                    return rsproto;
                 } else if(rs == 0) {
-                    exchangeMessageEntity.setInfo("该用户已存在。");
-                    return exchangeMessageEntity;
+                    rsdata.setComments(userData.getMemberid() + "该用户已存在。");
+                    rsproto.setProto_payload(JsonUtils.object2json(rsdata));
+                    return rsproto;
                 }
+                rsdata.setComments(userData.getMemberid() + "用户注册成功。");
                 break;
             case EnshuHelperUnregister:
-                rs = messageProcessor.enshuHelperUnregister(payload);
-                exchangeMessageEntity.setExchangeMessageTypes(ExchangeMessageTypes.EnshuHelperUnregister);
-                exchangeMessageEntity.setStatus(HttpRepStatus.FAILURE);
-                exchangeMessageEntity.setCode(HttpRepStatus.FAILURE.getCode());
+                rs = messageProcessor.enshuHelperUnregister(userData);
                 switch (rs) {
                     case -1:
-                        exchangeMessageEntity.setInfo("用户不存在。");
-                        return exchangeMessageEntity;
+                        rsdata.setComments(userData.getMemberid() + "用户不存在。");
+                        rsproto.setProto_payload(JsonUtils.object2json(rsdata));
+                        return rsproto;
                     case -2:
-                        exchangeMessageEntity.setInfo("请在用户注册群进行删除操作。");
-                        return exchangeMessageEntity;
+                        rsdata.setComments(userData.getMemberid() + "请在用户注册群进行删除操作。");
+                        rsproto.setProto_payload(JsonUtils.object2json(rsdata));
+                        return rsproto;
                     case 0:
-                        exchangeMessageEntity.setInfo("用户删除失败。");
-                        return exchangeMessageEntity;
+                        rsdata.setComments(userData.getMemberid() + "用户删除失败。");
+                        rsproto.setProto_payload(JsonUtils.object2json(rsdata));
+                        return rsproto;
                     default:
                         break;
                 }
+                rsdata.setComments(userData.getMemberid() + "用户删除成功。");
                 break;
         }
-        exchangeMessageEntity.setStatus(HttpRepStatus.SUCCESS);
-        exchangeMessageEntity.setCode(HttpRepStatus.SUCCESS.getCode());
-        exchangeMessageEntity.setInfo("信息处理完成。");
-        return exchangeMessageEntity;
+        rsproto.setProto_code(SUCCESS);
+        rsproto.setProto_payload(JsonUtils.object2json(rsdata));
+        return rsproto;
     }
 }

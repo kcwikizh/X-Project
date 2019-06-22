@@ -10,10 +10,10 @@ import java.util.logging.Level;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import kcwiki.x.enshuhelper.database.service.LogService;
-import kcwiki.x.enshuhelper.initializer.AppConfigs;
+import kcwiki.x.enshuhelper.initializer.AppConfig;
 import static kcwiki.x.enshuhelper.tools.ConstantValue.LINESEPARATOR;
-import kcwiki.x.enshuhelper.types.LogTypes;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.iharu.type.LogType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,17 +35,17 @@ public class EmailService {
     private static final Logger LOG = LoggerFactory.getLogger(EmailService.class);
     
     @Autowired
-    AppConfigs appConfigs;
+    AppConfig appConfig;
     @Autowired
     public JavaMailSender emailSender;
     @Autowired
     LogService logService;
    
     //https://blog.csdn.net/csdn_xuexiaoqiang/article/details/73730649
-    public void sendSimpleEmail(LogTypes msgTypes, String text){
+    public void sendSimpleEmail(LogType msgTypes, String text){
         SimpleMailMessage message = new SimpleMailMessage();//消息构造器
-        message.setFrom(appConfigs.getMail_sender());//发件人
-        message.setTo(appConfigs.getMail_recipient());//收件人
+        message.setFrom(appConfig.getMail_sender());//发件人
+        message.setTo(appConfig.getMail_recipient());//收件人
         String title = titleGenerator(msgTypes);
         message.setSubject(title);//主题
         message.setText(text);//正文
@@ -54,7 +54,7 @@ public class EmailService {
         } catch (MailException ex) {
             String log = String.format("邮件发送失败。标题为：%s，内容为：%s。", title, text);
             LOG.error(ExceptionUtils.getStackTrace(ex));
-            logService.addLog(LogTypes.ERROR, log);
+            logService.addLog(LogType.ERROR, log);
             return;
         }
         String log = String.format("发送邮件标题为：%s，内容为：%s。", title, text);
@@ -62,10 +62,10 @@ public class EmailService {
 //        logService.addLog(msgTypes, log);
     }
     
-    public void sendSimpleEmail(LogTypes msgTypes, Throwable ex){
+    public void sendSimpleEmail(LogType msgTypes, Throwable ex){
         SimpleMailMessage message = new SimpleMailMessage();//消息构造器
-        message.setFrom(appConfigs.getMail_sender());//发件人
-        message.setTo(appConfigs.getMail_recipient());//收件人
+        message.setFrom(appConfig.getMail_sender());//发件人
+        message.setTo(appConfig.getMail_recipient());//收件人
         String title = titleGenerator(msgTypes);
         message.setSubject(title);//主题
         String text = String.format(
@@ -82,7 +82,7 @@ public class EmailService {
         } catch (MailException ex1) {
             String log = String.format("邮件发送失败。标题为：%s，内容为：%s。", title, text);
             LOG.error(ExceptionUtils.getStackTrace(ex1));
-            logService.addLog(LogTypes.ERROR, log);
+            logService.addLog(LogType.ERROR, log);
             return;
         }
         String log = String.format("发送邮件标题为：%s，内容为：%s。", title, text);
@@ -114,7 +114,7 @@ public class EmailService {
         }
     }
     
-    private String titleGenerator(LogTypes msgTypes) {
-        return String.format("%s，类型为：%s", appConfigs.getMail_title(), msgTypes.getName());
+    private String titleGenerator(LogType msgTypes) {
+        return String.format("%s，类型为：%s", appConfig.getMail_title(), msgTypes);
     }
 }

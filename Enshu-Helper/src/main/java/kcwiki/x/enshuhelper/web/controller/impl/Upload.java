@@ -18,18 +18,17 @@ import kcwiki.x.enshuhelper.database.service.LogService;
 import kcwiki.x.enshuhelper.database.service.SystemInfoService;
 import kcwiki.x.enshuhelper.database.service.UserInfoService;
 import kcwiki.x.enshuhelper.message.websocket.MessagePublisher;
-import kcwiki.x.enshuhelper.message.websocket.entity.ExchangeMessageEntity;
-import kcwiki.x.enshuhelper.message.websocket.types.ExchangeMessageTypes;
-import kcwiki.x.enshuhelper.message.websocket.types.PublishStatus;
-import kcwiki.x.enshuhelper.message.websocket.types.PublishTypes;
+import kcwiki.x.enshuhelper.message.websocket.entity.UserData;
+import kcwiki.x.enshuhelper.message.websocket.types.EnshuDataType;
 import static kcwiki.x.enshuhelper.tools.ConstantValue.LINESEPARATOR;
-import kcwiki.x.enshuhelper.types.LogTypes;
-import kcwiki.x.enshuhelper.web.controller.BaseController;
-import kcwiki.x.enshuhelper.web.controller.entity.queryresponse.MatchInfo;
-import kcwiki.x.enshuhelper.web.controller.entity.queryresponse.QueryResponse;
+import org.iharu.type.LogType;
 import kcwiki.x.enshuhelper.web.controller.entity.request.UserEnshuInfoEntity;
-import kcwiki.x.enshuhelper.web.controller.types.HttpRepStatus;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.iharu.proto.web.WebResponseProto;
+import static org.iharu.type.BaseHttpStatus.FAILURE;
+import static org.iharu.type.BaseHttpStatus.SUCCESS;
+import org.iharu.util.JsonUtils;
+import org.iharu.web.BaseController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,12 +61,12 @@ public class Upload extends BaseController {
     
     @PostMapping(value="/query")
     @ResponseBody
-    public String query(@RequestBody String reqBody) throws JsonProcessingException
+    public WebResponseProto query(@RequestBody String reqBody) throws JsonProcessingException
     {
         LOG.debug("reqBody: {}", reqBody);
         UserEnshuInfoEntity userEnshuInfoEntity;
         if(!AppDataCache.isReadyReceive){
-            return Object2Json(BaseResponseGen(HttpRepStatus.FAILURE, "服务器数据处理中，暂时不能查询，请稍后再试。"));
+            return GenBaseResponse(FAILURE, "服务器数据处理中，暂时不能查询，请稍后再试。");
         }
         try {
             ObjectMapper objectMapper = new ObjectMapper();
@@ -80,18 +79,18 @@ public class Upload extends BaseController {
                     LINESEPARATOR,
                     reqBody
             );
-            return Object2Json(BaseResponseGen(HttpRepStatus.FAILURE, "上传的数据格式有误，请检查数据是否完整。"));
+            return GenBaseResponse(FAILURE, "上传的数据格式有误，请检查数据是否完整。");
         }
         long memberID = userEnshuInfoEntity.getApi_member_id();
         LOG.info("query memberID is {}。", memberID);
-        List<MatchInfo> rs = new ArrayList<>();
+        List<UserData> rs = new ArrayList<>();
         if(!AppDataCache.matchCache.containsKey(memberID)){
             UserDataEntity userDataEntity = userInfoService.findByGameid(memberID);
             if(userDataEntity == null) {
-                return Object2Json(BaseResponseGen(HttpRepStatus.FAILURE, "找不到用户，请确认你已经在服务器注册。"));
+                return GenBaseResponse(FAILURE, "找不到用户，请确认你已经在服务器注册。");
             } else if (userDataEntity.isBlock()) {
-                logService.addLog(LogTypes.WARN, String.format("%s已被禁止使用本服务。", memberID));
-                return Object2Json(BaseResponseGen(HttpRepStatus.FAILURE, "抱歉，你已被禁止使用本服务。"));
+                logService.addLog(LogType.WARN, String.format("%s已被禁止使用本服务。", memberID));
+                return GenBaseResponse(FAILURE, "抱歉，你已被禁止使用本服务。");
             }
             rs.add(userData2matchInfo(userDataEntity));
         } else {
@@ -100,7 +99,7 @@ public class Upload extends BaseController {
         List<Long> querylist = new ArrayList<>();
         LOG.trace("Api_enemy_list: {}", userEnshuInfoEntity.getApi_enemy_list());
         if(userEnshuInfoEntity.getApi_enemy_list().isEmpty()) {
-            return Object2Json(BaseResponseGen(HttpRepStatus.FAILURE, "待匹配项为空，请勿反复提交。"));
+            return GenBaseResponse(FAILURE, "待匹配项为空，请勿反复提交。");
         }
         userEnshuInfoEntity.getApi_enemy_list().forEach(item -> {
             if(AppDataCache.matchCache.containsKey(item)){
@@ -120,22 +119,12 @@ public class Upload extends BaseController {
         }
 //        LOG.info("AppDataCache.matchCache: {}", AppDataCache.matchCache.keySet());
         if( rs.size() < 2 ) {
-            return Object2Json(BaseResponseGen(HttpRepStatus.FAILURE, "暂时没有适配的玩家信息。"));
+            return GenBaseResponse(FAILURE, "暂时没有适配的玩家信息。");
         } else {
             CompletableFuture.runAsync(() -> {
                 AppDataCache.queryCount.increment();
                 AppDataCache.matchCount.add(rs.size()-1);
-                try{
-                    ExchangeMessageEntity exchangeMessageEntity = new ExchangeMessageEntity();
-                    exchangeMessageEntity.setStatus(HttpRepStatus.SUCCESS);
-                    exchangeMessageEntity.setCode(HttpRepStatus.SUCCESS.getCode());
-                    exchangeMessageEntity.setExchangeMessageTypes(ExchangeMessageTypes.EnshuHelperInform);
-                    exchangeMessageEntity.setPayload(Object2Json(rs));
-//                    LOG.trace("exchangeMessageEntity: {}", Object2Json(exchangeMessageEntity));
-                    messagePublisher.publish(Object2Json(exchangeMessageEntity), PublishTypes.Guest, PublishStatus.SUCCESS);
-                } catch (JsonProcessingException ex){
-                    LOG.error(ExceptionUtils.getStackTrace(ex));
-                }
+                messagePublisher.publish(JsonUtils.object2json(rs), EnshuDataType.EnshuHelperInform);
                 
                 try{
                     systemInfoService.updateCount();
@@ -148,29 +137,24 @@ public class Upload extends BaseController {
                     LOG.error(ExceptionUtils.getStackTrace(ex));
                 }
             });
-//            logService.addLog(LogTypes.DEBUG, "成功插入");
-            List<MatchInfo> rsp = new ArrayList<>();
+            List<UserData> rsp = new ArrayList<>();
             rs.forEach(item -> {
                 if(item.getMemberid() == memberID)
                     return;
-                MatchInfo matchInfo = new MatchInfo();
+                UserData matchInfo = new UserData();
                 matchInfo.setMemberid(item.getMemberid());
                 matchInfo.setTeitoku(item.getTeitoku());
                 matchInfo.setQqgroup(item.getQqgroup());
                 matchInfo.setComments(item.getComments());
                 rsp.add(matchInfo);
             });
-            QueryResponse queryResponse = new QueryResponse();
-            queryResponse.setStatus(HttpRepStatus.SUCCESS);
-            queryResponse.setCode(HttpRepStatus.SUCCESS.getCode());
-            queryResponse.setMatchlist(rsp);
-            logService.addLog(LogTypes.INFO, String.format("%s已匹配成功。", memberID));
-            return Object2Json(queryResponse);
+            logService.addLog(LogType.INFO, String.format("%s已匹配成功。", memberID));
+            return GenResponse(SUCCESS, rsp);
         }
     }
     
-    private MatchInfo userData2matchInfo(UserDataEntity userDataEntity){
-        MatchInfo matchInfo = new MatchInfo();
+    private UserData userData2matchInfo(UserDataEntity userDataEntity){
+        UserData matchInfo = new UserData();
         matchInfo.setMemberid(userDataEntity.getGameid());
         matchInfo.setTeitoku(userDataEntity.getTeitoku());
         matchInfo.setQq(userDataEntity.getQq());

@@ -7,6 +7,7 @@ import org.iharu.proto.websocket.system.WebsocketSystemProto;
 import org.iharu.type.ResultType;
 import org.iharu.type.websocket.WebsocketMessageType;
 import org.iharu.type.websocket.WebsocketSystemMessageType;
+import org.iharu.util.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,8 @@ public class MessagePublisher<T>
   
     public void publish(WebsocketProto payload, WebsocketMessageType messageType)
     {
+        if(payload == null)
+            return;
         switch (messageType)
         {
             case SYSTEM: 
@@ -37,6 +40,8 @@ public class MessagePublisher<T>
     
     public void publish(byte[] payload, WebsocketMessageType messageType)
     {
+        if(payload == null)
+            return;
         switch (messageType)
         {
             case SYSTEM: 
@@ -58,8 +63,8 @@ public class MessagePublisher<T>
         publish(payload, WebsocketMessageType.NON_SYSTEM);
     }
 
-    public <T> void publish(T payload, ResultType resultType, WebsocketSystemMessageType systemMessageType)
+    public <T> void publish(String payload, ResultType resultType, WebsocketSystemMessageType systemMessageType)
     {
-        publish(new WebsocketProto(WebsocketMessageType.SYSTEM, resultType, new WebsocketSystemProto(systemMessageType, payload)), WebsocketMessageType.SYSTEM);
+        publish(new WebsocketProto(resultType, JsonUtils.object2json(new WebsocketSystemProto(systemMessageType, payload))), WebsocketMessageType.SYSTEM);
     }
 }

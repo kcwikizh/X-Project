@@ -5,13 +5,11 @@
  */
 package kcwiki.x.enshuhelper.message.websocket.types;
 
-import kcwiki.x.enshuhelper.types.EnumBase;
-
 /**
  *
  * @author iHaru
  */
-public enum PublishTypes implements EnumBase{
+public enum PublishTypes{
     Admin(0),
     Guest(1),
     All(2)
@@ -22,23 +20,5 @@ public enum PublishTypes implements EnumBase{
     PublishTypes(int code) {
         this.code = code;
     }
-    
-    @Override
-    public String getName() {
-        switch(code) {
-            default:
-                return "未知";
-            case 0:
-                return "管理员";
-            case 1:
-                return "游客";
-            case 2:
-                return "全部";
-        }
-    }
 
-    @Override
-    public int getCode() {
-        return code;
-    }
 }

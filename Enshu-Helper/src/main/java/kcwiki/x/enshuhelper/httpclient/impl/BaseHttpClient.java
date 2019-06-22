@@ -36,7 +36,7 @@ public class BaseHttpClient {
     
     public void setConfig(boolean useProxy){
         if(useProxy) {
-//            HttpHost proxy = new HttpHost(AppDataCache.appConfigs.getProxy_host(), AppDataCache.appConfigs.getProxy_port());
+//            HttpHost proxy = new HttpHost(AppDataCache.appConfig.getProxy_host(), AppDataCache.appConfig.getProxy_port());
             HttpHost proxy = new HttpHost("127.0.0.1", 8888);
             config = RequestConfig.custom().setProxy(proxy).setRedirectsEnabled(true).build();
         } else {

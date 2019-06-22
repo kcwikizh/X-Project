@@ -8,7 +8,7 @@ package kcwiki.x.enshuhelper.httpclient;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.TimeZone;
-import kcwiki.x.enshuhelper.initializer.AppConfigs;
+import kcwiki.x.enshuhelper.initializer.AppConfig;
 import org.apache.hc.client5.http.config.RequestConfig;
 import org.apache.hc.core5.http.HttpHost;
 import org.apache.hc.core5.util.Timeout;
@@ -23,12 +23,12 @@ import org.springframework.stereotype.Component;
 public class HttpClientConfig {
     
     @Autowired
-    AppConfigs appConfigs;
+    AppConfig appConfig;
     
     public RequestConfig makeProxyConfig(boolean needProxy) {
         RequestConfig config;
         if (needProxy) {
-            HttpHost proxy = new HttpHost(appConfigs.getProxy_host(), appConfigs.getProxy_port());
+            HttpHost proxy = new HttpHost(appConfig.getProxy_host(), appConfig.getProxy_port());
             config = RequestConfig.custom()
                 .setProxy(proxy)
                 .setConnectionTimeout(Timeout.ofSeconds(5))

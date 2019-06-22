@@ -1,20 +1,26 @@
 package kcwiki.msgtransfer.initializer;
 
-import com.google.protobuf.ByteString;
+import com.fasterxml.jackson.core.type.TypeReference;
+import java.io.EOFException;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import kcwiki.msgtransfer.cache.inmem.RuntimeValue;
-import kcwiki.msgtransfer.protobuf.proto.WebsocketSystem;
-import kcwiki.msgtransfer.protobuf.proto.WebsocketWapper;
+import protobuf.proto.Websocket;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.iharu.constant.ConstantValue;
-import org.iharu.util.BaseConstantValue;
+import static org.iharu.constant.ConstantValue.LINESEPARATOR;
+import org.iharu.initializer.InitializerInterface;
+import org.iharu.proto.websocket.WebsocketProto;
+import org.iharu.proto.websocket.system.WebsocketSystemProto;
+import org.iharu.type.websocket.WebsocketMessageType;
 import org.iharu.util.JsonUtils;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
@@ -24,7 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class AppInitializer
+public class AppInitializer implements InitializerInterface 
 {
     private static final Logger LOG = LoggerFactory.getLogger(AppInitializer.class);
     @Autowired
@@ -34,6 +40,7 @@ public class AppInitializer
     boolean isInit = false;
 
     @PostConstruct
+    @Override
     public void initMethod()
     {
       if (appConfig == null) {
@@ -42,8 +49,10 @@ public class AppInitializer
     }
 
     @PreDestroy
+    @Override
     public void destroyMethod() {}
 
+    @Override
     public void init()
       throws IOException
     {
@@ -59,11 +68,11 @@ public class AppInitializer
       if (isInit)
       {
         kcwiki.msgtransfer.cache.inmem.AppDataCache.isAppInit = true;
-        LOG.info("X-Project MessageTransferStation: initialization completed in {} ms{}", endTime - startTime, BaseConstantValue.LINESEPARATOR);
+        LOG.info("X-Project MessageTransferStation: initialization completed in {} ms{}", endTime - startTime, LINESEPARATOR);
       }
       else
       {
-        LOG.error("X-Project MessageTransferStation: initialization failed in {} ms{}", endTime - startTime, BaseConstantValue.LINESEPARATOR);
+        LOG.error("X-Project MessageTransferStation: initialization failed in {} ms{}", endTime - startTime, LINESEPARATOR);
         System.exit(0);
       }
     }
@@ -83,7 +92,21 @@ public class AppInitializer
             @Override
             public void onMessage(String string)
             {
-              AppInitializer.LOG.info("TestClient - onMessage: {}", string);
+                WebsocketProto websocketProto = JsonUtils.json2objectWithoutThrowException(string, new TypeReference<WebsocketProto>(){});
+                if(websocketProto == null)
+                    return;
+                if(websocketProto.getProto_type()== WebsocketMessageType.SYSTEM){
+                    try {
+                        WebsocketSystemProto websocketSystemProto = JsonUtils.json2object(websocketProto.getProto_payload(), new TypeReference<WebsocketSystemProto>(){});
+                        if(websocketSystemProto == null)
+                            return;
+                        LOG.info("StringData from system Received: {}", websocketSystemProto.getData());
+                    } catch (IOException ex) {
+                        LOG.error(ExceptionUtils.getStackTrace(ex));
+                    }
+                } else {
+                     LOG.info("StringData from nonsystem: {} Received: {}", websocketProto.getProto_module(), websocketProto.getProto_payload());
+                }
             }
 
             @Override
@@ -95,7 +118,9 @@ public class AppInitializer
             @Override
             public void onError(Exception excptn)
             {
-              AppInitializer.LOG.info("TestClient - onError excptn:{}", ExceptionUtils.getStackTrace(excptn));
+                if(excptn instanceof EOFException)
+                    return;
+                AppInitializer.LOG.info("TestClient - onError excptn:{}", ExceptionUtils.getStackTrace(excptn));
             }
         };
         try
@@ -135,21 +160,22 @@ public class AppInitializer
             public void onMessage(ByteBuffer bb)
             {
                 try{
-                    WebsocketWapper websocketWapper = WebsocketWapper.parseFrom(bb);
+                    Websocket websocketWapper = Websocket.parseFrom(bb);
                     if(websocketWapper == null)
                         return;
-                    if(websocketWapper.getProtoType() == WebsocketWapper.ProtoType.SYSTEM){
-                        WebsocketSystem websocketSystem = WebsocketSystem.parseFrom(websocketWapper.getProtoPayload());
-                        if(websocketSystem == null)
+                    if(websocketWapper.getProtoType() == Websocket.ProtoType.SYSTEM){
+                        WebsocketSystemProto websocketSystemProto = JsonUtils.json2object(websocketWapper.getProtoPayload().toByteArray(), new TypeReference<WebsocketSystemProto>(){});
+                        if(websocketSystemProto == null)
                             return;
-                        LOG.info("ByteData Received: {}", websocketSystem.getData());
+                        LOG.info("ByteData from system Received: {}", websocketSystemProto.getData());
+                    } else {
+                        LOG.info("ByteData from nonsystem: {} Received: {}", websocketWapper.getProtoModule(), new String(websocketWapper.getProtoPayload().toByteArray(), StandardCharsets.UTF_8));
                     }
-                    
-                } catch (Exception ex) {
+                } catch (IOException ex) {
                     LOG.error(ExceptionUtils.getStackTrace(ex));
                 }
             }
-
+            
             @Override
             public void onClose(int i, String string, boolean bln)
             {
@@ -159,7 +185,9 @@ public class AppInitializer
             @Override
             public void onError(Exception excptn)
             {
-              AppInitializer.LOG.info("ProtobufTestClient - onError excptn:{}", ExceptionUtils.getStackTrace(excptn));
+                if(excptn instanceof EOFException)
+                    return;
+                AppInitializer.LOG.info("ProtobufTestClient - onError excptn:{}", ExceptionUtils.getStackTrace(excptn));
             }
         };
         try

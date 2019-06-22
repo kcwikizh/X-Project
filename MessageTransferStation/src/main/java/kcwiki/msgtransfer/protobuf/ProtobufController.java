@@ -7,21 +7,19 @@ package kcwiki.msgtransfer.protobuf;
 
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import kcwiki.msgtransfer.core.TransferController;
-import kcwiki.msgtransfer.protobuf.proto.WebsocketNonSystem;
-import kcwiki.msgtransfer.protobuf.proto.WebsocketSystem;
-import kcwiki.msgtransfer.protobuf.proto.WebsocketWapper;
+import java.nio.charset.StandardCharsets;
+import javax.validation.constraints.NotNull;
+import protobuf.proto.Websocket;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.iharu.exception.BaseException;
 import org.iharu.proto.websocket.WebsocketProto;
 import org.iharu.proto.websocket.system.WebsocketSystemProto;
 import org.iharu.type.ResultType;
+import org.iharu.type.error.ErrorType;
 import org.iharu.type.websocket.WebsocketMessageType;
 import org.iharu.type.websocket.WebsocketSystemMessageType;
 import org.iharu.util.JsonUtils;
@@ -39,119 +37,125 @@ import org.springframework.stereotype.Component;
 public class ProtobufController {
     private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(ProtobufController.class);
     
-    public WebsocketProto Transfor(ByteBuffer buffer){
+    public WebsocketProto Transfor(byte[] bytes){
         try {
-            WebsocketWapper websocketWapper = WebsocketWapper.parseFrom(buffer.array());
-//            websocketWapper.getProtoType() == WebsocketWapper.ProtoType.SYSTEM;
+            Websocket websocketWapper = Websocket.parseFrom(bytes);
+            if(websocketWapper == null)
+                return null;
+            if(websocketWapper.getProtoType() == Websocket.ProtoType.SYSTEM) {
+                return new WebsocketProto(convertProtoCode(websocketWapper.getProtoCode()), bytes2string(websocketWapper.getProtoPayload().toByteArray()));
+            } else {
+                return new WebsocketProto(websocketWapper.getProtoModule(), convertProtoCode(websocketWapper.getProtoCode()), bytes2string(websocketWapper.getProtoPayload().toByteArray()));
+            }
         } catch (InvalidProtocolBufferException ex) {
             LOG.error(ExceptionUtils.getStackTrace(ex));
         }
         return null;
     }
     
-    public byte[] Transfor(WebsocketProto proto){
-        if(proto.getProto_type() == WebsocketMessageType.SYSTEM){
-            WebsocketSystemProto systemProto = (WebsocketSystemProto) proto.getProto_payload();
-            WebsocketWapper websocketWapper = 
-                WebsocketWapper.newBuilder()
+    public WebsocketProto Transfor(ByteBuffer buffer){
+        return Transfor(buffer.array());
+    }
+    
+    public byte[] Transfor(WebsocketProto proto) throws IOException {
+        byte[] data = JsonUtils.json2bytes(proto.getProto_payload());
+        Websocket websocketWapper = 
+                Websocket.newBuilder()
                     .setProtoCode(convertResultType(proto.getProto_code()))
-                    .setProtoType(WebsocketWapper.ProtoType.SYSTEM)
+                    .setProtoType(convertWebsocketMessageType(proto.getProto_type()))
                     .setTimestamp(System.currentTimeMillis())
-                    .setSign(DigestUtils.sha256Hex(UUID.randomUUID().toString()))
-                    .setProtoPayload(
-                        ByteString.copyFrom(
-                            WebsocketSystem.newBuilder()
-                                .setMsgType(convertSystemMessageType(systemProto.getMsg_type()))
-                                .setData(JsonUtils.object2json(systemProto.getData()))
-                                .build().toByteArray()
-                        )
-                    )
+                    .setSign(DigestUtils.sha256Hex(data))
+                    .setProtoPayload(ByteString.copyFrom(data))
                     .build();
-            return websocketWapper.toByteArray();
-        }
-        return null;
+        return websocketWapper.toByteArray();
     }
     
     public byte[] Transfor(ResultType resultType, WebsocketSystemMessageType systemMessageType, String payload){
-        WebsocketWapper websocketWapper = 
-                WebsocketWapper.newBuilder()
+        if(StringUtils.isBlank(payload))
+            throw new BaseException(ErrorType.PARAMETER_ERROR, "payload 不能为空");
+        byte[] data = JsonUtils.object2bytes(new WebsocketSystemProto(systemMessageType, payload));
+        Websocket websocketWapper = 
+                Websocket.newBuilder()
                     .setProtoCode(convertResultType(resultType))
-                    .setProtoType(WebsocketWapper.ProtoType.SYSTEM)
+                    .setProtoType(Websocket.ProtoType.SYSTEM)
                     .setTimestamp(System.currentTimeMillis())
-                    .setSign(DigestUtils.sha256Hex(UUID.randomUUID().toString()))
-                    .setProtoPayload(
-                        ByteString.copyFrom(
-                            WebsocketSystem.newBuilder()
-                                .setMsgType(convertSystemMessageType(systemMessageType))
-                                .setData(payload)
-                                .build().toByteArray()
-                        )
-                    )
+                    .setSign(DigestUtils.sha256Hex(data))
+                    .setProtoPayload(ByteString.copyFrom(data))
                     .build();
         return websocketWapper.toByteArray();
     }
     
-    public byte[] Transfor(ResultType proto_code, String module, String payload){
-        WebsocketWapper websocketWapper = 
-                WebsocketWapper.newBuilder()
-                    .setProtoCode(WebsocketWapper.ProtoCode.SUCCESS)
-                    .setProtoType(WebsocketWapper.ProtoType.NON_SYSTEM)
+    public byte[] Transfor(ResultType proto_code, @NotNull String module, String payload){
+        if(StringUtils.isBlank(payload))
+            throw new BaseException(ErrorType.PARAMETER_ERROR, "payload 不能为空");
+        if(StringUtils.isBlank(module))
+            throw new BaseException(ErrorType.PARAMETER_ERROR, "module 不能为空");
+        byte[] data = string2bytes(payload);
+        Websocket websocketWapper = 
+                Websocket.newBuilder()
+                    .setProtoCode(convertResultType(proto_code))
+                    .setProtoType(Websocket.ProtoType.NON_SYSTEM)
+                    .setProtoModule(module)
                     .setTimestamp(System.currentTimeMillis())
-                    .setSign(DigestUtils.sha256Hex(UUID.randomUUID().toString()))
-                    .setProtoPayload(
-                        ByteString.copyFrom(
-                            WebsocketNonSystem.newBuilder()
-                                .setModule(module)
-                                .setData(payload)
-                                .build().toByteArray()
-                        )
-                    )
+                    .setSign(DigestUtils.sha256Hex(data))
+                    .setProtoPayload(ByteString.copyFrom(data))
                     .build();
         return websocketWapper.toByteArray();
     }
     
-    public byte[] Transfor(String module, String payload){
+    public <T> byte[] Transfor(@NotNull String module, String payload){
         return Transfor(ResultType.SUCCESS, module, payload);
     }
     
-    public WebsocketWapper.ProtoCode convertResultType(ResultType resultType){
+    public Websocket.ProtoCode convertResultType(ResultType resultType){
         switch(resultType){
             case SUCCESS:
-                return WebsocketWapper.ProtoCode.SUCCESS;
+                return Websocket.ProtoCode.SUCCESS;
             case FAIL:
-                return WebsocketWapper.ProtoCode.FAIL;
+                return Websocket.ProtoCode.FAIL;
             case ERROR:
-                return WebsocketWapper.ProtoCode.ERROR;
+                return Websocket.ProtoCode.ERROR;
         }
-        return WebsocketWapper.ProtoCode.UNRECOGNIZED;
+        return Websocket.ProtoCode.UNRECOGNIZED;
     }
     
-    public WebsocketSystem.SystemMessageType convertSystemMessageType(WebsocketSystemMessageType systemMessageType){
-        switch(systemMessageType){
-            case SYSTEM_INFO:
-                return WebsocketSystem.SystemMessageType.SYSTEM_INFO;
-            case DEBUG_MSG:
-                return WebsocketSystem.SystemMessageType.DEBUG_MSG;
-            case PAYLOAD_ERROR:
-                return WebsocketSystem.SystemMessageType.PAYLOAD_ERROR;
-            case CLIENT_REBOOT:
-                return WebsocketSystem.SystemMessageType.CLIENT_REBOOT;
-            case CLIENT_SHUTDOWN:
-                return WebsocketSystem.SystemMessageType.CLIENT_SHUTDOWN;
-            case SERVER_REBOOT:
-                return WebsocketSystem.SystemMessageType.SERVER_REBOOT;
-            case SERVER_SHUTDOWN:
-                return WebsocketSystem.SystemMessageType.SERVER_SHUTDOWN;
-            case AUTHORIZATION_REQUIRED:
-                return WebsocketSystem.SystemMessageType.AUTHORIZATION_REQUIRED;
-            case AUTHORIZATION_FAIL:
-                return WebsocketSystem.SystemMessageType.AUTHORIZATION_FAIL;
-            case AUTHORIZATION_SUCCESS:
-                return WebsocketSystem.SystemMessageType.AUTHORIZATION_SUCCESS;
-            case PING:
-                return WebsocketSystem.SystemMessageType.PING;
+    public ResultType convertProtoCode(Websocket.ProtoCode protoCode){
+        switch(protoCode){
+            case SUCCESS:
+                return ResultType.SUCCESS;
+            case FAIL:
+                return ResultType.FAIL;
+            default:
+                return ResultType.ERROR;
         }
-        return WebsocketSystem.SystemMessageType.UNRECOGNIZED;
+    }
+    
+    public Websocket.ProtoType convertWebsocketMessageType(WebsocketMessageType messageType){
+        switch(messageType){
+            case SYSTEM:
+                return Websocket.ProtoType.SYSTEM;
+            case NON_SYSTEM:
+                return Websocket.ProtoType.NON_SYSTEM;
+        }
+        return Websocket.ProtoType.UNRECOGNIZED;
+    }
+    
+    public WebsocketMessageType convertProtoType(Websocket.ProtoType protoType){
+        switch(protoType){
+            case SYSTEM:
+                return WebsocketMessageType.SYSTEM;
+            case NON_SYSTEM:
+                return WebsocketMessageType.NON_SYSTEM;
+        }
+        return WebsocketMessageType.NON_SYSTEM;
+    }
+    
+    public byte[] string2bytes(String str){
+        return str.getBytes(StandardCharsets.UTF_8);
+    }
+    
+    public String bytes2string(byte[] bytes){
+        return new String(bytes, StandardCharsets.UTF_8);
     }
     
 }

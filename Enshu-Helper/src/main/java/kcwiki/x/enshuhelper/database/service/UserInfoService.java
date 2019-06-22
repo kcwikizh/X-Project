@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import kcwiki.x.enshuhelper.database.dao.UserInfoDao;
 import kcwiki.x.enshuhelper.database.entity.UserDataEntity;
-import kcwiki.x.enshuhelper.initializer.AppConfigs;
+import kcwiki.x.enshuhelper.initializer.AppConfig;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,7 +23,7 @@ public class UserInfoService {
     static final org.slf4j.Logger LOG = LoggerFactory.getLogger(UserInfoService.class);
     
     @Autowired
-    private AppConfigs appConfigs;
+    private AppConfig appConfigs;
     @Autowired
     private UserInfoDao userInfoDao;
     
