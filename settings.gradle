@@ -3,8 +3,8 @@ rootProject.name = 'KcwikiXProject'
 // Find the directories containing a "build.gradle" file in the root directory
 // of the project. That is, every directory containing a "build.gradle" will
 // be automatically the subproject of this project.
-include 'KcwikiDB','KanColleScanner','WeChatWiki','Enshu-Helper','XControlCenter','XControlledModule'
-include 'MessageTransferStation','RetweetServer'
+include 'KcwikiDB','KanColleScanner','Enshu-Helper','RetweetServer'
+include 'XControlCenter','XControlledModule','XTrafficModule'
 
 includeBuild '../Haru-Framework'
 

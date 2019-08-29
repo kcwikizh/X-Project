@@ -40,11 +40,13 @@
 **/log/
 *.log
 *.jar
+*.json
 *.bat
+*.bak
 *debug*
 *test*
 **/startup.bat
+**/RSA/
 /KcwikiDB/
-/WeChatWiki/
-/XControlledModule/
 /RetweetServer/
+/MessageTransferStationReceiver/
