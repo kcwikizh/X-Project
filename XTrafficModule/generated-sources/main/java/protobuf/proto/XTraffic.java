@@ -29,16 +29,18 @@ public final class XTraffic {
   static {
     java.lang.String[] descriptorData = {
       "\n\025XTrafficWrapper.proto\022\033kcwiki.msgtrans" +
-      "fer.protobuf\"\331\002\n\rXTrafficProto\022H\n\nproto_" +
+      "fer.protobuf\"\210\003\n\rXTrafficProto\022H\n\nproto_" +
       "type\030\001 \001(\01624.kcwiki.msgtransfer.protobuf" +
       ".XTrafficProto.ProtoType\022H\n\nproto_code\030\002" +
       " \001(\01624.kcwiki.msgtransfer.protobuf.XTraf" +
       "ficProto.ProtoCode\022\024\n\014proto_module\030\003 \001(\t" +
-      "\022\025\n\rproto_payload\030\004 \001(\014\022\021\n\ttimestamp\030\005 \001" +
-      "(\003\022\014\n\004sign\030\006 \001(\t\"\'\n\tProtoType\022\n\n\006SYSTEM\020" +
-      "\000\022\016\n\nNON_SYSTEM\020\001\"=\n\tProtoCode\022\013\n\007FAILUR" +
-      "E\020\000\022\013\n\007SUCCESS\020\001\022\t\n\005ERROR\020\002\022\013\n\007UNKNOWN\020\003" +
-      "B\034\n\016protobuf.protoB\010XTrafficP\001b\006proto3"
+      "\022\025\n\rproto_payload\030\004 \001(\014\022\024\n\014proto_sender\030" +
+      "\005 \001(\t\022\027\n\017proto_recipient\030\006 \001(\t\022\021\n\ttimest" +
+      "amp\030\007 \001(\003\022\014\n\004sign\030\010 \001(\t\"\'\n\tProtoType\022\n\n\006" +
+      "SYSTEM\020\000\022\016\n\nNON_SYSTEM\020\001\"=\n\tProtoCode\022\013\n" +
+      "\007FAILURE\020\000\022\013\n\007SUCCESS\020\001\022\t\n\005ERROR\020\002\022\013\n\007UN" +
+      "KNOWN\020\003B\034\n\016protobuf.protoB\010XTrafficP\001b\006p" +
+      "roto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -57,7 +59,7 @@ public final class XTraffic {
     internal_static_kcwiki_msgtransfer_protobuf_XTrafficProto_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_kcwiki_msgtransfer_protobuf_XTrafficProto_descriptor,
-        new java.lang.String[] { "ProtoType", "ProtoCode", "ProtoModule", "ProtoPayload", "Timestamp", "Sign", });
+        new java.lang.String[] { "ProtoType", "ProtoCode", "ProtoModule", "ProtoPayload", "ProtoSender", "ProtoRecipient", "Timestamp", "Sign", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

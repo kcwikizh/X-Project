@@ -21,8 +21,10 @@ public class AppDataCache
 {
     private static final Logger LOG = LoggerFactory.getLogger(AppDataCache.class);
     
+    private static String PrivateKey = null;
+    
     public static boolean isAppInit = false;
-    public static String PrivateKey = null;
+    
     public static final Map<String, AuthVoucher> Vouchers = new ConcurrentHashMap();
     
     public static final Map<String, BaseWebsocketClient> WebsocketClients = new ConcurrentHashMap();

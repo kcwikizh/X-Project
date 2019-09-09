@@ -10,7 +10,7 @@ import kcwiki.x.enshuhelper.database.dao.LogDao;
 import kcwiki.x.enshuhelper.database.entity.log.LogEntity;
 import org.iharu.type.LogType;
 import kcwiki.x.enshuhelper.initializer.AppConfig;
-import static kcwiki.x.enshuhelper.tools.ConstantValue.LINESEPARATOR;
+import static org.iharu.constant.ConstantValue.LINESEPARATOR;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.iharu.exception.BaseException;
 import org.springframework.beans.factory.annotation.Autowired;

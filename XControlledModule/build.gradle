@@ -1,22 +1,21 @@
-plugins {
-    id "org.springframework.boot" version "2.1.0.RELEASE"
-}
-plugins {
-    id "io.spring.dependency-management" version "1.0.7.RELEASE"
-}
-repositories {
-    mavenCentral()
-}
 
 version = '1.0.0'
 
+jar {
+    enabled = true
+    baseName = 'controlled-module'
+    classifier = 'xproject'
+    manifest {
+        attributes 'Implementation-Title': 'X-Project Controlled Module', 'Implementation-Version': version
+    }
+}
+
 //添加依赖
 dependencies {
-    compile "org.iharu.bootstrap:SpringBoot"
+    compileOnly "org.iharu.bootstrap:SpringBoot"
     compile project(':XTrafficModule')
     
     compile group: 'de.codecentric', name: 'spring-boot-admin-starter-client', version: '2.1.5'
-
-    compile group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.1.0'
     
+    testCompile "org.iharu.bootstrap:SpringBoot"
 }

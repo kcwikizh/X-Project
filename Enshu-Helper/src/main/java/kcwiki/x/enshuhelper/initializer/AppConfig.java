@@ -15,8 +15,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 //@PropertySource(value={"classpath:configuration/appconfig/appconfig.properties"})
 public class AppConfig {
-    @Value("${myprops.system.root}")
-    private String system_root;
+    @Value("${myprops.application.root}")
+    private String application_root;
     @Value("${myprops.global.useproxy}")
     private boolean allow_use_proxy;
     @Value("${myprops.global.proxyhost}")
@@ -25,6 +25,8 @@ public class AppConfig {
     private int proxy_port;
     @Value("${myprops.global.debug}")
     private boolean debug;
+    @Value("${myprops.global.folder.webroot}")
+    private String folder_webroot;
     @Value("${myprops.global.folder.privatedata}")
     private String folder_privatedata;
     @Value("${myprops.global.folder.publish}")
@@ -273,20 +275,32 @@ public class AppConfig {
     public void setMessage_notice(String message_notice) {
         this.message_notice = message_notice;
     }
-
-    /**
-     * @return the system_root
-     */
-    public String getSystem_root() {
-        return system_root;
-    }
-
-    /**
-     * @param system_root the system_root to set
-     */
-    public void setSystem_root(String system_root) {
-        this.system_root = system_root;
-    }
-
     
+    /**
+     * @return the application_root
+     */
+    public String getApplication_root() {
+        return application_root;
+    }
+
+    /**
+     * @param application_root the application_root to set
+     */
+    public void setApplication_root(String application_root) {
+        this.application_root = application_root;
+    }
+
+    /**
+     * @return the folder_webroot
+     */
+    public String getFolder_webroot() {
+        return folder_webroot;
+    }
+
+    /**
+     * @param folder_webroot the folder_webroot to set
+     */
+    public void setFolder_webroot(String folder_webroot) {
+        this.folder_webroot = folder_webroot;
+    }
 }

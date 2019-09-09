@@ -6,16 +6,11 @@
 package kcwiki.management.xtraffic.utils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import java.util.Base64;
-import java.util.Calendar;
-import kcwiki.management.xtraffic.authentication.entity.AuthenticationEntity;
-import kcwiki.management.xtraffic.configuration.ModuleConfig;
-import kcwiki.management.xtraffic.crypto.rsa.RSAUtil;
-import org.iharu.proto.websocket.system.WebsocketSystemProto;
+import kcwiki.management.xtraffic.entity.AuthenticationEntity;
+import kcwiki.management.xtraffic.crypto.rsa.RSAUtils;
 import org.iharu.util.CalendarUtils;
 import org.iharu.util.JsonUtils;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  *
@@ -27,7 +22,7 @@ public class AuthenticationUtils {
     private final static String TIMEZONE = "JST";
     
     public static AuthenticationEntity GetAuthenticationEntity(String key, String body){
-        byte[] data = RSAUtil.DecryptWithPrivateKey(body, key);
+        byte[] data = RSAUtils.DecryptWithPrivateKey(body, key);
         return JsonUtils.json2objectWithoutThrowException(data, new TypeReference<AuthenticationEntity>(){});
     }
     

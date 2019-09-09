@@ -12,9 +12,10 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import kcwiki.management.controlcenter.cache.inmem.RuntimeValue;
+import static kcwiki.management.controlcenter.constant.ConstantValue.TEMP_FOLDER;
+import kcwiki.management.controlcenter.database.service.UtilsService;
 import protobuf.proto.Websocket;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.iharu.constant.ConstantValue;
 import static org.iharu.constant.ConstantValue.LINESEPARATOR;
 import org.iharu.initializer.InitializerInterface;
 import org.iharu.proto.websocket.WebsocketProto;
@@ -34,6 +35,8 @@ public class AppInitializer implements InitializerInterface
     private static final Logger LOG = LoggerFactory.getLogger(AppInitializer.class);
     @Autowired
     AppConfig appConfig;
+    @Autowired
+    UtilsService utilsService;
     @Autowired
     RuntimeValue RUNTIME;
     boolean isInit = false;
@@ -58,11 +61,12 @@ public class AppInitializer implements InitializerInterface
       LOG.info("X-Project MessageTransferStation: initialization started");
       isInit = true;
       long startTime = System.currentTimeMillis();
+      checkDatabase();
       startTestClient();
       startProtobufTestClient();
       long endTime = System.currentTimeMillis();
       LOG.info("AppRoot folder: {}", RUNTIME.APPROOT);
-      LOG.info("Temp folder: {}", ConstantValue.TEMP_FOLDER);
+      LOG.info("Temp folder: {}", TEMP_FOLDER);
       LOG.info("WebRoot folder: {}", RUNTIME.WEBROOT_FOLDER);
       if (isInit)
       {
@@ -74,6 +78,15 @@ public class AppInitializer implements InitializerInterface
         LOG.error("X-Project MessageTransferStation: initialization failed in {} ms{}", endTime - startTime, LINESEPARATOR);
         System.exit(0);
       }
+    }
+    
+    private void checkDatabase() {
+        utilsService.createModuleAuthorizationTable();
+        utilsService.createModuleIdentityTable();
+        utilsService.createModuleTokenTable();
+        utilsService.createUserAuthenticationTable();
+        utilsService.createAuthorizationLogTable();
+        utilsService.createSystemLogTable();
     }
 
     public void startTestClient()

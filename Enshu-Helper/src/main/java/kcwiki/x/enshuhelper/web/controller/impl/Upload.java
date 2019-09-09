@@ -20,7 +20,7 @@ import kcwiki.x.enshuhelper.database.service.UserInfoService;
 import kcwiki.x.enshuhelper.message.websocket.MessagePublisher;
 import kcwiki.x.enshuhelper.message.websocket.entity.UserData;
 import kcwiki.x.enshuhelper.message.websocket.types.EnshuDataType;
-import static kcwiki.x.enshuhelper.tools.ConstantValue.LINESEPARATOR;
+import static org.iharu.constant.ConstantValue.LINESEPARATOR;
 import org.iharu.type.LogType;
 import kcwiki.x.enshuhelper.web.controller.entity.request.UserEnshuInfoEntity;
 import org.apache.commons.lang3.exception.ExceptionUtils;

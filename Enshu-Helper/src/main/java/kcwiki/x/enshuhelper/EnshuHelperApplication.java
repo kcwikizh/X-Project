@@ -16,6 +16,7 @@ import org.springframework.boot.Banner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.ComponentScan;
 
 /**
  *
@@ -23,6 +24,7 @@ import org.springframework.context.ApplicationContext;
  */
 @SpringBootApplication
 //@MapperScan("kcwiki.x.enshuhelper.database.dao")  
+@ComponentScan(basePackages = {"org.iharu", "kcwiki.x.enshuhelper", "kcwiki.management.xcontrolled"})
 public class EnshuHelperApplication {
     private static final Logger LOG = LoggerFactory.getLogger(EnshuHelperApplication.class);
     

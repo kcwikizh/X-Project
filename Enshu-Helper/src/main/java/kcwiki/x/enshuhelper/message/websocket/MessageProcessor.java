@@ -12,8 +12,8 @@ import kcwiki.x.enshuhelper.database.service.LogService;
 import kcwiki.x.enshuhelper.database.service.UserInfoService;
 import kcwiki.x.enshuhelper.initializer.AppConfig;
 import kcwiki.x.enshuhelper.message.websocket.entity.UserData;
-import kcwiki.x.enshuhelper.tools.CommontUtils;
 import org.iharu.type.LogType;
+import org.iharu.util.CommontUtils;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -44,7 +44,7 @@ public class MessageProcessor {
         userDataEntity.setGameid(gameid);
         userDataEntity.setQq(userData.getQq());
         userDataEntity.setQqgroup(qqgroup);
-        userDataEntity.setToken(CommontUtils.UUIDGen());
+        userDataEntity.setToken(CommontUtils.GenUUID());
         userDataEntity.setTeitoku(userData.getTeitoku());
         userDataEntity.setComments(userData.getComments());
         userDataEntity.setTimestamp(new Date()); 

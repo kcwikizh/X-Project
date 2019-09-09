@@ -20,6 +20,8 @@ message XTrafficProto {
     ProtoCode proto_code = 2;
     string proto_module = 3;
     bytes proto_payload = 4;
-    int64 timestamp = 5;
-    string sign = 6;
+	string proto_sender = 5;
+	string proto_recipient = 6;
+    int64 timestamp = 7;
+    string sign = 8;
 }

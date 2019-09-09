@@ -20,6 +20,8 @@ private static final long serialVersionUID = 0L;
     protoCode_ = 0;
     protoModule_ = "";
     protoPayload_ = com.google.protobuf.ByteString.EMPTY;
+    protoSender_ = "";
+    protoRecipient_ = "";
     sign_ = "";
   }
 
@@ -70,12 +72,24 @@ private static final long serialVersionUID = 0L;
             protoPayload_ = input.readBytes();
             break;
           }
-          case 40: {
+          case 42: {
+            java.lang.String s = input.readStringRequireUtf8();
+
+            protoSender_ = s;
+            break;
+          }
+          case 50: {
+            java.lang.String s = input.readStringRequireUtf8();
+
+            protoRecipient_ = s;
+            break;
+          }
+          case 56: {
 
             timestamp_ = input.readInt64();
             break;
           }
-          case 50: {
+          case 66: {
             java.lang.String s = input.readStringRequireUtf8();
 
             sign_ = s;
@@ -404,19 +418,87 @@ private static final long serialVersionUID = 0L;
     return protoPayload_;
   }
 
-  public static final int TIMESTAMP_FIELD_NUMBER = 5;
+  public static final int PROTO_SENDER_FIELD_NUMBER = 5;
+  private volatile java.lang.Object protoSender_;
+  /**
+   * <code>string proto_sender = 5;</code>
+   */
+  public java.lang.String getProtoSender() {
+    java.lang.Object ref = protoSender_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      protoSender_ = s;
+      return s;
+    }
+  }
+  /**
+   * <code>string proto_sender = 5;</code>
+   */
+  public com.google.protobuf.ByteString
+      getProtoSenderBytes() {
+    java.lang.Object ref = protoSender_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      protoSender_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
+  }
+
+  public static final int PROTO_RECIPIENT_FIELD_NUMBER = 6;
+  private volatile java.lang.Object protoRecipient_;
+  /**
+   * <code>string proto_recipient = 6;</code>
+   */
+  public java.lang.String getProtoRecipient() {
+    java.lang.Object ref = protoRecipient_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      protoRecipient_ = s;
+      return s;
+    }
+  }
+  /**
+   * <code>string proto_recipient = 6;</code>
+   */
+  public com.google.protobuf.ByteString
+      getProtoRecipientBytes() {
+    java.lang.Object ref = protoRecipient_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      protoRecipient_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
+  }
+
+  public static final int TIMESTAMP_FIELD_NUMBER = 7;
   private long timestamp_;
   /**
-   * <code>int64 timestamp = 5;</code>
+   * <code>int64 timestamp = 7;</code>
    */
   public long getTimestamp() {
     return timestamp_;
   }
 
-  public static final int SIGN_FIELD_NUMBER = 6;
+  public static final int SIGN_FIELD_NUMBER = 8;
   private volatile java.lang.Object sign_;
   /**
-   * <code>string sign = 6;</code>
+   * <code>string sign = 8;</code>
    */
   public java.lang.String getSign() {
     java.lang.Object ref = sign_;
@@ -431,7 +513,7 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
-   * <code>string sign = 6;</code>
+   * <code>string sign = 8;</code>
    */
   public com.google.protobuf.ByteString
       getSignBytes() {
@@ -473,11 +555,17 @@ private static final long serialVersionUID = 0L;
     if (!protoPayload_.isEmpty()) {
       output.writeBytes(4, protoPayload_);
     }
+    if (!getProtoSenderBytes().isEmpty()) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 5, protoSender_);
+    }
+    if (!getProtoRecipientBytes().isEmpty()) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 6, protoRecipient_);
+    }
     if (timestamp_ != 0L) {
-      output.writeInt64(5, timestamp_);
+      output.writeInt64(7, timestamp_);
     }
     if (!getSignBytes().isEmpty()) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 6, sign_);
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 8, sign_);
     }
     unknownFields.writeTo(output);
   }
@@ -503,12 +591,18 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeBytesSize(4, protoPayload_);
     }
+    if (!getProtoSenderBytes().isEmpty()) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, protoSender_);
+    }
+    if (!getProtoRecipientBytes().isEmpty()) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(6, protoRecipient_);
+    }
     if (timestamp_ != 0L) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt64Size(5, timestamp_);
+        .computeInt64Size(7, timestamp_);
     }
     if (!getSignBytes().isEmpty()) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(6, sign_);
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(8, sign_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -531,6 +625,10 @@ private static final long serialVersionUID = 0L;
         .equals(other.getProtoModule())) return false;
     if (!getProtoPayload()
         .equals(other.getProtoPayload())) return false;
+    if (!getProtoSender()
+        .equals(other.getProtoSender())) return false;
+    if (!getProtoRecipient()
+        .equals(other.getProtoRecipient())) return false;
     if (getTimestamp()
         != other.getTimestamp()) return false;
     if (!getSign()
@@ -554,6 +652,10 @@ private static final long serialVersionUID = 0L;
     hash = (53 * hash) + getProtoModule().hashCode();
     hash = (37 * hash) + PROTO_PAYLOAD_FIELD_NUMBER;
     hash = (53 * hash) + getProtoPayload().hashCode();
+    hash = (37 * hash) + PROTO_SENDER_FIELD_NUMBER;
+    hash = (53 * hash) + getProtoSender().hashCode();
+    hash = (37 * hash) + PROTO_RECIPIENT_FIELD_NUMBER;
+    hash = (53 * hash) + getProtoRecipient().hashCode();
     hash = (37 * hash) + TIMESTAMP_FIELD_NUMBER;
     hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
         getTimestamp());
@@ -700,6 +802,10 @@ private static final long serialVersionUID = 0L;
 
       protoPayload_ = com.google.protobuf.ByteString.EMPTY;
 
+      protoSender_ = "";
+
+      protoRecipient_ = "";
+
       timestamp_ = 0L;
 
       sign_ = "";
@@ -734,6 +840,8 @@ private static final long serialVersionUID = 0L;
       result.protoCode_ = protoCode_;
       result.protoModule_ = protoModule_;
       result.protoPayload_ = protoPayload_;
+      result.protoSender_ = protoSender_;
+      result.protoRecipient_ = protoRecipient_;
       result.timestamp_ = timestamp_;
       result.sign_ = sign_;
       onBuilt();
@@ -796,6 +904,14 @@ private static final long serialVersionUID = 0L;
       }
       if (other.getProtoPayload() != com.google.protobuf.ByteString.EMPTY) {
         setProtoPayload(other.getProtoPayload());
+      }
+      if (!other.getProtoSender().isEmpty()) {
+        protoSender_ = other.protoSender_;
+        onChanged();
+      }
+      if (!other.getProtoRecipient().isEmpty()) {
+        protoRecipient_ = other.protoRecipient_;
+        onChanged();
       }
       if (other.getTimestamp() != 0L) {
         setTimestamp(other.getTimestamp());
@@ -1021,15 +1137,153 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
+    private java.lang.Object protoSender_ = "";
+    /**
+     * <code>string proto_sender = 5;</code>
+     */
+    public java.lang.String getProtoSender() {
+      java.lang.Object ref = protoSender_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        protoSender_ = s;
+        return s;
+      } else {
+        return (java.lang.String) ref;
+      }
+    }
+    /**
+     * <code>string proto_sender = 5;</code>
+     */
+    public com.google.protobuf.ByteString
+        getProtoSenderBytes() {
+      java.lang.Object ref = protoSender_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        protoSender_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    /**
+     * <code>string proto_sender = 5;</code>
+     */
+    public Builder setProtoSender(
+        java.lang.String value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  
+      protoSender_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string proto_sender = 5;</code>
+     */
+    public Builder clearProtoSender() {
+      
+      protoSender_ = getDefaultInstance().getProtoSender();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string proto_sender = 5;</code>
+     */
+    public Builder setProtoSenderBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+      
+      protoSender_ = value;
+      onChanged();
+      return this;
+    }
+
+    private java.lang.Object protoRecipient_ = "";
+    /**
+     * <code>string proto_recipient = 6;</code>
+     */
+    public java.lang.String getProtoRecipient() {
+      java.lang.Object ref = protoRecipient_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        protoRecipient_ = s;
+        return s;
+      } else {
+        return (java.lang.String) ref;
+      }
+    }
+    /**
+     * <code>string proto_recipient = 6;</code>
+     */
+    public com.google.protobuf.ByteString
+        getProtoRecipientBytes() {
+      java.lang.Object ref = protoRecipient_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        protoRecipient_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    /**
+     * <code>string proto_recipient = 6;</code>
+     */
+    public Builder setProtoRecipient(
+        java.lang.String value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  
+      protoRecipient_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string proto_recipient = 6;</code>
+     */
+    public Builder clearProtoRecipient() {
+      
+      protoRecipient_ = getDefaultInstance().getProtoRecipient();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string proto_recipient = 6;</code>
+     */
+    public Builder setProtoRecipientBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+      
+      protoRecipient_ = value;
+      onChanged();
+      return this;
+    }
+
     private long timestamp_ ;
     /**
-     * <code>int64 timestamp = 5;</code>
+     * <code>int64 timestamp = 7;</code>
      */
     public long getTimestamp() {
       return timestamp_;
     }
     /**
-     * <code>int64 timestamp = 5;</code>
+     * <code>int64 timestamp = 7;</code>
      */
     public Builder setTimestamp(long value) {
       
@@ -1038,7 +1292,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>int64 timestamp = 5;</code>
+     * <code>int64 timestamp = 7;</code>
      */
     public Builder clearTimestamp() {
       
@@ -1049,7 +1303,7 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object sign_ = "";
     /**
-     * <code>string sign = 6;</code>
+     * <code>string sign = 8;</code>
      */
     public java.lang.String getSign() {
       java.lang.Object ref = sign_;
@@ -1064,7 +1318,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>string sign = 6;</code>
+     * <code>string sign = 8;</code>
      */
     public com.google.protobuf.ByteString
         getSignBytes() {
@@ -1080,7 +1334,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>string sign = 6;</code>
+     * <code>string sign = 8;</code>
      */
     public Builder setSign(
         java.lang.String value) {
@@ -1093,7 +1347,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>string sign = 6;</code>
+     * <code>string sign = 8;</code>
      */
     public Builder clearSign() {
       
@@ -1102,7 +1356,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>string sign = 6;</code>
+     * <code>string sign = 8;</code>
      */
     public Builder setSignBytes(
         com.google.protobuf.ByteString value) {

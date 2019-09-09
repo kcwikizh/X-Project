@@ -5,6 +5,10 @@
  */
 package kcwiki.x.enshuhelper.message.websocket;
 
+import java.security.NoSuchAlgorithmException;
+import javax.annotation.PostConstruct;
+import kcwiki.management.xcontrolled.message.websocket.XMessagePublisher;
+import kcwiki.x.enshuhelper.message.websocket.entity.EnshuHelperProto;
 import kcwiki.x.enshuhelper.message.websocket.entity.ExchangeProto;
 import kcwiki.x.enshuhelper.message.websocket.types.EnshuDataType;
 import kcwiki.x.enshuhelper.message.websocket.types.PublishTypes;
@@ -27,14 +31,28 @@ import org.springframework.stereotype.Component;
 @Component
 //@Scope("prototype")
 public class MessagePublisher {
-    static final Logger LOG = LoggerFactory.getLogger(MessagePublisher.class);
+    private static final Logger LOG = LoggerFactory.getLogger(MessagePublisher.class);
     
     @Autowired
+    XModuleCallBack xModuleCallBack;
+    @Autowired
+    XMessagePublisher xMessagePublisher;
+    @Autowired
     ExchangeHandler exchangeHandler;
+    
+    @PostConstruct
+    public void initMethod() throws NoSuchAlgorithmException {
+        xMessagePublisher.connect(xModuleCallBack);
+    }
     
     public void publish(ExchangeProto msg, PublishTypes publishTypes, ResultType resultType){
         LOG.info(JsonUtils.object2json(msg));
         exchangeHandler.sendMessageToAllUsers(msg);
+        if(EnshuDataType.SystemInfo == msg.getModule_type()){
+            xMessagePublisher.publishSystemMsg(resultType, msg.getProto_payload());
+        } else {
+            xMessagePublisher.publishNonSystemMsg(resultType, new EnshuHelperProto(resultType, msg.getModule_type(), msg.getProto_payload()));
+        }
     }
     
     public void publish(String payload, EnshuDataType enshuDataType){

@@ -9,8 +9,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import kcwiki.x.enshuhelper.message.websocket.entity.ExchangeProto;
 import kcwiki.x.enshuhelper.message.websocket.entity.UserData;
 import kcwiki.x.enshuhelper.message.websocket.types.EnshuDataType;
-import static org.iharu.type.ResultType.FAIL;
-import static org.iharu.type.ResultType.SUCCESS;
+import org.iharu.type.ResultType;
 import org.iharu.util.JsonUtils;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +28,7 @@ public class MessageInterceptor {
     
     public ExchangeProto filter(ExchangeProto proto) {
         ExchangeProto rsproto = new ExchangeProto();
-        rsproto.setProto_code(FAIL);
+        rsproto.setProto_code(ResultType.FAILURE);
         String payload = proto.getProto_payload();
         UserData userData = JsonUtils.json2objectWithoutThrowException(payload, new TypeReference<UserData>(){});
         if(userData == null){
@@ -80,7 +79,7 @@ public class MessageInterceptor {
                 rsdata.setComments(userData.getMemberid() + "用户删除成功。");
                 break;
         }
-        rsproto.setProto_code(SUCCESS);
+        rsproto.setProto_code(ResultType.SUCCESS);
         rsproto.setProto_payload(JsonUtils.object2json(rsdata));
         return rsproto;
     }

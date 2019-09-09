@@ -30,8 +30,6 @@ public class AppConfig
   private String websocket_url_retweet;
   @Value("${myprops.websocket.url.enshuhelper}")
   private String websocket_url_enshuhelper;
-  @Value("${myprops.websocket.url.kcscan}")
-  private String websocket_url_kcscan;
   @Value("${myprops.websocket.url.senkamon}")
   private String websocket_url_senkamon;
   @Value("${myprops.application.superuser.username}")
@@ -313,20 +311,6 @@ public class AppConfig
      */
     public void setWebsocket_url_enshuhelper(String websocket_url_enshuhelper) {
         this.websocket_url_enshuhelper = websocket_url_enshuhelper;
-    }
-
-    /**
-     * @return the websocket_url_kcscan
-     */
-    public String getWebsocket_url_kcscan() {
-        return websocket_url_kcscan;
-    }
-
-    /**
-     * @param websocket_url_kcscan the websocket_url_kcscan to set
-     */
-    public void setWebsocket_url_kcscan(String websocket_url_kcscan) {
-        this.websocket_url_kcscan = websocket_url_kcscan;
     }
 
     /**

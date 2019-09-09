@@ -45,7 +45,7 @@ public class ProtobufController {
             if(websocketWapper.getProtoType() == Websocket.ProtoType.SYSTEM) {
                 return new WebsocketProto(convertProtoCode(websocketWapper.getProtoCode()), bytes2string(websocketWapper.getProtoPayload().toByteArray()));
             } else {
-                return new WebsocketProto(websocketWapper.getProtoModule(), convertProtoCode(websocketWapper.getProtoCode()), bytes2string(websocketWapper.getProtoPayload().toByteArray()));
+                return new WebsocketProto(convertProtoCode(websocketWapper.getProtoCode()), websocketWapper.getProtoModule(), bytes2string(websocketWapper.getProtoPayload().toByteArray()));
             }
         } catch (InvalidProtocolBufferException ex) {
             LOG.error(ExceptionUtils.getStackTrace(ex));

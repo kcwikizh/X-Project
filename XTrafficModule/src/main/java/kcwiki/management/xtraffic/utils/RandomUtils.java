@@ -23,6 +23,10 @@ public class RandomUtils {
         for (int i = 0; i < targetStringLength; i++) {
             int randomLimitedInt = leftLimit + (int) 
               (random.nextFloat() * (rightLimit - leftLimit + 1));
+            if(randomLimitedInt == 34 || randomLimitedInt == 39 || randomLimitedInt == 94 || randomLimitedInt == 96){
+                i--;
+                continue;
+            }
             buffer.append((char) randomLimitedInt);
         }
         return buffer.toString();

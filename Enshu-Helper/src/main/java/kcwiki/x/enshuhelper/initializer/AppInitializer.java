@@ -18,25 +18,22 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import kcwiki.x.enshuhelper.cache.inmem.AppDataCache;
+import kcwiki.x.enshuhelper.cache.inmem.RuntimeValue;
+import kcwiki.x.enshuhelper.constant.ConstantValue;
 import kcwiki.x.enshuhelper.database.dao.UtilsDao;
 import kcwiki.x.enshuhelper.database.entity.SystemParamEntity;
 import kcwiki.x.enshuhelper.database.service.SystemInfoService;
 import kcwiki.x.enshuhelper.database.service.UtilsService;
-import static kcwiki.x.enshuhelper.tools.ConstantValue.LINESEPARATOR;
+import static org.iharu.constant.ConstantValue.LINESEPARATOR;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import kcwiki.x.enshuhelper.httpclient.*;
-import static kcwiki.x.enshuhelper.tools.ConstantValue.TEMP_FOLDER;
-import static kcwiki.x.enshuhelper.tools.ConstantValue.WEBROOT;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
-import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.core5.http.HttpEntity;
-import org.apache.hc.core5.http.HttpResponse;
-import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.iharu.util.JsonUtils;
 
 /**
@@ -57,6 +54,8 @@ public class AppInitializer {
     SystemInfoService systemInfoService;
     @Autowired
     HttpClientConfig httpClientConfig;
+    @Autowired 
+    RuntimeValue RUNTIME;
     
     boolean isInit = false;
     
@@ -158,22 +157,22 @@ public class AppInitializer {
     private void createFolder(){
         File file;
         String filepath;
-        filepath = TEMP_FOLDER;
+        filepath = ConstantValue.TEMP_FOLDER;
         file = new File(filepath);
         if(!file.exists()){
             file.mkdirs();
         }
-        filepath = String.format("%s%s", WEBROOT, appConfig.getFolder_workspace());
+        filepath = RUNTIME.WORKSPACE_FOLDER;
         file = new File(filepath);
         if(!file.exists()){
             file.mkdirs();
         }
-        filepath = String.format("%s%s", WEBROOT, appConfig.getFolder_publish());
+        filepath = RUNTIME.PUBLISH_FOLDER;
         file = new File(filepath);
         if(!file.exists()){
             file.mkdirs();
         }
-        filepath = String.format("%s%s", WEBROOT, appConfig.getFolder_privatedata());
+        filepath = RUNTIME.PRIVATEDATA_FOLDER;
         file = new File(filepath);
         if(!file.exists()){
             file.mkdirs();

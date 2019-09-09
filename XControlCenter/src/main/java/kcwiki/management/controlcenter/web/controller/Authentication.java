@@ -8,13 +8,13 @@ package kcwiki.management.controlcenter.web.controller;
 import org.springframework.util.StringUtils;
 import java.security.NoSuchAlgorithmException;
 import kcwiki.management.controlcenter.cache.inmem.AppDataCache;
-import kcwiki.management.controlcenter.database.service.ModuleService;
+import kcwiki.management.controlcenter.database.service.ModuleUtilsService;
 import kcwiki.management.controlcenter.web.controller.entity.AuthVoucher;
 import kcwiki.management.controlcenter.web.controller.type.VoucherType;
 import kcwiki.management.xtraffic.utils.AuthenticationUtils;
-import kcwiki.management.xtraffic.authentication.entity.AuthenticationEntity;
+import kcwiki.management.xtraffic.entity.AuthenticationEntity;
 import kcwiki.management.xtraffic.crypto.rsa.RSAKeyPairGenerator;
-import kcwiki.management.xtraffic.crypto.rsa.RSAUtil;
+import kcwiki.management.xtraffic.crypto.rsa.RSAUtils;
 import org.iharu.proto.web.WebResponseProto;
 import org.iharu.type.BaseHttpStatus;
 import org.iharu.web.BaseController;
@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -37,7 +36,7 @@ public class Authentication extends BaseController {
     private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(Authentication.class);
     
     @Autowired
-    ModuleService moduleService;
+    ModuleUtilsService moduleUtilsService;
     
     private static String publicKey = null;
     private static String privateKey = null;
@@ -46,8 +45,8 @@ public class Authentication extends BaseController {
     public String getPublishKey() throws NoSuchAlgorithmException {
         if(publicKey == null || privateKey == null) {
             RSAKeyPairGenerator keyPairGenerator = new RSAKeyPairGenerator();
-            publicKey =  RSAUtil.GetBase64Key(keyPairGenerator.getPublicKey());
-            privateKey =  RSAUtil.GetBase64Key(keyPairGenerator.getPrivateKey());
+            publicKey =  RSAUtils.GetBase64Key(keyPairGenerator.getPublicKey());
+            privateKey =  RSAUtils.GetBase64Key(keyPairGenerator.getPrivateKey());
             AppDataCache.setPrivateKey(privateKey);
         }
         return publicKey;
@@ -62,7 +61,7 @@ public class Authentication extends BaseController {
             return GenResponse(BaseHttpStatus.FAILURE, "body decode failed", null);
         if(AuthenticationUtils.isAuthRequestTimeout(authentication.getTimestamp()))
             return GenResponse(BaseHttpStatus.FAILURE, "request timeout", null);
-        String identity = moduleService.GetIdentification(body);
+        String identity = moduleUtilsService.getIdentification(authentication.getToken());
         if(identity == null)
             return GenResponse(BaseHttpStatus.FAILURE, "authentication failed", null);
         

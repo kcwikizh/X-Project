@@ -41,16 +41,36 @@ public interface XTrafficProtoOrBuilder extends
   com.google.protobuf.ByteString getProtoPayload();
 
   /**
-   * <code>int64 timestamp = 5;</code>
+   * <code>string proto_sender = 5;</code>
+   */
+  java.lang.String getProtoSender();
+  /**
+   * <code>string proto_sender = 5;</code>
+   */
+  com.google.protobuf.ByteString
+      getProtoSenderBytes();
+
+  /**
+   * <code>string proto_recipient = 6;</code>
+   */
+  java.lang.String getProtoRecipient();
+  /**
+   * <code>string proto_recipient = 6;</code>
+   */
+  com.google.protobuf.ByteString
+      getProtoRecipientBytes();
+
+  /**
+   * <code>int64 timestamp = 7;</code>
    */
   long getTimestamp();
 
   /**
-   * <code>string sign = 6;</code>
+   * <code>string sign = 8;</code>
    */
   java.lang.String getSign();
   /**
-   * <code>string sign = 6;</code>
+   * <code>string sign = 8;</code>
    */
   com.google.protobuf.ByteString
       getSignBytes();

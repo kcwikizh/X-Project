@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package kcwiki.management.xtraffic.authentication.entity;
+package kcwiki.management.xtraffic.entity;
 
 /**
  *

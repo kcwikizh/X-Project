@@ -7,8 +7,7 @@ package kcwiki.x.enshuhelper.cache.inmem;
 
 import javax.annotation.PostConstruct;
 import kcwiki.x.enshuhelper.initializer.AppConfig;
-import static kcwiki.x.enshuhelper.tools.ConstantValue.CLASSPATH;
-import static kcwiki.x.enshuhelper.tools.ConstantValue.WEBROOT;
+import static org.iharu.constant.ConstantValue.CLASSPATH;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -28,19 +27,19 @@ public class RuntimeValue {
     public String TEMPLATE_FOLDER;
     public String PUBLISH_FOLDER;
     public String WORKSPACE_FOLDER;
-    public String FILE_SCANCORE;
-    public String FILE_FFDEC;
+    public String WEBROOT_FOLDER;
     
     @PostConstruct
     public void initMethod() {
-        APPROOT = appConfig.getSystem_root();
+        WEBROOT_FOLDER = appConfig.getFolder_webroot();
+        APPROOT = appConfig.getApplication_root();
         PRIVATEDATA_FOLDER =
             String.format("%s%s", CLASSPATH, appConfig.getFolder_privatedata());
     
         PUBLISH_FOLDER =
-            String.format("%s/%s", WEBROOT, appConfig.getFolder_publish());
+            String.format("%s/%s", WEBROOT_FOLDER, appConfig.getFolder_publish());
         WORKSPACE_FOLDER =
-            String.format("%s/%s", WEBROOT, appConfig.getFolder_workspace());
+            String.format("%s/%s", WEBROOT_FOLDER, appConfig.getFolder_workspace());
         
     }
     

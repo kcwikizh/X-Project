@@ -1,8 +1,7 @@
-package kcwiki.msgtransfer.websocket.client.kcscanner;
+package kcwiki.msgtransfer.websocket.client.senkamonitor;
 
 import java.util.Base64;
 import java.util.HashMap;
-import java.util.Map;
 import javax.annotation.PostConstruct;
 import kcwiki.management.controlcenter.cache.inmem.AppDataCache;
 import kcwiki.msgtransfer.core.TransferController;
@@ -18,17 +17,17 @@ import org.springframework.web.socket.BinaryMessage;
 import org.springframework.web.socket.TextMessage;
 
 @Service
-public class KanColleScanner
+public class SenkaMonitor
   extends WebsocketClientCallBack
 {
-  private static final Logger LOG = LoggerFactory.getLogger(KanColleScanner.class);
+  private static final Logger LOG = LoggerFactory.getLogger(SenkaMonitor.class);
   
     @Autowired
     private AppConfig appConfig;
     @Autowired
     TransferController transferController;
   
-    private final String name = "xproject-kcscan";
+    private final String name = "xproject-senkamon";
     private String url;
     private BaseWebsocketClient websocketClient;
   
@@ -36,7 +35,7 @@ public class KanColleScanner
     @PostConstruct
     public void initMethod()
     {
-        url = appConfig.getWebsocket_url_kcscan();
+        url = appConfig.getWebsocket_url_senkamon();
         HashMap<String, String> headers = new HashMap();
         headers.put("x-access-token", Base64.getEncoder().withoutPadding().encodeToString(appConfig.getWebsocket_token().getBytes()));
         websocketClient = new BaseWebsocketClient(name, headers, url, this);

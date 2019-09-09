@@ -7,10 +7,10 @@ package kcwiki.management.xtraffic.protobuf;
 
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import javax.validation.constraints.NotNull;
+import kcwiki.management.xtraffic.utils.AuthenticationUtils;
 import protobuf.proto.XTrafficProto;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -41,9 +41,18 @@ public class ProtobufUtils {
             if(websocketWapper == null)
                 return null;
             if(websocketWapper.getProtoType() == XTrafficProto.ProtoType.SYSTEM) {
-                return new WebsocketProto(convertProtoCode(websocketWapper.getProtoCode()), bytes2string(websocketWapper.getProtoPayload().toByteArray()));
+                return new WebsocketProto(convertProtoCode(websocketWapper.getProtoCode()), 
+                        bytes2string(websocketWapper.getProtoPayload().toByteArray()),
+                        websocketWapper.getTimestamp(),
+                        websocketWapper.getSign());
             } else {
-                return new WebsocketProto(websocketWapper.getProtoModule(), convertProtoCode(websocketWapper.getProtoCode()), bytes2string(websocketWapper.getProtoPayload().toByteArray()));
+                return new WebsocketProto(convertProtoCode(websocketWapper.getProtoCode()), 
+                        websocketWapper.getProtoModule(), 
+                        websocketWapper.getProtoSender(), 
+                        websocketWapper.getProtoRecipient(), 
+                        bytes2string(websocketWapper.getProtoPayload().toByteArray()),
+                        websocketWapper.getTimestamp(),
+                        websocketWapper.getSign());
             }
         } catch (InvalidProtocolBufferException ex) {
             LOG.error(ExceptionUtils.getStackTrace(ex));
@@ -68,15 +77,17 @@ public class ProtobufUtils {
         return Transfor(buffer.array());
     }
     
-    public static byte[] TransforAndConvert(WebsocketProto proto) throws IOException {
+    public static byte[] TransforAndConvert(WebsocketProto proto) {
         byte[] data = JsonUtils.json2bytes(proto.getProto_payload());
         XTrafficProto websocketWapper = 
                 XTrafficProto.newBuilder()
                     .setProtoCode(convertResultType(proto.getProto_code()))
                     .setProtoType(convertWebsocketMessageType(proto.getProto_type()))
-                    .setTimestamp(System.currentTimeMillis())
-                    .setSign(DigestUtils.sha256Hex(data))
+                    .setProtoSender(proto.getProto_sender()==null?"":proto.getProto_sender())
+                    .setProtoRecipient(proto.getProto_recipient()==null?"":proto.getProto_recipient())
                     .setProtoPayload(ByteString.copyFrom(data))
+                    .setTimestamp(AuthenticationUtils.GetTimestamp())
+                    .setSign(DigestUtils.sha512Hex(data))
                     .build();
         return websocketWapper.toByteArray();
     }
@@ -89,14 +100,14 @@ public class ProtobufUtils {
                 XTrafficProto.newBuilder()
                     .setProtoCode(convertResultType(resultType))
                     .setProtoType(XTrafficProto.ProtoType.SYSTEM)
-                    .setTimestamp(System.currentTimeMillis())
-                    .setSign(DigestUtils.sha256Hex(data))
                     .setProtoPayload(ByteString.copyFrom(data))
+                    .setTimestamp(AuthenticationUtils.GetTimestamp())
+                    .setSign(DigestUtils.sha512Hex(data))
                     .build();
         return websocketWapper.toByteArray();
     }
     
-    public static byte[] Transfor(ResultType proto_code, @NotNull String module, String payload){
+    public static byte[] Transfor(ResultType proto_code, @NotNull String module, String sender, String recipient, String payload){
         if(StringUtils.isBlank(payload))
             throw new BaseException(ErrorType.PARAMETER_ERROR, "payload 不能为空");
         if(StringUtils.isBlank(module))
@@ -107,15 +118,17 @@ public class ProtobufUtils {
                     .setProtoCode(convertResultType(proto_code))
                     .setProtoType(XTrafficProto.ProtoType.NON_SYSTEM)
                     .setProtoModule(module)
-                    .setTimestamp(System.currentTimeMillis())
-                    .setSign(DigestUtils.sha256Hex(data))
+                    .setProtoSender(sender==null?"":sender)
+                    .setProtoRecipient(recipient==null?"":recipient)
                     .setProtoPayload(ByteString.copyFrom(data))
+                    .setTimestamp(AuthenticationUtils.GetTimestamp())
+                    .setSign(DigestUtils.sha512Hex(data))
                     .build();
         return websocketWapper.toByteArray();
     }
     
-    public static <T> byte[] Transfor(@NotNull String module, String payload){
-        return Transfor(ResultType.SUCCESS, module, payload);
+    public static <T> byte[] Transfor(@NotNull String module, String sender, String recipient, String payload){
+        return Transfor(ResultType.SUCCESS, module, sender, recipient, payload);
     }
     
     public static XTrafficProto.ProtoCode convertResultType(ResultType resultType){

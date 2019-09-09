@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
-import static kcwiki.x.enshuhelper.tools.ConstantValue.LINESEPARATOR;
+import static org.iharu.constant.ConstantValue.LINESEPARATOR;
 import org.apache.hc.client5.http.config.RequestConfig;
 import org.apache.hc.client5.http.cookie.BasicCookieStore;
 import org.apache.hc.client5.http.cookie.Cookie;

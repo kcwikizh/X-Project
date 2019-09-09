@@ -15,9 +15,10 @@ repositories {
 version = '1.0.0'
 
 bootJar {
-    baseName = 'XControlCenter'
+    baseName = 'control-center'
     classifier = 'xproject'
 }
+
 dependencies {
     compile "org.iharu.bootstrap:SpringBoot"
     compile project(':XTrafficModule')

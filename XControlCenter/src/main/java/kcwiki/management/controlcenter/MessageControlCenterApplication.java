@@ -36,6 +36,7 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import java.io.IOException;
 import kcwiki.management.controlcenter.initializer.AppInitializer;
 import kcwiki.management.controlcenter.sba.CustomNotifier;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.security.config.http.SessionCreationPolicy;
 
 /**
@@ -45,8 +46,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 @Configuration
 @EnableAutoConfiguration
 @EnableAdminServer
-@ComponentScan(basePackages = {"org.iharu", "kcwiki.management", "kcwiki.msgtransfer"}, excludeFilters={
-  @ComponentScan.Filter(type=FilterType.ASSIGNABLE_TYPE, value=DefaultGlobalController.class)})
+@MapperScan("kcwiki.management.controlcenter.database.dao")
+@ComponentScan(basePackages = {"org.iharu", "kcwiki.management", "kcwiki.msgtransfer"}, 
+        excludeFilters={@ComponentScan.Filter(type=FilterType.ASSIGNABLE_TYPE, value=DefaultGlobalController.class)})
 public class MessageControlCenterApplication
 {
     private static final Logger LOG = LoggerFactory.getLogger(MessageControlCenterApplication.class);
@@ -111,6 +113,8 @@ public class MessageControlCenterApplication
             .authorizeRequests()
                 .antMatchers(adminContextPath + "/assets/**").permitAll() 
                 .antMatchers(adminContextPath + "/login").permitAll()
+                .antMatchers(adminContextPath + "/websocket/**").permitAll()
+                .antMatchers(adminContextPath + "/authentication/**").permitAll()
                 .anyRequest().authenticated() 
                 .and()
             .formLogin().loginPage(adminContextPath + "/login").successHandler(successHandler).and() 
@@ -120,7 +124,8 @@ public class MessageControlCenterApplication
                 .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())  
                 .ignoringAntMatchers(
                     adminContextPath + "/instances",   
-                    adminContextPath + "/actuator/**"  
+                    adminContextPath + "/actuator/**",
+                    adminContextPath + "/authentication/**"
                 );
             // @formatter:on
         }

@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 
 // tag::customization-notifiers[]
 public class CustomNotifier  extends AbstractEventNotifier {
-    private static final Logger LOGGER = LoggerFactory.getLogger(LoggingNotifier.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CustomNotifier.class);
 
     public CustomNotifier(InstanceRepository repository) {
         super(repository);

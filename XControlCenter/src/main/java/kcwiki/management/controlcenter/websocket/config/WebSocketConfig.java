@@ -34,16 +34,16 @@ public class WebSocketConfig
     {
         registry
             .addHandler(transferHandler, "/websocket/transfer")
-            .setAllowedOrigins("https://api.x.kcwiki.org", "http://localhost:48080", "http://www.blue-zero.com", "http://coolaf.com", "null" )
+            .setAllowedOrigins("https://api.x.kcwiki.org", "http://localhost:48080", "http://www.websocket-test.com", "http://coolaf.com", "*" )
             .addInterceptors(transferInterceptor);
         registry
             .addHandler(protobufTransferHandler, "/websocket/protobuftransfer")
-            .setAllowedOrigins("https://api.x.kcwiki.org", "http://localhost:48080", "http://www.blue-zero.com", "http://coolaf.com", "null" )
+            .setAllowedOrigins("https://api.x.kcwiki.org", "http://localhost:48080", "http://www.websocket-test.com", "http://coolaf.com", "*" )
             .addInterceptors(transferInterceptor);
         
         registry
             .addHandler(subscriberHandler, "/websocket/subscriber")
-            .setAllowedOrigins("https://api.x.kcwiki.org", "http://localhost:48080", "http://www.blue-zero.com", "http://coolaf.com", "null" )
+            .setAllowedOrigins("https://api.x.kcwiki.org", "http://localhost:48080", "http://www.websocket-test.com", "http://coolaf.com", "*" )
             .addInterceptors(subscriberInterceptor);
     }
 }
