@@ -5,6 +5,7 @@ import javax.validation.constraints.NotNull;
 import io.micrometer.core.instrument.util.StringUtils;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.concurrent.ExecutionException;
 import kcwiki.management.controlcenter.cache.inmem.AppDataCache;
 import kcwiki.management.controlcenter.message.websocket.MessagePublisher;
 import kcwiki.msgtransfer.protobuf.ProtobufController;

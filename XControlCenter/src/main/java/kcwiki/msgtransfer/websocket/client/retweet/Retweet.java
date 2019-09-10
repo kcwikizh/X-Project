@@ -1,5 +1,6 @@
 package kcwiki.msgtransfer.websocket.client.retweet;
 
+import java.util.concurrent.ExecutionException;
 import javax.annotation.PostConstruct;
 import kcwiki.management.controlcenter.cache.inmem.AppDataCache;
 import kcwiki.msgtransfer.core.TransferController;

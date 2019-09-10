@@ -13,7 +13,6 @@ import javax.validation.constraints.NotNull;
 import kcwiki.management.xtraffic.utils.AuthenticationUtils;
 import protobuf.proto.XTrafficProto;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.iharu.exception.BaseException;
 import org.iharu.proto.websocket.WebsocketProto;
@@ -23,6 +22,7 @@ import org.iharu.type.error.ErrorType;
 import org.iharu.type.websocket.WebsocketMessageType;
 import org.iharu.type.websocket.WebsocketSystemMessageType;
 import org.iharu.util.JsonUtils;
+import org.iharu.util.StringUtils;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -36,13 +36,15 @@ public class ProtobufUtils {
     private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(ProtobufUtils.class);
     
     public static WebsocketProto TransforAndConvert(byte[] bytes){
+        if(bytes == null)
+            return null;
         try {
             XTrafficProto websocketWapper = XTrafficProto.parseFrom(bytes);
             if(websocketWapper == null)
                 return null;
             if(websocketWapper.getProtoType() == XTrafficProto.ProtoType.SYSTEM) {
                 return new WebsocketProto(convertProtoCode(websocketWapper.getProtoCode()), 
-                        bytes2string(websocketWapper.getProtoPayload().toByteArray()),
+                        StringUtils.ByteArrayToString(websocketWapper.getProtoPayload().toByteArray()),
                         websocketWapper.getTimestamp(),
                         websocketWapper.getSign());
             } else {
@@ -50,7 +52,7 @@ public class ProtobufUtils {
                         websocketWapper.getProtoModule(), 
                         websocketWapper.getProtoSender(), 
                         websocketWapper.getProtoRecipient(), 
-                        bytes2string(websocketWapper.getProtoPayload().toByteArray()),
+                        StringUtils.ByteArrayToString(websocketWapper.getProtoPayload().toByteArray()),
                         websocketWapper.getTimestamp(),
                         websocketWapper.getSign());
             }
@@ -83,6 +85,7 @@ public class ProtobufUtils {
                 XTrafficProto.newBuilder()
                     .setProtoCode(convertResultType(proto.getProto_code()))
                     .setProtoType(convertWebsocketMessageType(proto.getProto_type()))
+                    .setProtoModule(proto.getProto_module()==null?"":proto.getProto_module())
                     .setProtoSender(proto.getProto_sender()==null?"":proto.getProto_sender())
                     .setProtoRecipient(proto.getProto_recipient()==null?"":proto.getProto_recipient())
                     .setProtoPayload(ByteString.copyFrom(data))
@@ -93,7 +96,7 @@ public class ProtobufUtils {
     }
     
     public static byte[] Transfor(ResultType resultType, WebsocketSystemMessageType systemMessageType, String payload){
-        if(StringUtils.isBlank(payload))
+        if(StringUtils.isNullOrWhiteSpace(payload))
             throw new BaseException(ErrorType.PARAMETER_ERROR, "payload 不能为空");
         byte[] data = JsonUtils.object2bytes(new WebsocketSystemProto(systemMessageType, payload));
         XTrafficProto websocketWapper = 
@@ -108,11 +111,11 @@ public class ProtobufUtils {
     }
     
     public static byte[] Transfor(ResultType proto_code, @NotNull String module, String sender, String recipient, String payload){
-        if(StringUtils.isBlank(payload))
+        if(StringUtils.isNullOrWhiteSpace(payload))
             throw new BaseException(ErrorType.PARAMETER_ERROR, "payload 不能为空");
-        if(StringUtils.isBlank(module))
+        if(StringUtils.isNullOrWhiteSpace(module))
             throw new BaseException(ErrorType.PARAMETER_ERROR, "module 不能为空");
-        byte[] data = string2bytes(payload);
+        byte[] data = StringUtils.StringToByteArray(payload);
         XTrafficProto websocketWapper = 
                 XTrafficProto.newBuilder()
                     .setProtoCode(convertResultType(proto_code))
@@ -172,14 +175,6 @@ public class ProtobufUtils {
                 return WebsocketMessageType.NON_SYSTEM;
         }
         return WebsocketMessageType.NON_SYSTEM;
-    }
-    
-    public static byte[] string2bytes(String str){
-        return str.getBytes(StandardCharsets.UTF_8);
-    }
-    
-    public static String bytes2string(byte[] bytes){
-        return new String(bytes, StandardCharsets.UTF_8);
     }
     
 }

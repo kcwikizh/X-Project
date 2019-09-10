@@ -6,6 +6,7 @@
 package kcwiki.management.xtraffic.utils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import static kcwiki.management.xtraffic.constant.ConstantValue.TIMEZONEID;
 import kcwiki.management.xtraffic.entity.AuthenticationEntity;
 import kcwiki.management.xtraffic.crypto.rsa.RSAUtils;
 import org.iharu.util.CalendarUtils;
@@ -19,19 +20,17 @@ import org.slf4j.LoggerFactory;
 public class AuthenticationUtils {
     private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(AuthenticationUtils.class);
     
-    private final static String TIMEZONE = "JST";
-    
     public static AuthenticationEntity GetAuthenticationEntity(String key, String body){
         byte[] data = RSAUtils.DecryptWithPrivateKey(body, key);
         return JsonUtils.json2objectWithoutThrowException(data, new TypeReference<AuthenticationEntity>(){});
     }
     
     public static long GetTimestamp(){
-        return CalendarUtils.getTimezoneCalendar(TIMEZONE).getTimeInMillis();
+        return CalendarUtils.getZonedDateTime(TIMEZONEID).toInstant().toEpochMilli();
     }
     
     public static boolean isAuthRequestTimeout(long timestamp){
-        return GetTimestamp() - timestamp > 30000;
+        return GetTimestamp() - timestamp > 180 * 1000;
     }
     
     public static String GenVoucher(){

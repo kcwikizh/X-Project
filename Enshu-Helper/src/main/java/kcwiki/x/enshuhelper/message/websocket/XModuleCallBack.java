@@ -6,6 +6,8 @@
 package kcwiki.x.enshuhelper.message.websocket;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
 import kcwiki.management.xcontrolled.websocket.XModuleWebsocketClientCallBack;
 import kcwiki.x.enshuhelper.message.websocket.entity.ExchangeProto;
 import org.iharu.proto.websocket.WebsocketProto;

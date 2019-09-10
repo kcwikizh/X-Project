@@ -20,10 +20,10 @@ import javax.crypto.NoSuchPaddingException;
 import kcwiki.management.xcontrolled.cache.inmem.AppDataCache;
 import kcwiki.management.xtraffic.entity.AuthenticationEntity;
 import kcwiki.management.xcontrolled.configuration.XModuleConfig;
-import kcwiki.management.xcontrolled.exception.XControlledModuleConnectFail;
+import kcwiki.management.xcontrolled.exception.XControlledModuleConnectFailException;
+import kcwiki.management.xcontrolled.websocket.XModuleReconnectCallBack;
 import kcwiki.management.xtraffic.crypto.rsa.RSAUtils;
 import kcwiki.management.xtraffic.utils.AuthenticationUtils;
-import kcwiki.management.xtraffic.utils.HttpClientUtils;
 import kcwiki.management.xcontrolled.websocket.XModuleWebsocketClient;
 import kcwiki.management.xcontrolled.websocket.XModuleWebsocketClientCallBack;
 import kcwiki.management.xtraffic.crypto.aes.AesUtils;
@@ -33,11 +33,12 @@ import org.iharu.proto.websocket.WebsocketProto;
 import org.iharu.type.BaseHttpStatus;
 import org.iharu.type.error.ErrorType;
 import org.iharu.util.Base64Utils;
+import org.iharu.util.HttpClientUtils;
 import org.iharu.util.JsonUtils;
+import org.iharu.util.StringUtils;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
 /**
  *
@@ -54,10 +55,18 @@ public class XModuleController {
     private XModuleWebsocketClient websocketClient;
     
     
-    public void connect(XModuleWebsocketClientCallBack callbackImpl) throws XControlledModuleConnectFail {
-        identity = xModuleConfig.getXtraffic_identity();
-        String publickey = HttpClientUtils.GetBody(xModuleConfig.getXtraffic_url_publickey());
-        if(StringUtils.isEmpty(publickey)){
+    public void connect(XModuleWebsocketClientCallBack callbackImpl, XModuleReconnectCallBack reconnectCallBack) throws XControlledModuleConnectFailException {
+        this.identity = xModuleConfig.getXtraffic_identity();
+        String publickey = null;
+        try {
+            publickey = HttpClientUtils.GetBody(xModuleConfig.getXtraffic_url_publickey());
+        } catch (IOException ex) {
+            LOG.error("fetch public key error", ex);
+            handleConnectFailed();
+            return;
+        }
+        if(StringUtils.isNullOrWhiteSpace(publickey)){
+            LOG.error("public key is blank");
             handleConnectFailed();
             return;
         }
@@ -82,14 +91,25 @@ public class XModuleController {
             reqBody = Base64.getEncoder().encodeToString(RSAUtils.Encrypt(JsonUtils.object2bytes(authentication), RSAUtils.GetPublicKey(publickey)));
         } catch (InvalidKeyException | NoSuchAlgorithmException | BadPaddingException | IllegalBlockSizeException | NoSuchPaddingException ex) {
             LOG.error("XControlledModule: {} Encrypt data failed", getIdentity(), ex);
+            handleConnectFailed();
+            return;
         }
-        String body = HttpClientUtils.GetBody(xModuleConfig.getXtraffic_url_auth(), reqBody);
-        if(StringUtils.isEmpty(body)){
+        String body;
+        try {
+            body = HttpClientUtils.GetBody(xModuleConfig.getXtraffic_url_auth(), reqBody);
+        } catch (IOException ex) {
+            LOG.error("fetch voucher error", ex);
+            handleConnectFailed();
+            return;
+        }
+        if(StringUtils.isNullOrWhiteSpace(body)){
+            LOG.error("voucher is blank");
             handleConnectFailed();
             return;
         }
         WebResponseProto resp = JsonUtils.json2objectWithoutThrowException(body, new TypeReference<WebResponseProto>(){});
         if(resp == null){
+            LOG.error("decode resp failed");
             handleConnectFailed();
             return;
         }
@@ -98,19 +118,19 @@ public class XModuleController {
             handleConnectFailed();
             return;
         }
-        String voucher = (String) resp.getData();
+        String voucher = StringUtils.ByteArrayToString(AesUtils.DecryptWithoutException(Base64Utils.DecryptBase64((String) resp.getData()), symmetricKey));
+        if(voucher == null) {
+            LOG.warn("decrypt voucher failed");
+            handleConnectFailed();
+            return;
+        }
         HashMap<String, String> headers = new HashMap();
         headers.put("x-access-token", voucher);
-        websocketClient = new XModuleWebsocketClient(getIdentity(), headers, xModuleConfig.getXtraffic_url_subscribe(), symmetricKey, callbackImpl);
+        websocketClient = new XModuleWebsocketClient(getIdentity(), headers, xModuleConfig.getXtraffic_url_subscribe(), symmetricKey, callbackImpl, reconnectCallBack);
         if(websocketClient.connect()){
             callbackImpl.setWebsocketClient(websocketClient);
             AppDataCache.isAppInit = true;
             return;
-        }
-        try {
-            websocketClient.close();
-        } catch (IOException ex) {
-            LOG.error("", ex);
         }
         handleConnectFailed();
     }
@@ -129,19 +149,12 @@ public class XModuleController {
         websocketClient.send(proto);
     }
     
-    private void handleConnectFailed() throws XControlledModuleConnectFail{
+    private void handleConnectFailed() throws XControlledModuleConnectFailException{
         LOG.warn("XControlledModule connect failed");
-        if(xModuleConfig.isXtraffic_force())
-            throw new XControlledModuleConnectFail(ErrorType.KERNEL_ERROR, "XControlledModule connect failed");
-    }
-    
-    @PreDestroy
-    public void destroyMethod() {
-        try {
+        if(websocketClient != null)
             websocketClient.close();
-        } catch (IOException ex) {
-            LOG.error("XControlledModule: {} shutdown failed", getIdentity(), ex);
-        }
+        if(xModuleConfig.isXtraffic_force())
+            throw new XControlledModuleConnectFailException(ErrorType.KERNEL_ERROR, "XControlledModule connect failed");
     }
     
     /**

@@ -12,7 +12,22 @@ package kcwiki.management.controlcenter.database.entity;
 public class ModuleAuthorization {
     private int id;
     private String identity_name;
-    private int interact;
+    private int receive;
+    private int transmit;
+
+    /**
+     * @return the id
+     */
+    public int getId() {
+        return id;
+    }
+
+    /**
+     * @param id the id to set
+     */
+    public void setId(int id) {
+        this.id = id;
+    }
 
     /**
      * @return the identity_name
@@ -29,30 +44,32 @@ public class ModuleAuthorization {
     }
 
     /**
-     * @return the interact
+     * @return the receive
      */
-    public int getInteract() {
-        return interact;
+    public int getReceive() {
+        return receive;
     }
 
     /**
-     * @param interact the interact to set
+     * @param receive the receive to set
      */
-    public void setInteract(int interact) {
-        this.interact = interact;
+    public void setReceive(int receive) {
+        this.receive = receive;
     }
 
     /**
-     * @return the id
+     * @return the transmit
      */
-    public int getId() {
-        return id;
+    public int getTransmit() {
+        return transmit;
     }
 
     /**
-     * @param id the id to set
+     * @param transmit the transmit to set
      */
-    public void setId(int id) {
-        this.id = id;
+    public void setTransmit(int transmit) {
+        this.transmit = transmit;
     }
+
+    
 }

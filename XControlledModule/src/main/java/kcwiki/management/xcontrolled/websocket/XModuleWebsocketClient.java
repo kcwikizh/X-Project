@@ -11,12 +11,10 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.HashMap;
-import java.util.logging.Level;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import kcwiki.management.xtraffic.crypto.aes.AesUtils;
-import kcwiki.management.xtraffic.crypto.rsa.RSAUtils;
 import kcwiki.management.xtraffic.protobuf.ProtobufUtils;
 import org.iharu.proto.websocket.WebsocketProto;
 import org.iharu.websocket.client.BaseWebsocketClient;
@@ -34,8 +32,8 @@ public class XModuleWebsocketClient extends BaseWebsocketClient {
     
     private final byte[] symmetricKey;
     
-    public XModuleWebsocketClient(String name, HashMap headers, String url, byte[] symmetricKey, XModuleWebsocketClientCallBack callback) {
-        super(name, headers, url, callback);
+    public XModuleWebsocketClient(String name, HashMap headers, String url, byte[] symmetricKey, XModuleWebsocketClientCallBack callback, XModuleReconnectCallBack reconnectCallBack) {
+        super(name, headers, url, callback, reconnectCallBack);
         this.symmetricKey = symmetricKey;
     }
     
@@ -75,7 +73,7 @@ public class XModuleWebsocketClient extends BaseWebsocketClient {
     }
     
     @Override
-    public void send(byte[] payload) throws IOException{
+    public void send(byte[] payload) throws IOException {
         if(!webSocketSession.isOpen()){
             instance.connect();
             if(!webSocketSession.isOpen()){

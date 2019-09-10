@@ -2,6 +2,7 @@ package kcwiki.msgtransfer.websocket.client.senkamonitor;
 
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.concurrent.ExecutionException;
 import javax.annotation.PostConstruct;
 import kcwiki.management.controlcenter.cache.inmem.AppDataCache;
 import kcwiki.msgtransfer.core.TransferController;

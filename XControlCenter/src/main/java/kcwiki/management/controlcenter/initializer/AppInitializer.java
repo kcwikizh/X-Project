@@ -62,8 +62,8 @@ public class AppInitializer implements InitializerInterface
       isInit = true;
       long startTime = System.currentTimeMillis();
       checkDatabase();
-      startTestClient();
-      startProtobufTestClient();
+//      startTestClient();
+//      startProtobufTestClient();
       long endTime = System.currentTimeMillis();
       LOG.info("AppRoot folder: {}", RUNTIME.APPROOT);
       LOG.info("Temp folder: {}", TEMP_FOLDER);

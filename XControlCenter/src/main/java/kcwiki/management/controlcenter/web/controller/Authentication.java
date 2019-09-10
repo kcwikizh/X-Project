@@ -5,18 +5,20 @@
  */
 package kcwiki.management.controlcenter.web.controller;
 
-import org.springframework.util.StringUtils;
 import java.security.NoSuchAlgorithmException;
 import kcwiki.management.controlcenter.cache.inmem.AppDataCache;
 import kcwiki.management.controlcenter.database.service.ModuleUtilsService;
 import kcwiki.management.controlcenter.web.controller.entity.AuthVoucher;
 import kcwiki.management.controlcenter.web.controller.type.VoucherType;
+import kcwiki.management.xtraffic.crypto.aes.AesUtils;
 import kcwiki.management.xtraffic.utils.AuthenticationUtils;
 import kcwiki.management.xtraffic.entity.AuthenticationEntity;
 import kcwiki.management.xtraffic.crypto.rsa.RSAKeyPairGenerator;
 import kcwiki.management.xtraffic.crypto.rsa.RSAUtils;
 import org.iharu.proto.web.WebResponseProto;
 import org.iharu.type.BaseHttpStatus;
+import org.iharu.util.Base64Utils;
+import org.iharu.util.StringUtils;
 import org.iharu.web.BaseController;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,26 +56,31 @@ public class Authentication extends BaseController {
     
     @PostMapping("/module")
     public WebResponseProto module(@RequestBody String body) {
-        if(StringUtils.isEmpty(body))
+        if(StringUtils.isNullOrWhiteSpace(body))
             return GenResponse(BaseHttpStatus.FAILURE, "body is blank", null);
         AuthenticationEntity authentication = AuthenticationUtils.GetAuthenticationEntity(privateKey, body);
-        if(authentication == null || StringUtils.isEmpty(authentication.getToken()))
+        if(authentication == null || StringUtils.isNullOrWhiteSpace(authentication.getToken()))
             return GenResponse(BaseHttpStatus.FAILURE, "body decode failed", null);
         if(AuthenticationUtils.isAuthRequestTimeout(authentication.getTimestamp()))
             return GenResponse(BaseHttpStatus.FAILURE, "request timeout", null);
         String identity = moduleUtilsService.getIdentification(authentication.getToken());
         if(identity == null)
             return GenResponse(BaseHttpStatus.FAILURE, "authentication failed", null);
-        
+        byte[] key = Base64Utils.DecryptBase64(authentication.getKey());
+        if(key == null)
+            return GenResponse(BaseHttpStatus.FAILURE, "decode key failed", null);
         String voucher = AuthenticationUtils.GenVoucher();
         AuthVoucher authVoucher = new AuthVoucher();
         authVoucher.setIdentity(identity);
-        authVoucher.setKey(authentication.getKey());
+        authVoucher.setKey(Base64Utils.EncryptBase64ToString(key));
         authVoucher.setToken(authentication.getToken());
         authVoucher.setType(VoucherType.MODULE_WEBSOCKET);
         authVoucher.setTimestamp(AuthenticationUtils.GetTimestamp());
         AppDataCache.Vouchers.put(voucher, authVoucher);
-        return GenResponse(BaseHttpStatus.SUCCESS, "authentication success", voucher);
+        byte[] _voucher = AesUtils.EncryptWithoutException(voucher, key);
+        if(_voucher == null)
+            return GenResponse(BaseHttpStatus.FAILURE, "encrypt voucher failed", null);
+        return GenResponse(BaseHttpStatus.SUCCESS, "authentication success", Base64Utils.EncryptBase64ToString(_voucher));
     }
     
     

@@ -8,9 +8,12 @@ package kcwiki.management.xcontrolled.message.websocket;
 import java.security.NoSuchAlgorithmException;
 import kcwiki.management.xcontrolled.configuration.XModuleConfig;
 import kcwiki.management.xcontrolled.core.XModuleController;
+import kcwiki.management.xcontrolled.exception.XControlledMissCallbackException;
+import kcwiki.management.xcontrolled.websocket.XModuleReconnectCallBack;
 import kcwiki.management.xcontrolled.websocket.XModuleWebsocketClientCallBack;
 import org.iharu.proto.websocket.WebsocketProto;
 import org.iharu.type.ResultType;
+import org.iharu.type.error.ErrorType;
 import org.iharu.util.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +34,9 @@ public class XMessagePublisher <T> {
     private String identity;
     
     public void connect(XModuleWebsocketClientCallBack callback) {
-        xModuleController.connect(callback);
+        if(callback == null)
+            throw new XControlledMissCallbackException(ErrorType.KERNEL_ERROR);
+        xModuleController.connect(callback, new XModuleReconnectCallBack(xModuleController, callback));
         identity = xModuleController.getIdentity();
     }
     

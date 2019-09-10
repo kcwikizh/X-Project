@@ -45,7 +45,6 @@ public class ProtobufTransferHandler
         protected void handleBinaryMessage(WebSocketSession session, BinaryMessage message)
         {
             byte[] bytes = message.getPayload().array();
-            LOG.info("incoming msg: {}", bytes);
             transferController.ReTransfer2S(protobufController.Transfor(bytes));
         }
   

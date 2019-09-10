@@ -48,11 +48,7 @@ public class MessagePublisher {
     public void publish(ExchangeProto msg, PublishTypes publishTypes, ResultType resultType){
         LOG.info(JsonUtils.object2json(msg));
         exchangeHandler.sendMessageToAllUsers(msg);
-        if(EnshuDataType.SystemInfo == msg.getModule_type()){
-            xMessagePublisher.publishSystemMsg(resultType, msg.getProto_payload());
-        } else {
-            xMessagePublisher.publishNonSystemMsg(resultType, new EnshuHelperProto(resultType, msg.getModule_type(), msg.getProto_payload()));
-        }
+        xMessagePublisher.publishNonSystemMsg(resultType, new EnshuHelperProto(resultType, msg.getModule_type(), msg.getProto_payload()));
     }
     
     public void publish(String payload, EnshuDataType enshuDataType){

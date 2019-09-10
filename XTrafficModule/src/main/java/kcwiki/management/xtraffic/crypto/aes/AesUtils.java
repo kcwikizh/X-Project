@@ -14,6 +14,8 @@ import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -26,6 +28,7 @@ import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 import kcwiki.management.xtraffic.crypto.aes.type.AESEncryptType;
 import org.iharu.constant.ConstantValue;
+import org.iharu.util.StringUtils;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -36,6 +39,7 @@ public class AesUtils {
     private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(AesUtils.class);
     
     private final static String KEY = "AES";
+    private final static AESEncryptType DEFAULT_ENCRYPTION = AESEncryptType.GCM;
     public static final int GCM_TAG_LENGTH = 16;
     
     private static byte[] genRandomIV(AESEncryptType encryptType){
@@ -52,6 +56,8 @@ public class AesUtils {
     }
     
     private static byte[] encrypt(byte[] data, byte[] key, AESEncryptType encryptType) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException, InvalidKeySpecException {
+        if(data == null || key == null)
+            return null;
         Cipher cipher = Cipher.getInstance(encryptType.getName());
         SecretKey aesSecret = new SecretKeySpec(key, KEY);
         byte[] iv = genRandomIV(encryptType);
@@ -73,8 +79,26 @@ public class AesUtils {
         return cipherData;
     }
     
+    public static byte[] EncryptWithoutException(byte[] data, byte[] key) {
+        try {
+            return encrypt(data, key, DEFAULT_ENCRYPTION);
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException | InvalidKeySpecException ex) {
+            LOG.error("Encrypt error", ex);
+        }
+        return null;
+    }
+    
+    public static byte[] EncryptWithoutException(String data, byte[] key) {
+        try {
+            return encrypt(StringUtils.StringToByteArray(data), key, DEFAULT_ENCRYPTION);
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException | InvalidKeySpecException ex) {
+            LOG.error("Encrypt error", ex);
+        }
+        return null;
+    }
+    
     public static byte[] Encrypt(byte[] data, byte[] key) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException, InvalidKeySpecException {
-        return encrypt(data, key, AESEncryptType.GCM);
+        return encrypt(data, key, DEFAULT_ENCRYPTION);
     }
     
     public static byte[] Encrypt(byte[] data, byte[] key, AESEncryptType encryptType) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException, InvalidKeySpecException {
@@ -86,6 +110,8 @@ public class AesUtils {
     }
     
     private static byte[] decrypt(byte[] data, byte[] key, AESEncryptType encryptType) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException, InvalidKeySpecException {
+        if(data == null || key == null)
+            return null;
         Cipher cipher = Cipher.getInstance(encryptType.getName());
         SecretKey aesSecret = new SecretKeySpec(key, KEY);
         if(AESEncryptType.GCM == encryptType){
@@ -101,12 +127,30 @@ public class AesUtils {
         return cipher.doFinal(Arrays.copyOfRange(data, encryptType.getIvLength(), data.length));
     }
     
+    public static byte[] DecryptWithoutException(byte[] data, byte[] key) {
+        try {
+            return decrypt(data, key, DEFAULT_ENCRYPTION);
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException | InvalidKeySpecException ex) {
+            LOG.error("Decrypt error", ex);
+        }
+        return null;
+    }
+    
+    public static byte[] DecryptWithoutException(String data, byte[] key) {
+        try {
+            return decrypt(StringUtils.StringToByteArray(data), key, DEFAULT_ENCRYPTION);
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException | InvalidKeySpecException ex) {
+            LOG.error("Decrypt error", ex);
+        }
+        return null;
+    }
+    
     public static byte[] Decrypt(byte[] data, byte[] key, AESEncryptType encryptType) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException, InvalidKeySpecException {
         return decrypt(data, key, encryptType);
     }
     
     public static byte[] Decrypt(byte[] data, byte[] key) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException, InvalidKeySpecException {
-        return decrypt(data, key, AESEncryptType.GCM);
+        return decrypt(data, key, DEFAULT_ENCRYPTION);
     }
     
     public static byte[] Decrypt(byte[] data, String password, String salt) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException, InvalidKeySpecException, UnsupportedEncodingException {

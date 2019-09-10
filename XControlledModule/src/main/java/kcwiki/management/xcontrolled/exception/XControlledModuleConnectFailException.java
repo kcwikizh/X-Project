@@ -12,25 +12,25 @@ import org.iharu.type.error.ErrorType;
  *
  * @author iHaru
  */
-public class XControlledModuleConnectFail extends BaseException {
+public class XControlledModuleConnectFailException extends BaseException {
     
-    public XControlledModuleConnectFail(ErrorType errorType, String module, String msg, Throwable sourceException) {
+    public XControlledModuleConnectFailException(ErrorType errorType, String module, String msg, Throwable sourceException) {
         super(errorType, module, msg, sourceException);
     }
     
-    public XControlledModuleConnectFail(ErrorType errorType, String module, String msg) {
+    public XControlledModuleConnectFailException(ErrorType errorType, String module, String msg) {
         super(errorType, module, msg);
     }
     
-    public XControlledModuleConnectFail(ErrorType errorType, String msg) {
+    public XControlledModuleConnectFailException(ErrorType errorType, String msg) {
         super(errorType, msg);
     }
     
-    public XControlledModuleConnectFail(ErrorType errorType, Throwable sourceException) {
+    public XControlledModuleConnectFailException(ErrorType errorType, Throwable sourceException) {
         super(errorType, sourceException);
     }
     
-    public XControlledModuleConnectFail(ErrorType errorType) {
+    public XControlledModuleConnectFailException(ErrorType errorType) {
         super(errorType);
     }
     
