@@ -9,7 +9,7 @@ package kcwiki.x.enshuhelper.message.websocket.types;
  *
  * @author iHaru
  */
-public enum EnshuDataType{
+public enum ModuleType{
     SystemInfo,
     PayloadError,
     EnshuHelperRegister,

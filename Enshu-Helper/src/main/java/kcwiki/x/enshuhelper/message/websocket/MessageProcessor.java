@@ -12,7 +12,7 @@ import kcwiki.x.enshuhelper.database.service.LogService;
 import kcwiki.x.enshuhelper.database.service.UserInfoService;
 import kcwiki.x.enshuhelper.initializer.AppConfig;
 import kcwiki.x.enshuhelper.message.websocket.entity.UserData;
-import org.iharu.type.LogType;
+import org.iharu.type.MsgType;
 import org.iharu.util.CommontUtils;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +50,7 @@ public class MessageProcessor {
         userDataEntity.setTimestamp(new Date()); 
         int rs = userInfoService.addUser(userDataEntity);
         if(rs > 0){
-            logService.addLog(LogType.INFO, String.format("玩家%s在%s群注册。", gameid, qqgroup));
+            logService.addLog(MsgType.INFO, String.format("玩家%s在%s群注册。", gameid, qqgroup));
             return 1;
         }
         return -1;
@@ -64,7 +64,7 @@ public class MessageProcessor {
         if(userDataEntity != null){
             if(!userDataEntity.getQqgroup().equals(qqgroup)) {
                 LOG.warn("玩家{}在{}群注册，{}群管理员没有删除权限。", gameid, userDataEntity.getQqgroup(), qqgroup);
-                logService.addLog(LogType.WARN, String.format("玩家%s在%s群注册，%s群管理员没有删除权限。", gameid, userDataEntity.getQqgroup(), qqgroup));
+                logService.addLog(MsgType.WARN, String.format("玩家%s在%s群注册，%s群管理员没有删除权限。", gameid, userDataEntity.getQqgroup(), qqgroup));
                 return -2;
             }
             rs = userInfoService.deleteUser(gameid);

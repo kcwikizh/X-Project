@@ -6,10 +6,8 @@
 package kcwiki.x.enshuhelper.message.websocket;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import java.util.concurrent.ExecutionException;
-import java.util.logging.Level;
 import kcwiki.management.xcontrolled.websocket.XModuleWebsocketClientCallBack;
-import kcwiki.x.enshuhelper.message.websocket.entity.ExchangeProto;
+import kcwiki.x.enshuhelper.message.websocket.entity.EnshuHelperProto;
 import org.iharu.proto.websocket.WebsocketProto;
 import org.iharu.type.ResultType;
 import org.iharu.util.JsonUtils;
@@ -24,7 +22,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class XModuleCallBack extends XModuleWebsocketClientCallBack {
-    private static final Logger LOG = LoggerFactory.getLogger(MessagePublisher.class);
+    private static final Logger LOG = LoggerFactory.getLogger(XModuleCallBack.class);
     
     @Autowired
     MessageInterceptor messageInterceptor;
@@ -37,11 +35,11 @@ public class XModuleCallBack extends XModuleWebsocketClientCallBack {
     @Override
     protected void moduleCallback(WebsocketProto proto) {
         LOG.info("received proto data: {}", JsonUtils.object2json(proto));
-        ExchangeProto exchangeProto = JsonUtils.json2objectWithoutThrowException(proto.getProto_payload(), new TypeReference<ExchangeProto>(){});
-        if(exchangeProto == null)
+        EnshuHelperProto _proto = JsonUtils.json2objectWithoutThrowException(proto.getProto_payload(), new TypeReference<EnshuHelperProto>(){});
+        if(_proto == null)
             return;
-        exchangeProto = messageInterceptor.filter(exchangeProto);
-        getWebsocketClient().send(new WebsocketProto(ResultType.SUCCESS, null, null, proto.getProto_sender(), JsonUtils.object2json(exchangeProto)));
+        _proto = messageInterceptor.filter(_proto);
+        getWebsocketClient().send(new WebsocketProto(ResultType.SUCCESS, null, null, proto.getProto_sender(), JsonUtils.object2json(_proto)));
     }
 
     @Override

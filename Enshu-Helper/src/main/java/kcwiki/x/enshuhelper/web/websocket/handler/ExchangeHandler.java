@@ -10,8 +10,8 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import kcwiki.x.enshuhelper.message.websocket.MessageInterceptor;
-import kcwiki.x.enshuhelper.message.websocket.entity.ExchangeProto;
-import kcwiki.x.enshuhelper.message.websocket.types.EnshuDataType;
+import kcwiki.x.enshuhelper.message.websocket.entity.EnshuHelperProto;
+import kcwiki.x.enshuhelper.message.websocket.types.ModuleType;
 import org.iharu.websocket.handler.DefaultWebsocketHandler;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.iharu.type.ResultType;
@@ -45,10 +45,10 @@ public class ExchangeHandler extends DefaultWebsocketHandler {
     protected void handleTextMessage(WebSocketSession session, TextMessage message) {
         String payload = message.getPayload();
         try {
-            ExchangeProto exchangeProto = JsonUtils.json2object(payload, new TypeReference<ExchangeProto>(){});
-            if(exchangeProto == null)
+            EnshuHelperProto proto = JsonUtils.json2object(payload, new TypeReference<EnshuHelperProto>(){});
+            if(proto == null)
                 return;
-            sendMessageToUser(getUserId(session), messageInterceptor.filter(exchangeProto));
+            sendMessageToUser(getUserId(session), messageInterceptor.filter(proto));
         } catch (IOException ex) {
             LOG.info("转换数据时发生错误 payload： {}", payload);
             LOG.info(ExceptionUtils.getStackTrace(ex));
@@ -56,8 +56,8 @@ public class ExchangeHandler extends DefaultWebsocketHandler {
         }
     }
     
-    private ExchangeProto payloadError() {
-        return new ExchangeProto(ResultType.ERROR, EnshuDataType.PayloadError, "上传数据格式有误，解析出错。");
+    private EnshuHelperProto payloadError() {
+        return new EnshuHelperProto(ModuleType.PayloadError, ResultType.ERROR, "上传数据格式有误，解析出错。");
     }
 
     @Override

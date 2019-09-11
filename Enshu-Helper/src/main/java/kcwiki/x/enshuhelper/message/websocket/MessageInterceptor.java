@@ -6,9 +6,9 @@
 package kcwiki.x.enshuhelper.message.websocket;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import kcwiki.x.enshuhelper.message.websocket.entity.ExchangeProto;
+import kcwiki.x.enshuhelper.message.websocket.entity.EnshuHelperProto;
 import kcwiki.x.enshuhelper.message.websocket.entity.UserData;
-import kcwiki.x.enshuhelper.message.websocket.types.EnshuDataType;
+import kcwiki.x.enshuhelper.message.websocket.types.ModuleType;
 import org.iharu.type.ResultType;
 import org.iharu.util.JsonUtils;
 import org.slf4j.LoggerFactory;
@@ -26,34 +26,34 @@ public class MessageInterceptor {
     @Autowired
     MessageProcessor messageProcessor;
     
-    public ExchangeProto filter(ExchangeProto proto) {
-        ExchangeProto rsproto = new ExchangeProto();
-        rsproto.setProto_code(ResultType.FAILURE);
-        String payload = proto.getProto_payload();
+    public EnshuHelperProto filter(EnshuHelperProto proto) {
+        EnshuHelperProto rsproto = new EnshuHelperProto();
+        rsproto.setModuleCode(ResultType.FAILURE);
+        String payload = proto.getModulePayload();
         UserData userData = JsonUtils.json2objectWithoutThrowException(payload, new TypeReference<UserData>(){});
         if(userData == null){
-            rsproto.setModule_type(EnshuDataType.PayloadError);
-            rsproto.setProto_payload(rsproto.getProto_payload());
+            rsproto.setModuleType(ModuleType.PayloadError);
+            rsproto.setModulePayload(rsproto.getModulePayload());
             return rsproto;
         }
         UserData rsdata = new UserData();
         rsdata.setQq(userData.getQq());
         rsdata.setQqgroup(userData.getQqgroup());
-        rsproto.setModule_type(EnshuDataType.SystemInfo);
-        switch(proto.getModule_type()) {
+        rsproto.setModuleType(ModuleType.SystemInfo);
+        switch(proto.getModuleType()) {
             default:
-                rsproto.setModule_type(EnshuDataType.PayloadError);
-                rsproto.setProto_payload(rsproto.getProto_payload());
+                rsproto.setModuleType(ModuleType.PayloadError);
+                rsproto.setModulePayload(rsproto.getModulePayload());
                 break;
             case EnshuHelperRegister:
                 int rs = messageProcessor.enshuHelperRegister(userData);
                 if(rs == -1) {
                     rsdata.setComments("出现未知错误，无法新增用户信息。");
-                    rsproto.setProto_payload(JsonUtils.object2json(rsdata));
+                    rsproto.setModulePayload(JsonUtils.object2json(rsdata));
                     return rsproto;
                 } else if(rs == 0) {
                     rsdata.setComments(userData.getMemberid() + "该用户已存在。");
-                    rsproto.setProto_payload(JsonUtils.object2json(rsdata));
+                    rsproto.setModulePayload(JsonUtils.object2json(rsdata));
                     return rsproto;
                 }
                 rsdata.setComments(userData.getMemberid() + "用户注册成功。");
@@ -63,15 +63,15 @@ public class MessageInterceptor {
                 switch (rs) {
                     case -1:
                         rsdata.setComments(userData.getMemberid() + "用户不存在。");
-                        rsproto.setProto_payload(JsonUtils.object2json(rsdata));
+                        rsproto.setModulePayload(JsonUtils.object2json(rsdata));
                         return rsproto;
                     case -2:
                         rsdata.setComments(userData.getMemberid() + "请在用户注册群进行删除操作。");
-                        rsproto.setProto_payload(JsonUtils.object2json(rsdata));
+                        rsproto.setModulePayload(JsonUtils.object2json(rsdata));
                         return rsproto;
                     case 0:
                         rsdata.setComments(userData.getMemberid() + "用户删除失败。");
-                        rsproto.setProto_payload(JsonUtils.object2json(rsdata));
+                        rsproto.setModulePayload(JsonUtils.object2json(rsdata));
                         return rsproto;
                     default:
                         break;
@@ -79,8 +79,8 @@ public class MessageInterceptor {
                 rsdata.setComments(userData.getMemberid() + "用户删除成功。");
                 break;
         }
-        rsproto.setProto_code(ResultType.SUCCESS);
-        rsproto.setProto_payload(JsonUtils.object2json(rsdata));
+        rsproto.setModuleCode(ResultType.SUCCESS);
+        rsproto.setModulePayload(JsonUtils.object2json(rsdata));
         return rsproto;
     }
 }

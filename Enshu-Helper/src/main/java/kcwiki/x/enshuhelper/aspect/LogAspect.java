@@ -7,7 +7,7 @@ package kcwiki.x.enshuhelper.aspect;
 
 import kcwiki.x.enshuhelper.database.service.LogService;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.iharu.type.LogType;
+import org.iharu.type.MsgType;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.AfterThrowing;
@@ -60,7 +60,7 @@ public class LogAspect {
     public void afterThrowing(JoinPoint joinPoint,Throwable error){
         LOG.error("[Aspect-LogActions] Method Signature:{}", joinPoint.getSignature());
         LOG.error("[Aspect-LogActions] Exception:{}", ExceptionUtils.getStackTrace(error));
-        logService.addLog(LogType.ERROR, joinPoint.getSignature().toLongString(), error);
+        logService.addLog(MsgType.ERROR, joinPoint.getSignature().toLongString(), error);
     }
     
 //    @Around("pointCut()")

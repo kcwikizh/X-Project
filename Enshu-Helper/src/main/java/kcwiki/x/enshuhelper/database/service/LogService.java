@@ -8,7 +8,7 @@ package kcwiki.x.enshuhelper.database.service;
 import java.util.Date;
 import kcwiki.x.enshuhelper.database.dao.LogDao;
 import kcwiki.x.enshuhelper.database.entity.log.LogEntity;
-import org.iharu.type.LogType;
+import org.iharu.type.MsgType;
 import kcwiki.x.enshuhelper.initializer.AppConfig;
 import static org.iharu.constant.ConstantValue.LINESEPARATOR;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -28,7 +28,7 @@ public class LogService {
     @Autowired
     private LogDao logDao;
     
-    public boolean addLog(LogType msgTypes, String msg) {
+    public boolean addLog(MsgType msgTypes, String msg) {
         LogEntity logEntity = new LogEntity();
         logEntity.setType(msgTypes);
         logEntity.setTimestamp(new Date());
@@ -37,7 +37,7 @@ public class LogService {
         return true;
     }
     
-    public boolean addLog(LogType msgTypes, String signature, Throwable ex) {
+    public boolean addLog(MsgType msgTypes, String signature, Throwable ex) {
         LogEntity logEntity = new LogEntity();
         logEntity.setType(msgTypes);
         logEntity.setTimestamp(new Date());

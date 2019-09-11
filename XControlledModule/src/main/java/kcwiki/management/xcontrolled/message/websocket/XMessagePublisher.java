@@ -40,18 +40,22 @@ public class XMessagePublisher <T> {
         identity = xModuleController.getIdentity();
     }
     
+    public void publish(WebsocketProto proto){
+         xModuleController.send(proto);
+    }
+    
     public void publishNonSystemMsg(ResultType result, T payload){
         if(payload instanceof String)
-            xModuleController.send(new WebsocketProto(result, identity, (String) payload));
+            xModuleController.send(new WebsocketProto(result, null, (String) payload));
         else
-            xModuleController.send(new WebsocketProto(result, identity, JsonUtils.object2json(payload)));
+            xModuleController.send(new WebsocketProto(result, null, JsonUtils.object2json(payload)));
     }
     
     public void publishNonSystemMsgWithTrack(ResultType result, String sender, String recipient, T payload){
         if(payload instanceof String)
-            xModuleController.send(new WebsocketProto(result, identity, sender, recipient, (String) payload));
+            xModuleController.send(new WebsocketProto(result, null, sender, recipient, (String) payload));
         else
-            xModuleController.send(new WebsocketProto(result, identity, sender, recipient, JsonUtils.object2json(payload)));
+            xModuleController.send(new WebsocketProto(result, null, sender, recipient, JsonUtils.object2json(payload)));
     }
     
     public void publishSystemMsg(ResultType result, T payload){

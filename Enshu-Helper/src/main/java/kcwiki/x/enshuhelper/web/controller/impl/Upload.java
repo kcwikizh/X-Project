@@ -19,9 +19,9 @@ import kcwiki.x.enshuhelper.database.service.SystemInfoService;
 import kcwiki.x.enshuhelper.database.service.UserInfoService;
 import kcwiki.x.enshuhelper.message.websocket.MessagePublisher;
 import kcwiki.x.enshuhelper.message.websocket.entity.UserData;
-import kcwiki.x.enshuhelper.message.websocket.types.EnshuDataType;
+import kcwiki.x.enshuhelper.message.websocket.types.ModuleType;
 import static org.iharu.constant.ConstantValue.LINESEPARATOR;
-import org.iharu.type.LogType;
+import org.iharu.type.MsgType;
 import kcwiki.x.enshuhelper.web.controller.entity.request.UserEnshuInfoEntity;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.iharu.proto.web.WebResponseProto;
@@ -89,7 +89,7 @@ public class Upload extends BaseController {
             if(userDataEntity == null) {
                 return GenBaseResponse(FAILURE, "找不到用户，请确认你已经在服务器注册。");
             } else if (userDataEntity.isBlock()) {
-                logService.addLog(LogType.WARN, String.format("%s已被禁止使用本服务。", memberID));
+                logService.addLog(MsgType.WARN, String.format("%s已被禁止使用本服务。", memberID));
                 return GenBaseResponse(FAILURE, "抱歉，你已被禁止使用本服务。");
             }
             rs.add(userData2matchInfo(userDataEntity));
@@ -124,7 +124,7 @@ public class Upload extends BaseController {
             CompletableFuture.runAsync(() -> {
                 AppDataCache.queryCount.increment();
                 AppDataCache.matchCount.add(rs.size()-1);
-                messagePublisher.publish(JsonUtils.object2json(rs), EnshuDataType.EnshuHelperInform);
+                messagePublisher.publish(JsonUtils.object2json(rs), ModuleType.EnshuHelperInform);
                 
                 try{
                     systemInfoService.updateCount();
@@ -148,7 +148,7 @@ public class Upload extends BaseController {
                 matchInfo.setComments(item.getComments());
                 rsp.add(matchInfo);
             });
-            logService.addLog(LogType.INFO, String.format("%s已匹配成功。", memberID));
+            logService.addLog(MsgType.INFO, String.format("%s已匹配成功。", memberID));
             return GenResponse(SUCCESS, rsp);
         }
     }

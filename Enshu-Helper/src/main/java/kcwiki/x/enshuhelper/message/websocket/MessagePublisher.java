@@ -9,16 +9,8 @@ import java.security.NoSuchAlgorithmException;
 import javax.annotation.PostConstruct;
 import kcwiki.management.xcontrolled.message.websocket.XMessagePublisher;
 import kcwiki.x.enshuhelper.message.websocket.entity.EnshuHelperProto;
-import kcwiki.x.enshuhelper.message.websocket.entity.ExchangeProto;
-import kcwiki.x.enshuhelper.message.websocket.types.EnshuDataType;
-import kcwiki.x.enshuhelper.message.websocket.types.PublishTypes;
-import static kcwiki.x.enshuhelper.message.websocket.types.PublishTypes.All;
-import static kcwiki.x.enshuhelper.message.websocket.types.PublishTypes.Guest;
-import kcwiki.x.enshuhelper.web.websocket.handler.AdministratorHandler;
-import kcwiki.x.enshuhelper.web.websocket.handler.ExchangeHandler;
-import org.iharu.proto.websocket.WebsocketProto;
+import kcwiki.x.enshuhelper.message.websocket.types.ModuleType;
 import org.iharu.type.ResultType;
-import org.iharu.util.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,26 +29,22 @@ public class MessagePublisher {
     XModuleCallBack xModuleCallBack;
     @Autowired
     XMessagePublisher xMessagePublisher;
-    @Autowired
-    ExchangeHandler exchangeHandler;
     
     @PostConstruct
     public void initMethod() throws NoSuchAlgorithmException {
         xMessagePublisher.connect(xModuleCallBack);
     }
     
-    public void publish(ExchangeProto msg, PublishTypes publishTypes, ResultType resultType){
-        LOG.info(JsonUtils.object2json(msg));
-        exchangeHandler.sendMessageToAllUsers(msg);
-        xMessagePublisher.publishNonSystemMsg(resultType, new EnshuHelperProto(resultType, msg.getModule_type(), msg.getProto_payload()));
+    public void publish(EnshuHelperProto proto, ResultType resultType){
+        xMessagePublisher.publishNonSystemMsg(resultType, proto);
     }
     
-    public void publish(String payload, EnshuDataType enshuDataType){
-        publish(new ExchangeProto(enshuDataType, payload));
+    public void publish(String payload, ModuleType enshuDataType){
+        publish(new EnshuHelperProto(enshuDataType, payload));
     }
     
-    public void publish(ExchangeProto exchangeProto){
-        publish(exchangeProto, PublishTypes.All, ResultType.SUCCESS);
+    public void publish(EnshuHelperProto enshuHelperProto){
+        publish(enshuHelperProto, ResultType.SUCCESS);
     }
     
 }

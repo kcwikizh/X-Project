@@ -47,7 +47,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 @EnableAutoConfiguration
 @EnableAdminServer
 @MapperScan("kcwiki.management.controlcenter.database.dao")
-@ComponentScan(basePackages = {"org.iharu", "kcwiki.management", "kcwiki.msgtransfer"}, 
+@ComponentScan(basePackages = {"org.iharu", "kcwiki.management"}, 
         excludeFilters={@ComponentScan.Filter(type=FilterType.ASSIGNABLE_TYPE, value=DefaultGlobalController.class)})
 public class MessageControlCenterApplication
 {

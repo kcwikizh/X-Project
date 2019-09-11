@@ -5,73 +5,42 @@
  */
 package kcwiki.x.enshuhelper.message.websocket.entity;
 
-import kcwiki.x.enshuhelper.message.websocket.types.EnshuDataType;
+import kcwiki.management.xtraffic.base.BaseModuleProto;
+import kcwiki.x.enshuhelper.message.websocket.types.ModuleType;
 import org.iharu.type.ResultType;
 
 /**
  *
  * @author iHaru
  */
-public class EnshuHelperProto {
-    private ResultType proto_code;
-    private String proto_payload;
-    private EnshuDataType proto_type;
+public class EnshuHelperProto extends BaseModuleProto {
+
+    private ModuleType moduleType;
     
     public EnshuHelperProto(){}
     
-    public EnshuHelperProto(EnshuDataType proto_type, String proto_payload){
-        this.proto_type = proto_type;
-        this.proto_payload = proto_payload;
-        this.proto_code = ResultType.SUCCESS;
+    public EnshuHelperProto(ModuleType moduleType, String modulePayload){
+        super(modulePayload);
+        this.moduleType = moduleType;
     }
     
-    public EnshuHelperProto(ResultType proto_code, EnshuDataType proto_type, String proto_payload){
-        this.proto_type = proto_type;
-        this.proto_payload = proto_payload;
-        this.proto_code = proto_code;
+    public EnshuHelperProto(ModuleType moduleType, ResultType moduleCode, String modulePayload){
+        super(moduleCode, modulePayload);
+        this.moduleType = moduleType;
     }
 
     /**
-     * @return the proto_code
+     * @return the moduleType
      */
-    public ResultType getProto_code() {
-        return proto_code;
+    public ModuleType getModuleType() {
+        return moduleType;
     }
 
     /**
-     * @param proto_code the proto_code to set
+     * @param moduleType the moduleType to set
      */
-    public void setProto_code(ResultType proto_code) {
-        this.proto_code = proto_code;
+    public void setModuleType(ModuleType moduleType) {
+        this.moduleType = moduleType;
     }
 
-    /**
-     * @return the proto_payload
-     */
-    public String getProto_payload() {
-        return proto_payload;
-    }
-
-    /**
-     * @param proto_payload the proto_payload to set
-     */
-    public void setProto_payload(String proto_payload) {
-        this.proto_payload = proto_payload;
-    }
-
-    /**
-     * @return the proto_type
-     */
-    public EnshuDataType getProto_type() {
-        return proto_type;
-    }
-
-    /**
-     * @param proto_type the proto_type to set
-     */
-    public void setProto_type(EnshuDataType proto_type) {
-        this.proto_type = proto_type;
-    }
-
-    
 }
