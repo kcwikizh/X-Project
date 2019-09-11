@@ -25,8 +25,8 @@ public class CorsConfiguration implements WebMvcConfigurer {
             public void addCorsMappings(CorsRegistry registry) {
 //                添加映射路径
                 registry.addMapping("/enshuhelper/**")
-                        .allowCredentials(true)
-                        .allowedOrigins("http://127.0.0.1")
+//                        .allowCredentials(true)
+                        .allowedOrigins("http://127.0.0.1", "https://api.senka.com.ru", "http://api.senka.com.ru", null)
                         .allowedHeaders("*")
                         .allowedMethods("OPTIONS", "HEAD", "GET", "PUT", "POST", "DELETE", "PATCH")
                         .exposedHeaders(HttpHeaders.LOCATION, "X-CSRF-TOKEN", "XSRF-TOKEN");

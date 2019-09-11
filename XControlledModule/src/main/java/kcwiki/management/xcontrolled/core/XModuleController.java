@@ -28,6 +28,7 @@ import kcwiki.management.xcontrolled.websocket.XModuleWebsocketClient;
 import kcwiki.management.xcontrolled.websocket.XModuleWebsocketClientCallBack;
 import kcwiki.management.xtraffic.crypto.aes.AesUtils;
 import kcwiki.management.xtraffic.utils.RandomUtils;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.iharu.proto.web.WebResponseProto;
 import org.iharu.proto.websocket.WebsocketProto;
 import org.iharu.type.BaseHttpStatus;
@@ -145,6 +146,8 @@ public class XModuleController {
     }
     
     public void send(WebsocketProto proto) {
+        proto.setSign(DigestUtils.sha512Hex(StringUtils.StringToByteArray(proto.getProto_payload())));
+        proto.setTimestamp(AuthenticationUtils.GetTimestamp());
         LOG.info("proto: {}", JsonUtils.object2json(proto));
         websocketClient.send(proto);
     }

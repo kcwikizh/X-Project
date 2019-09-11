@@ -25,7 +25,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED).and()
             .authorizeRequests().anyRequest().permitAll().and()
 //                .csrf().csrfTokenRepository(new CookieCsrfTokenRepository()).and()   //API服务器开启csrf验证会导致接口403错误
-            .csrf().ignoringAntMatchers("/actuator/**", "/query/**", "/api/**")
+            .csrf().ignoringAntMatchers("/actuator/**", "/file/**")
 //            .csrf().disable()
             ;
     }

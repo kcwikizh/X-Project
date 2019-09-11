@@ -48,13 +48,14 @@ public class ProtobufUtils {
                         websocketWapper.getTimestamp(),
                         websocketWapper.getSign());
             } else {
+                byte[] data = websocketWapper.getProtoPayload().toByteArray();
                 return new WebsocketProto(convertProtoCode(websocketWapper.getProtoCode()), 
                         websocketWapper.getProtoModule(), 
                         websocketWapper.getProtoSender(), 
                         websocketWapper.getProtoRecipient(), 
-                        StringUtils.ByteArrayToString(websocketWapper.getProtoPayload().toByteArray()),
-                        websocketWapper.getTimestamp(),
-                        websocketWapper.getSign());
+                        StringUtils.ByteArrayToString(data),
+                        websocketWapper.getTimestamp()==0?AuthenticationUtils.GetTimestamp():websocketWapper.getTimestamp(),
+                        DigestUtils.sha512Hex(data));
             }
         } catch (InvalidProtocolBufferException ex) {
             LOG.error(ExceptionUtils.getStackTrace(ex));
@@ -80,7 +81,7 @@ public class ProtobufUtils {
     }
     
     public static byte[] TransforAndConvert(WebsocketProto proto) {
-        byte[] data = JsonUtils.json2bytes(proto.getProto_payload());
+        byte[] data = StringUtils.StringToByteArray(proto.getProto_payload());
         XTrafficProto websocketWapper = 
                 XTrafficProto.newBuilder()
                     .setProtoCode(convertResultType(proto.getProto_code()))
@@ -89,7 +90,7 @@ public class ProtobufUtils {
                     .setProtoSender(proto.getProto_sender()==null?"":proto.getProto_sender())
                     .setProtoRecipient(proto.getProto_recipient()==null?"":proto.getProto_recipient())
                     .setProtoPayload(ByteString.copyFrom(data))
-                    .setTimestamp(AuthenticationUtils.GetTimestamp())
+                    .setTimestamp(proto.getTimestamp()==0?AuthenticationUtils.GetTimestamp():proto.getTimestamp())
                     .setSign(DigestUtils.sha512Hex(data))
                     .build();
         return websocketWapper.toByteArray();
