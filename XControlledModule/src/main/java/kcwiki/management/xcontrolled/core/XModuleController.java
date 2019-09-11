@@ -33,7 +33,7 @@ import org.iharu.proto.websocket.WebsocketProto;
 import org.iharu.type.BaseHttpStatus;
 import org.iharu.type.error.ErrorType;
 import org.iharu.util.Base64Utils;
-import org.iharu.util.HttpClientUtils;
+import org.iharu.util.HttpUtils;
 import org.iharu.util.JsonUtils;
 import org.iharu.util.StringUtils;
 import org.slf4j.LoggerFactory;
@@ -59,7 +59,7 @@ public class XModuleController {
         this.identity = xModuleConfig.getXtraffic_identity();
         String publickey = null;
         try {
-            publickey = HttpClientUtils.GetBody(xModuleConfig.getXtraffic_url_publickey());
+            publickey = HttpUtils.GetBody(xModuleConfig.getXtraffic_url_publickey());
         } catch (IOException ex) {
             LOG.error("fetch public key error", ex);
             handleConnectFailed();
@@ -96,7 +96,7 @@ public class XModuleController {
         }
         String body;
         try {
-            body = HttpClientUtils.GetBody(xModuleConfig.getXtraffic_url_auth(), reqBody);
+            body = HttpUtils.GetBody(xModuleConfig.getXtraffic_url_auth(), reqBody);
         } catch (IOException ex) {
             LOG.error("fetch voucher error", ex);
             handleConnectFailed();

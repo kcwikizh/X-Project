@@ -27,7 +27,7 @@ import kcwiki.retweet.initializer.AppConfig;
 import kcwiki.retweet.message.websocket.MessagePublisher;
 import static org.iharu.constant.ConstantValue.LINESEPARATOR;
 import org.iharu.spring.SpringUtils;
-import org.iharu.util.HttpClientUtils;
+import org.iharu.util.HttpUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -110,9 +110,9 @@ public class RetweetController {
                 String filename = new File(avatarURL).getName();
                 try {
                     if(appConfig.isAllow_use_proxy()) {
-                        HttpClientUtils.DownloadFile(avatarURL, runtimeValue.AVATAR_FOLDER, filename, appConfig.getProxy_host(), appConfig.getProxy_port());
+                        HttpUtils.DownloadFile(avatarURL, runtimeValue.AVATAR_FOLDER, filename, appConfig.getProxy_host(), appConfig.getProxy_port());
                     } else {
-                        HttpClientUtils.DownloadFile(avatarURL, runtimeValue.AVATAR_FOLDER, filename);
+                        HttpUtils.DownloadFile(avatarURL, runtimeValue.AVATAR_FOLDER, filename);
                     }
                     rertweet.setAvatar(getAvatarUrl(filename));
                 } catch (IOException ex) {
@@ -146,9 +146,9 @@ public class RetweetController {
                 String filename = new File(avatarURL).getName();
                 try {
                     if(appConfig.isAllow_use_proxy()) {
-                        HttpClientUtils.DownloadFile(avatarURL, runtimeValue.AVATAR_FOLDER, filename, appConfig.getProxy_host(), appConfig.getProxy_port());
+                        HttpUtils.DownloadFile(avatarURL, runtimeValue.AVATAR_FOLDER, filename, appConfig.getProxy_host(), appConfig.getProxy_port());
                     } else {
-                        HttpClientUtils.DownloadFile(avatarURL, runtimeValue.AVATAR_FOLDER, filename);
+                        HttpUtils.DownloadFile(avatarURL, runtimeValue.AVATAR_FOLDER, filename);
                     }
                     rertweet.setAvatar(getAvatarUrl(filename));
                 } catch (IOException ex) {
@@ -169,9 +169,9 @@ public class RetweetController {
                 String filename = String.valueOf(media.getId()) + ".jpg";
                 try {
                     if(appConfig.isAllow_use_proxy()) {
-                        HttpClientUtils.DownloadFile(media.getMediaURLHttps(), runtimeValue.IMAGE_FOLDER, filename, appConfig.getProxy_host(), appConfig.getProxy_port());
+                        HttpUtils.DownloadFile(media.getMediaURLHttps(), runtimeValue.IMAGE_FOLDER, filename, appConfig.getProxy_host(), appConfig.getProxy_port());
                     } else {
-                        HttpClientUtils.DownloadFile(media.getMediaURLHttps(), runtimeValue.IMAGE_FOLDER, filename);
+                        HttpUtils.DownloadFile(media.getMediaURLHttps(), runtimeValue.IMAGE_FOLDER, filename);
                     }
                     imgs.add(getImageUrl(filename));
                 } catch (IOException ex) {
@@ -287,9 +287,9 @@ class AvatarScanTask extends ScanTask implements Runnable {
                 String filename = new File(avatarURL).getName();
                 try {
                     if(host != null && !host.trim().isEmpty() && port > 0) {
-                        HttpClientUtils.DownloadFile(avatarURL, runtimeValue.AVATAR_FOLDER, filename, host, port);
+                        HttpUtils.DownloadFile(avatarURL, runtimeValue.AVATAR_FOLDER, filename, host, port);
                     } else {
-                        HttpClientUtils.DownloadFile(avatarURL, runtimeValue.AVATAR_FOLDER, filename);
+                        HttpUtils.DownloadFile(avatarURL, runtimeValue.AVATAR_FOLDER, filename);
                     }
                     rertweet.setAvatar(getAvatarUrl(filename));
                 } catch (IOException ex) {
@@ -351,9 +351,9 @@ class StatusScanTask extends ScanTask implements Runnable {
                 String filename = String.valueOf(media.getId()) + ".jpg";
                 try {
                     if(host != null && !host.trim().isEmpty() && port > 0) {
-                        HttpClientUtils.DownloadFile(media.getMediaURLHttps(), runtimeValue.IMAGE_FOLDER, filename, host, port);
+                        HttpUtils.DownloadFile(media.getMediaURLHttps(), runtimeValue.IMAGE_FOLDER, filename, host, port);
                     } else {
-                        HttpClientUtils.DownloadFile(media.getMediaURLHttps(), runtimeValue.IMAGE_FOLDER, filename);
+                        HttpUtils.DownloadFile(media.getMediaURLHttps(), runtimeValue.IMAGE_FOLDER, filename);
                     }
                     imgs.add(getImageUrl(filename));
                 } catch (IOException ex) {
@@ -385,9 +385,9 @@ class StatusScanTask extends ScanTask implements Runnable {
                 String filename = new File(avatarURL).getName();
                 try {
                     if(host != null && !host.trim().isEmpty() && port > 0) {
-                        HttpClientUtils.DownloadFile(avatarURL, runtimeValue.AVATAR_FOLDER, filename, host, port);
+                        HttpUtils.DownloadFile(avatarURL, runtimeValue.AVATAR_FOLDER, filename, host, port);
                     } else {
-                        HttpClientUtils.DownloadFile(avatarURL, runtimeValue.AVATAR_FOLDER, filename);
+                        HttpUtils.DownloadFile(avatarURL, runtimeValue.AVATAR_FOLDER, filename);
                     }
                     Rertweet rertweet = new Rertweet();
                     rertweet.setFromID(userID);
