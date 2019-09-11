@@ -47,6 +47,5 @@
 *test*
 **/startup.bat
 **/RSA/
+**/webroot/
 /KcwikiDB/
-/RetweetServer/
-/MessageTransferStationReceiver/
