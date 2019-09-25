@@ -16,15 +16,18 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import kcwiki.management.controlcenter.cache.inmem.AppDataCache;
 import kcwiki.management.controlcenter.database.entity.ModuleAuthorization;
 import kcwiki.management.controlcenter.database.service.ModuleUtilsService;
+import kcwiki.management.controlcenter.initializer.AppConfig;
 import kcwiki.management.controlcenter.web.controller.entity.AuthVoucher;
 import kcwiki.management.xtraffic.crypto.aes.AesUtils;
 import kcwiki.management.xtraffic.entity.ByteArrayContainer;
+import kcwiki.management.xtraffic.entity.ModuleNotification;
 import kcwiki.management.xtraffic.protobuf.ProtobufUtils;
 import kcwiki.management.xtraffic.utils.AuthenticationUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -60,9 +63,12 @@ public class SubscriberHandler extends DefaultWebsocketHandler {
     private static final String IDENTITY = "IDENTITY";
     private static final String ENCRYPT_KEY = "ENCRYPT_KEY";
     private static final String AUTHORIZATIONS_INTERACT = "AUTHORIZATIONS_INTERACT";
+    private String notifierUserID = null;
     
     @Autowired
     ModuleUtilsService moduleUtilsService;
+    @Autowired
+    AppConfig appConfig;
     
     @Override
     protected Logger GetImplLogger() {
@@ -103,6 +109,8 @@ public class SubscriberHandler extends DefaultWebsocketHandler {
                 return;
             }
             String identity = authVoucher.getIdentity();
+            if(appConfig.getXtraffic_notifier_identity().equals(identity))
+                notifierUserID = userId;
             if(!IDENTITYS.containsKey(identity))
                 IDENTITYS.put(identity, new ArrayList());
             IDENTITYS.get(identity).add(userId);
@@ -206,6 +214,20 @@ public class SubscriberHandler extends DefaultWebsocketHandler {
         }
     }
     
+    public void sendNotifierMsg(String identity, String clientID, String status, String msg){
+        if(notifierUserID == null)
+            return;
+        WebsocketProto proto = new WebsocketProto(ResultType.SUCCESS, 
+                new WebsocketSystemProto(WebsocketSystemMessageType.MODULE_STATUS_NOTIFY,
+                        JsonUtils.object2json(new ModuleNotification(identity, clientID, status, msg))));
+        try {
+            sendMessageToUser(notifierUserID,
+                    AesUtils.Encrypt(ProtobufUtils.TransforAndConvert(proto), ((ByteArrayContainer) USERS.get(notifierUserID).getAttributes().get(ENCRYPT_KEY)).getArray()));
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException | InvalidKeySpecException ex) {
+            LOG.warn("send notification failed", ex);
+        }
+    }
+    
     @Override
     protected void sendConnectedMsg(String userId){
         try {
@@ -245,6 +267,8 @@ public class SubscriberHandler extends DefaultWebsocketHandler {
         String userId = getUserId(session);
         if(userId == null)
             return;
+        if(notifierUserID.equals(userId))
+            notifierUserID = null;
         unRegisterUser(userId);
         String identity = (String) session.getAttributes().get(IDENTITY);
         if(identity == null)

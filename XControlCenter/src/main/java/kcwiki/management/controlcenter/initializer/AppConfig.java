@@ -8,6 +8,8 @@ public class AppConfig
 {
   @Value("${myprops.system.root}")
   private String system_root;
+  @Value("${myprops.xtraffic.notifier.identity}")
+  private String xtraffic_notifier_identity;
   @Value("${myprops.global.useproxy}")
   private boolean allow_use_proxy;
   @Value("${myprops.global.proxyhost}")
@@ -325,6 +327,20 @@ public class AppConfig
      */
     public void setWebsocket_url_senkamon(String websocket_url_senkamon) {
         this.websocket_url_senkamon = websocket_url_senkamon;
+    }
+
+    /**
+     * @return the xtraffic_notifier_identity
+     */
+    public String getXtraffic_notifier_identity() {
+        return xtraffic_notifier_identity;
+    }
+
+    /**
+     * @param xtraffic_notifier_identity the xtraffic_notifier_identity to set
+     */
+    public void setXtraffic_notifier_identity(String xtraffic_notifier_identity) {
+        this.xtraffic_notifier_identity = xtraffic_notifier_identity;
     }
   
 }
