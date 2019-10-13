@@ -12,10 +12,8 @@ package kcwiki.management.xtraffic.constant;
 public class ConstantValue {
     
     public final static String TEMP_FOLDER = 
-            String.format("%s/%s", System.getProperty("java.io.tmpdir"), "senkaviewer-v2");
+            String.format("%s/%s", System.getProperty("java.io.tmpdir"), "xtraffic");
     
-    public final static String TIMEZONEID = "Asia/Tokyo";
-    public final static String SCANNAME_START2 = "Start2";
-    public final static String SCANNAME_LASTMODIFIED = "Lastmodified";
+    public final static String TIMEZONEID = "UTC";
     
 }

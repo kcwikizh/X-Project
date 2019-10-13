@@ -3,30 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package kcwiki.management.xtraffic.entity;
+package kcwiki.management.xtraffic.entity.authentication;
 
 /**
  *
  * @author iHaru
  */
-public class AuthenticationEntity {
-    private String token;
+public class BaseAuthenticationEntity {
     private String key;
+    private long expiry;
     private long timestamp;
-
-    /**
-     * @return the token
-     */
-    public String getToken() {
-        return token;
-    }
-
-    /**
-     * @param token the token to set
-     */
-    public void setToken(String token) {
-        this.token = token;
-    }
 
     /**
      * @return the key
@@ -40,6 +26,20 @@ public class AuthenticationEntity {
      */
     public void setKey(String key) {
         this.key = key;
+    }
+
+    /**
+     * @return the expiry
+     */
+    public long getExpiry() {
+        return expiry;
+    }
+
+    /**
+     * @param expiry the expiry to set
+     */
+    public void setExpiry(long expiry) {
+        this.expiry = expiry;
     }
 
     /**

@@ -134,14 +134,29 @@ public class SubscriberHandler extends DefaultWebsocketHandler {
             sendConnectedMsg(userId);
         } catch (Exception ex) {
             GetImplLogger().error("init connection error", ex);
+            handleClose(session);
         }
     }
 
     @Override
     protected void handleBinaryMessage(WebSocketSession session, BinaryMessage message) {
         WebsocketProto proto = null;
+        byte[] key = null;
+        String identity = (String) session.getAttributes().get(IDENTITY);
+        LOG.info("receive from: {}", identity);
+        if(!message.getPayload().hasArray()){
+            LOG.warn("Payload array is empty");
+            return;
+        }
         try {
-            proto = ProtobufUtils.TransforAndConvert(AesUtils.Decrypt(message.getPayload().array(), ((ByteArrayContainer) session.getAttributes().get(ENCRYPT_KEY)).getArray()));
+            if(!session.getAttributes().containsKey(ENCRYPT_KEY)){
+                LOG.error("ByteArrayContainer property not exist");
+                return;
+            }else if((key = ((ByteArrayContainer) session.getAttributes().get(ENCRYPT_KEY)).getArray()) == null){
+                LOG.error("ENCRYPT_KEY bytes is empty");
+                return;
+            }
+            proto = ProtobufUtils.TransforAndConvert(AesUtils.Decrypt(message.getPayload().array(), key));
         } catch (NoSuchPaddingException | NoSuchAlgorithmException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException | InvalidAlgorithmParameterException | InvalidKeySpecException ex) {
             LOG.warn("decrypt failed", ex);
             return;
@@ -149,8 +164,6 @@ public class SubscriberHandler extends DefaultWebsocketHandler {
         if(proto == null){
             return;
         }
-        String identity = (String) session.getAttributes().get(IDENTITY);
-        LOG.info("receive from: {}", identity);
         
         proto.setProto_sender(getUserId(session));
         if(proto.getProto_type() == WebsocketMessageType.SYSTEM){

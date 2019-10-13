@@ -12,7 +12,7 @@ import kcwiki.management.controlcenter.web.controller.entity.AuthVoucher;
 import kcwiki.management.controlcenter.web.controller.type.VoucherType;
 import kcwiki.management.xtraffic.crypto.aes.AesUtils;
 import kcwiki.management.xtraffic.utils.AuthenticationUtils;
-import kcwiki.management.xtraffic.entity.AuthenticationEntity;
+import kcwiki.management.xtraffic.entity.authentication.TokenAuthEntity;
 import kcwiki.management.xtraffic.crypto.rsa.RSAKeyPairGenerator;
 import kcwiki.management.xtraffic.crypto.rsa.RSAUtils;
 import org.iharu.proto.web.WebResponseProto;
@@ -58,7 +58,7 @@ public class Authentication extends BaseController {
     public WebResponseProto module(@RequestBody String body) {
         if(StringUtils.isNullOrWhiteSpace(body))
             return GenResponse(BaseHttpStatus.FAILURE, "body is blank", null);
-        AuthenticationEntity authentication = AuthenticationUtils.GetAuthenticationEntity(privateKey, body);
+        TokenAuthEntity authentication = AuthenticationUtils.GetAuthenticationEntity(privateKey, body);
         if(authentication == null || StringUtils.isNullOrWhiteSpace(authentication.getToken()))
             return GenResponse(BaseHttpStatus.FAILURE, "body decode failed", null);
         if(AuthenticationUtils.isAuthRequestTimeout(authentication.getTimestamp()))

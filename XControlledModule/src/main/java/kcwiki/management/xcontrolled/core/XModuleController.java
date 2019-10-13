@@ -12,13 +12,14 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Base64;
+import java.util.Date;
 import java.util.HashMap;
 import javax.annotation.PreDestroy;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import kcwiki.management.xcontrolled.cache.inmem.AppDataCache;
-import kcwiki.management.xtraffic.entity.AuthenticationEntity;
+import kcwiki.management.xtraffic.entity.authentication.TokenAuthEntity;
 import kcwiki.management.xcontrolled.configuration.XModuleConfig;
 import kcwiki.management.xcontrolled.exception.XControlledModuleConnectFailException;
 import kcwiki.management.xcontrolled.websocket.XModuleReconnectCallBack;
@@ -27,7 +28,6 @@ import kcwiki.management.xtraffic.utils.AuthenticationUtils;
 import kcwiki.management.xcontrolled.websocket.XModuleWebsocketClient;
 import kcwiki.management.xcontrolled.websocket.XModuleWebsocketClientCallBack;
 import kcwiki.management.xtraffic.crypto.aes.AesUtils;
-import kcwiki.management.xtraffic.utils.RandomUtils;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.iharu.proto.web.WebResponseProto;
 import org.iharu.proto.websocket.WebsocketProto;
@@ -36,6 +36,7 @@ import org.iharu.type.error.ErrorType;
 import org.iharu.util.Base64Utils;
 import org.iharu.util.HttpUtils;
 import org.iharu.util.JsonUtils;
+import org.iharu.util.RandomUtils;
 import org.iharu.util.StringUtils;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,11 +83,12 @@ public class XModuleController {
         }
         
         callbackImpl.setPrivKey(symmetricKey);
-        
-        AuthenticationEntity authentication = new AuthenticationEntity();
+        long ts = AuthenticationUtils.GetTimestamp();
+        LOG.info(new Date(ts).toString());
+        TokenAuthEntity authentication = new TokenAuthEntity();
         authentication.setToken(xModuleConfig.getXtraffic_token());
         authentication.setKey(Base64Utils.EncryptBase64ToString(symmetricKey));
-        authentication.setTimestamp(AuthenticationUtils.GetTimestamp());
+        authentication.setTimestamp(ts);
         String reqBody = null;
         try {
             reqBody = Base64.getEncoder().encodeToString(RSAUtils.Encrypt(JsonUtils.object2bytes(authentication), RSAUtils.GetPublicKey(publickey)));
