@@ -10,7 +10,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import javax.validation.constraints.NotNull;
-import kcwiki.management.xtraffic.utils.AuthenticationUtils;
+import org.iharu.auth2.utils.AuthenticationUtils;
 import protobuf.proto.XTrafficProto;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;

@@ -14,7 +14,7 @@ import java.util.HashMap;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import kcwiki.management.xtraffic.crypto.aes.AesUtils;
+import org.iharu.crypto.aes.AesUtils;
 import kcwiki.management.xtraffic.protobuf.ProtobufUtils;
 import org.iharu.proto.websocket.WebsocketProto;
 import org.iharu.websocket.client.BaseWebsocketClient;

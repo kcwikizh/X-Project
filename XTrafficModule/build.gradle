@@ -9,14 +9,13 @@ jar {
     baseName = 'traffic-module'
     classifier = 'xproject'
     manifest {
-        attributes 'Implementation-Title': 'X-Project Traffic Module', 'Implementation-Version': version
+        attributes 'Implementation-Title': 'iHaru bootstrap', 'Implementation-Version': version
     }
 }
 
 dependencies {
     compileOnly "org.iharu.bootstrap:Base-Interface"
-    
-    compile group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.61'
+    compile "org.iharu.bootstrap:Auth2"
     
     compile group: 'com.google.protobuf', name: 'protobuf-java', version: '3.7.1'
     compile group: 'com.googlecode.protobuf-java-format', name: 'protobuf-java-format', version: '1.4'
