@@ -12,7 +12,7 @@ import kcwiki.management.controlcenter.web.controller.entity.AuthVoucher;
 import kcwiki.management.controlcenter.web.controller.type.VoucherType;
 import org.iharu.crypto.aes.AesUtils;
 import org.iharu.auth2.utils.AuthenticationUtils;
-import org.iharu.auth2.authentication.TokenAuthEntity;
+import org.iharu.auth2.authentication.entity.TokenAuthEntity;
 import org.iharu.crypto.rsa.RSAKeyPairGenerator;
 import org.iharu.crypto.rsa.RSAUtils;
 import org.iharu.proto.web.WebResponseProto;

@@ -132,6 +132,7 @@ public class SubscriberHandler extends DefaultWebsocketHandler {
             session.getAttributes().put(AUTHORIZATIONS_INTERACT, interact);
 //            AppDataCache.Vouchers.remove(voucher);
             sendConnectedMsg(userId);
+            LOG.info("identity {} connected, id {}", identity, userId);
         } catch (Exception ex) {
             GetImplLogger().error("init connection error", ex);
             handleClose(session);

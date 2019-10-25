@@ -19,7 +19,7 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import kcwiki.management.xcontrolled.cache.inmem.AppDataCache;
-import org.iharu.auth2.authentication.TokenAuthEntity;
+import org.iharu.auth2.authentication.entity.TokenAuthEntity;
 import kcwiki.management.xcontrolled.configuration.XModuleConfig;
 import kcwiki.management.xcontrolled.exception.XControlledModuleConnectFailException;
 import kcwiki.management.xcontrolled.websocket.XModuleReconnectCallBack;
