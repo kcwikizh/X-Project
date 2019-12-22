@@ -11,12 +11,10 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
@@ -211,8 +209,11 @@ public class SubscriberHandler extends DefaultWebsocketHandler {
                 LOG.warn("send proto failed in: {}", identity, ex);
             }
         } else {
-            if(!AppDataCache.Subscribers.containsKey(identity))
+            if(!AppDataCache.Subscribers.containsKey(identity)){
+                LOG.warn("unknown destination data: {}", identity, JsonUtils.object2json(proto));
                 return;
+            }
+                
             proto.setProto_module(identity);
             byte[] protoPayload = ProtobufUtils.TransforAndConvert(proto);
             for(String userid:AppDataCache.Subscribers.get(identity)) {
@@ -281,7 +282,7 @@ public class SubscriberHandler extends DefaultWebsocketHandler {
         String userId = getUserId(session);
         if(userId == null)
             return;
-        if(notifierUserID.equals(userId))
+        if(userId.equals(notifierUserID))
             notifierUserID = null;
         unRegisterUser(userId);
         String identity = (String) session.getAttributes().get(IDENTITY);
