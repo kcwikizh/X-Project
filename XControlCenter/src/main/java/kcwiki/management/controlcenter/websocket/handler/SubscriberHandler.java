@@ -15,6 +15,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import javax.annotation.PostConstruct;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
@@ -26,6 +31,7 @@ import kcwiki.management.controlcenter.web.controller.entity.AuthVoucher;
 import org.iharu.crypto.aes.AesUtils;
 import kcwiki.management.controlcenter.websocket.entity.ByteArrayContainer;
 import kcwiki.management.controlcenter.websocket.entity.ModuleNotification;
+import kcwiki.management.xtraffic.keepalive.KeepAlive;
 import kcwiki.management.xtraffic.protobuf.ProtobufUtils;
 import org.iharu.auth2.utils.AuthenticationUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -67,6 +73,33 @@ public class SubscriberHandler extends DefaultWebsocketHandler {
     ModuleUtilsService moduleUtilsService;
     @Autowired
     AppConfig appConfig;
+    
+    @PostConstruct
+    public void initMethod()
+    {
+        if (appConfig.isXtraffic_keepalive_enable()) {
+            Runnable keepAliveTask = () -> {
+                byte[] data = ProtobufUtils.TransforAndConvert(WebsocketUtils.PINGMessage());
+                List<WebSocketSession> waitforclean = new ArrayList();
+                USERS.values().forEach(session -> {
+                    try {
+                        if(!sendMessageToUser(session, 
+                                AesUtils.Encrypt(data, 
+                                        ((ByteArrayContainer) session.getAttributes().get(ENCRYPT_KEY)).getArray())))
+                        {
+                            waitforclean.add(session);
+                        }
+                    } catch (BadPaddingException | IllegalBlockSizeException | InvalidKeyException | NoSuchPaddingException | NoSuchAlgorithmException | InvalidAlgorithmParameterException | InvalidKeySpecException ex) {
+                        LOG.warn("send proto failed in: {}", (String) session.getAttributes().get(IDENTITY), ex);
+                    }
+                });
+                waitforclean.forEach(session -> handleClose(session));
+                waitforclean.clear();
+            };
+            KeepAlive.newTask(keepAliveTask, appConfig.getXtraffic_keepalive_period());
+            LOG.info("subscriber handler keepalive task set. period: {}", appConfig.getXtraffic_keepalive_period());
+        }
+    }
     
     @Override
     protected Logger GetImplLogger() {
@@ -166,7 +199,28 @@ public class SubscriberHandler extends DefaultWebsocketHandler {
         
         proto.setProto_sender(getUserId(session));
         if(proto.getProto_type() == WebsocketMessageType.SYSTEM){
-            LOG.info("websocket client {} send system msg: {}", identity, proto.getProto_payload());
+            try {
+                WebsocketSystemProto systemproto = WebsocketUtils.SystemMessageDecoder(proto.getProto_payload());
+                switch(systemproto.getMsg_type()) {
+                    case PING: {
+                        try {
+                            sendMessageToUser(session, 
+                                    AesUtils.Encrypt(ProtobufUtils.TransforAndConvert(WebsocketUtils.PONGMessage()), ((ByteArrayContainer) session.getAttributes().get(ENCRYPT_KEY)).getArray()));
+                        } catch (BadPaddingException | IllegalBlockSizeException | InvalidKeyException | NoSuchPaddingException | NoSuchAlgorithmException | InvalidAlgorithmParameterException | InvalidKeySpecException ex) {
+                            LOG.warn("send proto failed in: {}", identity, ex);
+                        }
+                        break;
+                    }
+                    case PONG: {
+                        break;
+                    }
+                    default: {
+                        LOG.info("websocket client {} send system msg: {} {}", identity, systemproto.getMsg_type(), systemproto.getData());
+                    }
+                }
+            } catch (IOException ex) {
+                LOG.error("decode system payload fdiled {}", proto.getProto_payload(), ex);
+            }
             return;
         } else {
             LOG.info("websocket client {} send non_system msg: {}", identity, JsonUtils.object2json(proto));

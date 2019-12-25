@@ -18,6 +18,10 @@ public class XModuleConfig
     private String xtraffic_url_auth;
     @Value("${myprops.xtraffic.url.subscribe}")
     private String xtraffic_url_subscribe;
+    @Value("${myprops.xtraffic.keepalive.enable}")
+    private boolean xtraffic_keepalive_enable;
+    @Value("${myprops.xtraffic.keepalive.period}")
+    private int xtraffic_keepalive_period;
 
     /**
      * @return the xtraffic_url_publickey
@@ -101,6 +105,34 @@ public class XModuleConfig
      */
     public void setXtraffic_force(boolean xtraffic_force) {
         this.xtraffic_force = xtraffic_force;
+    }
+
+    /**
+     * @return the xtraffic_keepalive_enable
+     */
+    public boolean isXtraffic_keepalive_enable() {
+        return xtraffic_keepalive_enable;
+    }
+
+    /**
+     * @param xtraffic_keepalive_enable the xtraffic_keepalive_enable to set
+     */
+    public void setXtraffic_keepalive_enable(boolean xtraffic_keepalive_enable) {
+        this.xtraffic_keepalive_enable = xtraffic_keepalive_enable;
+    }
+
+    /**
+     * @return the xtraffic_keepalive_period
+     */
+    public int getXtraffic_keepalive_period() {
+        return xtraffic_keepalive_period;
+    }
+
+    /**
+     * @param xtraffic_keepalive_period the xtraffic_keepalive_period to set
+     */
+    public void setXtraffic_keepalive_period(int xtraffic_keepalive_period) {
+        this.xtraffic_keepalive_period = xtraffic_keepalive_period;
     }
   
 }

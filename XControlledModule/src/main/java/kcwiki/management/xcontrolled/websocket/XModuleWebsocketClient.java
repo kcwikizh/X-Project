@@ -14,10 +14,12 @@ import java.util.HashMap;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+import kcwiki.management.xtraffic.keepalive.KeepAlive;
 import org.iharu.crypto.aes.AesUtils;
 import kcwiki.management.xtraffic.protobuf.ProtobufUtils;
 import org.iharu.proto.websocket.WebsocketProto;
 import org.iharu.websocket.client.BaseWebsocketClient;
+import org.iharu.websocket.util.WebsocketUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.socket.BinaryMessage;
@@ -31,10 +33,31 @@ public class XModuleWebsocketClient extends BaseWebsocketClient {
     private static final Logger LOG = LoggerFactory.getLogger(XModuleWebsocketClient.class);
     
     private final byte[] symmetricKey;
+    private KeepAlive keepAliveExecutor = null;
     
     public XModuleWebsocketClient(String name, HashMap headers, String url, byte[] symmetricKey, XModuleWebsocketClientCallBack callback, XModuleReconnectCallBack reconnectCallBack) {
         super(name, headers, url, callback, reconnectCallBack);
         this.symmetricKey = symmetricKey;
+    }
+    
+    public void keepalive(int period){
+        if(keepAliveExecutor != null)
+            return;
+        Runnable keepAliveTask = () -> {
+            if(isShutdown()){
+                shutdown();
+                return;
+            }
+            send(WebsocketUtils.PINGMessage());
+        };
+        keepAliveExecutor = KeepAlive.newTask(keepAliveTask, period);
+        LOG.info("XModuleWebsocketClient: {} keepalive task set. period: {}", name, period);
+    }
+    
+    public void shutdown(){
+        close();
+        if(keepAliveExecutor != null)
+            keepAliveExecutor.forceStopKeepAliveTask();
     }
     
     public boolean send(WebsocketProto payload) {

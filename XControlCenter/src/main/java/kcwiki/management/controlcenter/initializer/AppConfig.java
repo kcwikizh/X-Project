@@ -10,6 +10,10 @@ public class AppConfig
   private String system_root;
   @Value("${myprops.xtraffic.notifier.identity}")
   private String xtraffic_notifier_identity;
+  @Value("${myprops.xtraffic.keepalive.enable}")
+    private boolean xtraffic_keepalive_enable;
+    @Value("${myprops.xtraffic.keepalive.period}")
+    private int xtraffic_keepalive_period;
   @Value("${myprops.global.useproxy}")
   private boolean allow_use_proxy;
   @Value("${myprops.global.proxyhost}")
@@ -341,6 +345,34 @@ public class AppConfig
      */
     public void setXtraffic_notifier_identity(String xtraffic_notifier_identity) {
         this.xtraffic_notifier_identity = xtraffic_notifier_identity;
+    }
+
+    /**
+     * @return the xtraffic_keepalive_enable
+     */
+    public boolean isXtraffic_keepalive_enable() {
+        return xtraffic_keepalive_enable;
+    }
+
+    /**
+     * @param xtraffic_keepalive_enable the xtraffic_keepalive_enable to set
+     */
+    public void setXtraffic_keepalive_enable(boolean xtraffic_keepalive_enable) {
+        this.xtraffic_keepalive_enable = xtraffic_keepalive_enable;
+    }
+
+    /**
+     * @return the xtraffic_keepalive_period
+     */
+    public int getXtraffic_keepalive_period() {
+        return xtraffic_keepalive_period;
+    }
+
+    /**
+     * @param xtraffic_keepalive_period the xtraffic_keepalive_period to set
+     */
+    public void setXtraffic_keepalive_period(int xtraffic_keepalive_period) {
+        this.xtraffic_keepalive_period = xtraffic_keepalive_period;
     }
   
 }

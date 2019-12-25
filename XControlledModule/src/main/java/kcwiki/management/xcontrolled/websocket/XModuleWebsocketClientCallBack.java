@@ -5,6 +5,7 @@
  */
 package kcwiki.management.xcontrolled.websocket;
 
+import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -18,11 +19,14 @@ import org.iharu.crypto.rsa.RSAUtils;
 import kcwiki.management.xtraffic.protobuf.ProtobufUtils;
 import org.iharu.exception.BaseException;
 import org.iharu.proto.websocket.WebsocketProto;
+import org.iharu.proto.websocket.system.WebsocketSystemProto;
+import org.iharu.type.ResultType;
 import org.iharu.type.error.ErrorType;
 import org.iharu.type.websocket.WebsocketMessageType;
 import org.iharu.util.JsonUtils;
 import org.iharu.util.StackTraceUtils;
 import org.iharu.websocket.client.WebsocketClientCallBack;
+import org.iharu.websocket.util.WebsocketUtils;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.socket.BinaryMessage;
 import org.springframework.web.socket.TextMessage;
@@ -59,7 +63,23 @@ public abstract class XModuleWebsocketClientCallBack extends WebsocketClientCall
             WebsocketProto proto = ProtobufUtils.TransforAndConvert(data);
             getImplLogger().info("proto: {}", JsonUtils.object2json(proto));
             if(proto.getProto_type() == WebsocketMessageType.SYSTEM){
-                getImplLogger().info("websocket client {} received system msg: {}", getWebsocketClient().getName(), proto.getProto_payload());
+                try {
+                    WebsocketSystemProto systemproto = WebsocketUtils.SystemMessageDecoder(proto.getProto_payload());
+                    switch(systemproto.getMsg_type()) {
+                        case PING: {
+                            websocketClient.send(WebsocketUtils.PONGMessage());
+                            break;
+                        }
+                        case PONG: {
+                            break;
+                        }
+                        default: {
+                            getImplLogger().info("websocket client {} received system msg: {} {}", getWebsocketClient().getName(), systemproto.getMsg_type(), systemproto.getData());
+                        }
+                    }
+                } catch (IOException ex) {
+                    getImplLogger().error("decode system payload fdiled", ex);
+                }
                 return;
             }
             moduleCallback(proto);

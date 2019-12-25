@@ -8,12 +8,15 @@ package kcwiki.management.xcontrolled.core;
 import com.fasterxml.jackson.core.type.TypeReference;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import javax.annotation.PreDestroy;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -27,6 +30,7 @@ import org.iharu.crypto.rsa.RSAUtils;
 import org.iharu.auth2.utils.AuthenticationUtils;
 import kcwiki.management.xcontrolled.websocket.XModuleWebsocketClient;
 import kcwiki.management.xcontrolled.websocket.XModuleWebsocketClientCallBack;
+import kcwiki.management.xtraffic.keepalive.KeepAlive;
 import org.iharu.crypto.aes.AesUtils;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.iharu.proto.web.WebResponseProto;
@@ -38,6 +42,7 @@ import org.iharu.util.HttpUtils;
 import org.iharu.util.JsonUtils;
 import org.iharu.util.RandomUtils;
 import org.iharu.util.StringUtils;
+import org.iharu.websocket.util.WebsocketUtils;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -129,10 +134,15 @@ public class XModuleController {
         }
         HashMap<String, String> headers = new HashMap();
         headers.put("x-access-token", voucher);
+        if(websocketClient != null)
+            websocketClient.shutdown();
         websocketClient = new XModuleWebsocketClient(getIdentity(), headers, xModuleConfig.getXtraffic_url_subscribe(), symmetricKey, callbackImpl, reconnectCallBack);
         if(websocketClient.connect()){
             callbackImpl.setWebsocketClient(websocketClient);
             AppDataCache.isAppInit = true;
+            if (xModuleConfig.isXtraffic_keepalive_enable()) {
+                websocketClient.keepalive(xModuleConfig.getXtraffic_keepalive_period());
+            }
             return;
         }
         handleConnectFailed();
