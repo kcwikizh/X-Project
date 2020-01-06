@@ -10,8 +10,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.LongAdder;
-import kcwiki.x.enshuhelper.database.entity.UserDataEntity;
-import kcwiki.x.enshuhelper.web.controller.entity.queryresponse.MatchInfo;
+import kcwiki.x.enshuhelper.core.entity.DiscordUserDataBO;
+import kcwiki.x.enshuhelper.database.entity.UserDataDO;
 import org.springframework.context.ApplicationContext;
 
 /**
@@ -28,7 +28,10 @@ public class AppDataCache {
     public static final Map<Integer, String> gameWorlds = new ConcurrentHashMap<>();
     public static final Map<Integer, String> world_Num2Name = new ConcurrentHashMap<>();
     
-    public static final Map<Long, UserDataEntity> matchCache = new ConcurrentHashMap<>();
+    public static final Map<Integer, UserDataDO> matchCache = new ConcurrentHashMap<>();
+    public static final Map<Integer, DiscordUserDataBO> discordMatchCache = new ConcurrentHashMap<>();
+    
+    public static final Map<String, Set<String>> discordAdmins = new ConcurrentHashMap();
     
     public static final Set<String> existTables = new HashSet<>();
     

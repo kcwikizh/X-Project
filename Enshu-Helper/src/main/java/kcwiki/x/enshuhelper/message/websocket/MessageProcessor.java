@@ -7,7 +7,7 @@ package kcwiki.x.enshuhelper.message.websocket;
 
 import java.util.Date;
 import kcwiki.x.enshuhelper.cache.inmem.AppDataCache;
-import kcwiki.x.enshuhelper.database.entity.UserDataEntity;
+import kcwiki.x.enshuhelper.database.entity.UserDataDO;
 import kcwiki.x.enshuhelper.database.service.LogService;
 import kcwiki.x.enshuhelper.database.service.UserInfoService;
 import kcwiki.x.enshuhelper.initializer.AppConfig;
@@ -34,13 +34,13 @@ public class MessageProcessor {
     LogService logService;
     
     public int enshuHelperRegister(UserData userData){
-        long gameid = userData.getMemberid();
+        int gameid = userData.getMemberid();
         String qqgroup = userData.getQqgroup();
-        UserDataEntity userDataEntity = userInfoService.findByGameid(gameid);
+        UserDataDO userDataEntity = userInfoService.findByGameid(gameid);
         if(userDataEntity != null) {
             return 0;
         }
-        userDataEntity = new UserDataEntity();
+        userDataEntity = new UserDataDO();
         userDataEntity.setGameid(gameid);
         userDataEntity.setQq(userData.getQq());
         userDataEntity.setQqgroup(qqgroup);
@@ -60,7 +60,7 @@ public class MessageProcessor {
         long gameid = userData.getMemberid();
         String qqgroup = userData.getQqgroup();
         int rs = -1;
-        UserDataEntity userDataEntity = userInfoService.findByGameid(gameid);
+        UserDataDO userDataEntity = userInfoService.findByGameid(gameid);
         if(userDataEntity != null){
             if(!userDataEntity.getQqgroup().equals(qqgroup)) {
                 LOG.warn("玩家{}在{}群注册，{}群管理员没有删除权限。", gameid, userDataEntity.getQqgroup(), qqgroup);

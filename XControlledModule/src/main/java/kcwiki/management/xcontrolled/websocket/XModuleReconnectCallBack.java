@@ -5,7 +5,6 @@
  */
 package kcwiki.management.xcontrolled.websocket;
 
-import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import kcwiki.management.xcontrolled.core.XModuleController;

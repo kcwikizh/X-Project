@@ -7,12 +7,12 @@ package kcwiki.x.enshuhelper.database.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import kcwiki.x.enshuhelper.database.dao.UserInfoDao;
-import kcwiki.x.enshuhelper.database.entity.UserDataEntity;
+import kcwiki.x.enshuhelper.database.entity.UserDataDO;
 import kcwiki.x.enshuhelper.initializer.AppConfig;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import kcwiki.x.enshuhelper.database.dao.UserInfoDAO;
 
 /**
  *
@@ -25,31 +25,31 @@ public class UserInfoService {
     @Autowired
     private AppConfig appConfigs;
     @Autowired
-    private UserInfoDao userInfoDao;
+    private UserInfoDAO userInfoDAO;
     
-    public UserDataEntity findByGameid(long gameid) {
-        return userInfoDao.selectOne(appConfigs.getDatabase_tables_userdata(), gameid);
+    public UserDataDO findByGameid(long gameid) {
+        return userInfoDAO.selectOne(appConfigs.getDatabase_tables_userdata(), gameid);
     }
     
-    public List<UserDataEntity> findByGameids(List<Long> gameids) {
+    public List<UserDataDO> findByGameids(List<Integer> gameids) {
         if(gameids.isEmpty())
             return new ArrayList<>();
-        return userInfoDao.selectBatch(appConfigs.getDatabase_tables_userdata(), gameids);
+        return userInfoDAO.selectBatch(appConfigs.getDatabase_tables_userdata(), gameids);
     }
     
-    public int addUser(UserDataEntity userDataEntity) {
-        return userInfoDao.insertOne(appConfigs.getDatabase_tables_userdata(), userDataEntity);
+    public int addUser(UserDataDO userDataEntity) {
+        return userInfoDAO.insertOne(appConfigs.getDatabase_tables_userdata(), userDataEntity);
     }
     
-    public int updateUser(UserDataEntity userDataEntity) {
-        return userInfoDao.udpateOne(appConfigs.getDatabase_tables_userdata(), userDataEntity);
+    public int updateUser(UserDataDO userDataEntity) {
+        return userInfoDAO.udpateOne(appConfigs.getDatabase_tables_userdata(), userDataEntity);
     }
     
-    public int updateUsers(List<UserDataEntity> list) {
-        return userInfoDao.udpateBatch(appConfigs.getDatabase_tables_userdata(), list);
+    public int updateUsers(List<UserDataDO> list) {
+        return userInfoDAO.udpateBatch(appConfigs.getDatabase_tables_userdata(), list);
     }
     
     public int deleteUser(long gameid) {
-        return userInfoDao.deleteOne(appConfigs.getDatabase_tables_userdata(), gameid);
+        return userInfoDAO.deleteOne(appConfigs.getDatabase_tables_userdata(), gameid);
     }
 }

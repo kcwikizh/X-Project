@@ -10,7 +10,7 @@ package kcwiki.x.enshuhelper.message.websocket.entity;
  * @author iHaru
  */
 public class UserData {
-    private long memberid;
+    private int memberid;
     private String teitoku;
     private String qq;
     private String qqgroup;
@@ -75,14 +75,14 @@ public class UserData {
     /**
      * @return the memberid
      */
-    public long getMemberid() {
+    public int getMemberid() {
         return memberid;
     }
 
     /**
      * @param memberid the memberid to set
      */
-    public void setMemberid(long memberid) {
+    public void setMemberid(int memberid) {
         this.memberid = memberid;
     }
 }

@@ -20,10 +20,10 @@ import javax.annotation.PreDestroy;
 import kcwiki.x.enshuhelper.cache.inmem.AppDataCache;
 import kcwiki.x.enshuhelper.cache.inmem.RuntimeValue;
 import kcwiki.x.enshuhelper.constant.ConstantValue;
-import kcwiki.x.enshuhelper.database.dao.UtilsDao;
-import kcwiki.x.enshuhelper.database.entity.SystemParamEntity;
+import kcwiki.x.enshuhelper.database.entity.SystemParamDO;
 import kcwiki.x.enshuhelper.database.service.SystemInfoService;
 import kcwiki.x.enshuhelper.database.service.UtilsService;
+import kcwiki.x.enshuhelper.discord.DiscordBotController;
 import static org.iharu.constant.ConstantValue.LINESEPARATOR;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +35,7 @@ import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.core5.http.HttpEntity;
 import org.iharu.util.JsonUtils;
+import kcwiki.x.enshuhelper.database.dao.UtilsDAO;
 
 /**
  *
@@ -47,7 +48,7 @@ public class AppInitializer {
     @Autowired
     AppConfig appConfig;
     @Autowired
-    UtilsDao utilsDao;
+    UtilsDAO utilsDao;
     @Autowired
     UtilsService utilsService;
     @Autowired
@@ -56,6 +57,8 @@ public class AppInitializer {
     HttpClientConfig httpClientConfig;
     @Autowired 
     RuntimeValue RUNTIME;
+    @Autowired
+    DiscordBotController discordBotController;
     
     boolean isInit = false;
     
@@ -80,6 +83,7 @@ public class AppInitializer {
         checkDatabase();
         getKcServers();
         createFolder();
+        discordBotController.start();
         AppDataCache.isReadyReceive = true;
         AppDataCache.isAppInit = true;
         long endTime = System.currentTimeMillis();
@@ -127,18 +131,18 @@ public class AppInitializer {
         if(!utilsService.existTable(tbname)) {
             utilsService.createSystemParamsTable(tbname);
             Date date = new Date();
-            SystemParamEntity systemParamEntity = new SystemParamEntity();
+            SystemParamDO systemParamEntity = new SystemParamDO();
             systemParamEntity.setName("queryCount");
             systemParamEntity.setValue("0");
             systemParamEntity.setLastmodified(date);
             systemInfoService.insertOne(systemParamEntity);
-            systemParamEntity = new SystemParamEntity();
+            systemParamEntity = new SystemParamDO();
             systemParamEntity.setName("matchCount");
             systemParamEntity.setValue("0");
             systemParamEntity.setLastmodified(date);
             systemInfoService.insertOne(systemParamEntity);
         } else {
-            SystemParamEntity systemParamEntity = systemInfoService.findByName("queryCount");
+            SystemParamDO systemParamEntity = systemInfoService.findByName("queryCount");
             if(systemParamEntity != null) {
                 AppDataCache.queryCount.add(Long.valueOf(systemParamEntity.getValue()));
             }
@@ -151,7 +155,8 @@ public class AppInitializer {
         if(!utilsService.existTable(tbname)) {
             utilsService.createUserDataTable(tbname);
         }
-        
+        utilsService.createDiscordAdminDataTable();
+        utilsService.createDiscordUserDataTable();
     }
     
     private void createFolder(){

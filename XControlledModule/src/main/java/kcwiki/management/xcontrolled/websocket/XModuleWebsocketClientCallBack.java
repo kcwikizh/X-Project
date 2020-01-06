@@ -61,7 +61,6 @@ public abstract class XModuleWebsocketClientCallBack extends WebsocketClientCall
             if(data == null)
                 return;
             WebsocketProto proto = ProtobufUtils.TransforAndConvert(data);
-            getImplLogger().info("proto: {}", JsonUtils.object2json(proto));
             if(proto.getProto_type() == WebsocketMessageType.SYSTEM){
                 try {
                     WebsocketSystemProto systemproto = WebsocketUtils.SystemMessageDecoder(proto.getProto_payload());
@@ -74,7 +73,7 @@ public abstract class XModuleWebsocketClientCallBack extends WebsocketClientCall
                             break;
                         }
                         default: {
-                            getImplLogger().info("websocket client {} received system msg: {} {}", getWebsocketClient().getName(), systemproto.getMsg_type(), systemproto.getData());
+                            getImplLogger().info("websocket client {} received system msg: {} {}", websocketClient.getName(), systemproto.getMsg_type(), systemproto.getData());
                         }
                     }
                 } catch (IOException ex) {
@@ -82,6 +81,7 @@ public abstract class XModuleWebsocketClientCallBack extends WebsocketClientCall
                 }
                 return;
             }
+            getImplLogger().debug("proto: {}", JsonUtils.object2json(proto));
             moduleCallback(proto);
         } catch (NoSuchPaddingException | NoSuchAlgorithmException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException | InvalidAlgorithmParameterException | InvalidKeySpecException ex) {
             getImplLogger().warn("decrypt failed", ex);

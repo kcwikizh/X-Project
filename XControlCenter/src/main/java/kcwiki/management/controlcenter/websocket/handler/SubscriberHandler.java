@@ -175,22 +175,22 @@ public class SubscriberHandler extends DefaultWebsocketHandler {
         WebsocketProto proto = null;
         byte[] key = null;
         String identity = (String) session.getAttributes().get(IDENTITY);
-        LOG.info("receive from: {}", identity);
         if(!message.getPayload().hasArray()){
             LOG.warn("Payload array is empty");
             return;
         }
         try {
             if(!session.getAttributes().containsKey(ENCRYPT_KEY)){
-                LOG.error("ByteArrayContainer property not exist");
+                LOG.error("{} ByteArrayContainer property not exist", identity);
+                handleClose(session);
                 return;
             }else if((key = ((ByteArrayContainer) session.getAttributes().get(ENCRYPT_KEY)).getArray()) == null){
-                LOG.error("ENCRYPT_KEY bytes is empty");
+                LOG.error("{} ENCRYPT_KEY bytes is empty", identity);
                 return;
             }
             proto = ProtobufUtils.TransforAndConvert(AesUtils.Decrypt(message.getPayload().array(), key));
         } catch (NoSuchPaddingException | NoSuchAlgorithmException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException | InvalidAlgorithmParameterException | InvalidKeySpecException ex) {
-            LOG.warn("decrypt failed", ex);
+            LOG.warn("websocket client {} decrypt failed", identity, ex);
             return;
         }
         if(proto == null){
@@ -223,7 +223,7 @@ public class SubscriberHandler extends DefaultWebsocketHandler {
             }
             return;
         } else {
-            LOG.info("websocket client {} send non_system msg: {}", identity, JsonUtils.object2json(proto));
+            LOG.info("receive from {} non_system msg: {}", identity, proto.getProto_payload());
         }
         
         if (!StringUtils.isNullOrWhiteSpace(proto.getProto_module())) {
@@ -351,8 +351,9 @@ public class SubscriberHandler extends DefaultWebsocketHandler {
             if(session.isOpen())
                 session.close();
         } catch (IOException ex) {
-            GetImplLogger().error("handleClose: {}", ExceptionUtils.getStackTrace(ex));
+            GetImplLogger().error("{} handleClose failed", identity, ex);
         }
+        GetImplLogger().info("{} disconnected", identity);
     }
     
 }

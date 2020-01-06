@@ -137,8 +137,8 @@ public class XModuleController {
         if(websocketClient != null)
             websocketClient.shutdown();
         websocketClient = new XModuleWebsocketClient(getIdentity(), headers, xModuleConfig.getXtraffic_url_subscribe(), symmetricKey, callbackImpl, reconnectCallBack);
+        callbackImpl.setWebsocketClient(websocketClient);
         if(websocketClient.connect()){
-            callbackImpl.setWebsocketClient(websocketClient);
             AppDataCache.isAppInit = true;
             if (xModuleConfig.isXtraffic_keepalive_enable()) {
                 websocketClient.keepalive(xModuleConfig.getXtraffic_keepalive_period());

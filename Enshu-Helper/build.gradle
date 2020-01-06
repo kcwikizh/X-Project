@@ -7,13 +7,19 @@ apply plugin: 'io.spring.dependency-management'
 version = '1.0.0'
 
 bootJar {
-    baseName = 'enshu-helper'
+    baseName = 'ehshu-assistant'
     classifier = 'xproject'
+}
+
+repositories {
+    mavenCentral()
+    jcenter()
 }
 
 //添加依赖
 dependencies {
     compile "org.iharu.bootstrap:SpringBoot"
+    compile "org.iharu.component:iharu-component-discord-bot"
     compile project(':XControlledModule')
     
     def $springBootVersion = '2.1.5.RELEASE'

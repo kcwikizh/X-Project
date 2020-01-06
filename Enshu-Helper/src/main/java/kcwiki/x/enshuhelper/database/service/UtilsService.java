@@ -5,11 +5,11 @@
  */
 package kcwiki.x.enshuhelper.database.service;
 
-import kcwiki.x.enshuhelper.database.dao.UtilsDao;
 import kcwiki.x.enshuhelper.initializer.AppConfig;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import kcwiki.x.enshuhelper.database.dao.UtilsDAO;
 
 /**
  *
@@ -22,31 +22,41 @@ public class UtilsService {
     @Autowired
     private AppConfig appConfig;
     @Autowired
-    private UtilsDao utilsDao;
+    private UtilsDAO utilsDAO;
     
     
     public boolean createSystemLogTable(String tablename) {
-        utilsDao.createSystemLogTable(tablename);
+        utilsDAO.createSystemLogTable(tablename);
         return addLog(tablename);
     }
     
     public boolean createSystemParamsTable(String tablename) {
-        utilsDao.createSystemParamsTable(tablename);
+        utilsDAO.createSystemParamsTable(tablename);
         return addLog(tablename);
     }
     
     public boolean createUserDataTable(String tablename) {
-        utilsDao.createUserDataTable(tablename);
+        utilsDAO.createUserDataTable(tablename);
         return addLog(tablename);
+    }
+    
+    public boolean createDiscordUserDataTable() {
+        utilsDAO.createDiscordUserDataTable();
+        return addLog("data_user_discord");
+    }
+    
+    public boolean createDiscordAdminDataTable() {
+        utilsDAO.createDiscordAdminDataTable();
+        return addLog("data_admin_discord");
     }
     
     public void truncateTable(String tablename) {
         if(existTable(tablename))
-            utilsDao.truncateTable(tablename);
+            utilsDAO.truncateTable(tablename);
     }
     
     public boolean existTable(String tablename) {
-        int result = utilsDao.existTable(appConfig.getDatabase_name(), tablename);
+        int result = utilsDAO.existTable(appConfig.getDatabase_name(), tablename);
         return result>0;
     }
     

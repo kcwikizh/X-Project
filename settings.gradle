@@ -7,6 +7,7 @@ include 'KcwikiDB','KanColleScanner','Enshu-Helper','RetweetServer'
 include 'XControlCenter','XControlledModule','XTrafficModule'
 
 includeBuild '../Haru-Framework'
+includeBuild '../iharu-component-discord-bot'
 
 
 def subDirs = rootDir.listFiles(new FileFilter() {

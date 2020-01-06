@@ -6,7 +6,6 @@
 package kcwiki.x.enshuhelper.database.service;
 
 import java.util.Date;
-import kcwiki.x.enshuhelper.database.dao.LogDao;
 import kcwiki.x.enshuhelper.database.entity.log.LogEntity;
 import org.iharu.type.MsgType;
 import kcwiki.x.enshuhelper.initializer.AppConfig;
@@ -15,6 +14,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.iharu.exception.BaseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import kcwiki.x.enshuhelper.database.dao.LogDAO;
 
 /**
  *
@@ -26,14 +26,14 @@ public class LogService {
     @Autowired
     private AppConfig appConfig;
     @Autowired
-    private LogDao logDao;
+    private LogDAO logDAO;
     
     public boolean addLog(MsgType msgTypes, String msg) {
         LogEntity logEntity = new LogEntity();
         logEntity.setType(msgTypes);
         logEntity.setTimestamp(new Date());
         logEntity.setMessage(msg);
-        logDao.addLogMsg(appConfig.getDatabase_tables_systemlog(), logEntity);
+        logDAO.addLogMsg(appConfig.getDatabase_tables_systemlog(), logEntity);
         return true;
     }
     
@@ -55,7 +55,7 @@ public class LogService {
         }else {
             logEntity.setException(ExceptionUtils.getStackTrace(ex));
         }
-        logDao.addLogMsg(appConfig.getDatabase_tables_systemlog(), logEntity);
+        logDAO.addLogMsg(appConfig.getDatabase_tables_systemlog(), logEntity);
         return true;
     }
     

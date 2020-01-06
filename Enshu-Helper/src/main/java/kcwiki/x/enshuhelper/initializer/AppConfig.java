@@ -25,6 +25,14 @@ public class AppConfig {
     private int proxy_port;
     @Value("${myprops.global.debug}")
     private boolean debug;
+    @Value("${myprops.discord.token}")
+    private String discord_token;
+    @Value("${myprops.discord.guildId}")
+    private long discord_guildId;
+    @Value("${myprops.discord.channelId.rattingwarning}")
+    private long discord_channelId_rattingwarning;
+    @Value("${myprops.discord.channelId.alliance}")
+    private long discord_channelId_alliance;
     @Value("${myprops.global.folder.webroot}")
     private String folder_webroot;
     @Value("${myprops.global.folder.privatedata}")
@@ -303,4 +311,61 @@ public class AppConfig {
     public void setFolder_webroot(String folder_webroot) {
         this.folder_webroot = folder_webroot;
     }
+
+    /**
+     * @return the discord_token
+     */
+    public String getDiscord_token() {
+        return discord_token;
+    }
+
+    /**
+     * @param discord_token the discord_token to set
+     */
+    public void setDiscord_token(String discord_token) {
+        this.discord_token = discord_token;
+    }
+
+    /**
+     * @return the discord_guildId
+     */
+    public long getDiscord_guildId() {
+        return discord_guildId;
+    }
+
+    /**
+     * @param discord_guildId the discord_guildId to set
+     */
+    public void setDiscord_guildId(long discord_guildId) {
+        this.discord_guildId = discord_guildId;
+    }
+
+    /**
+     * @return the discord_channelId_rattingwarning
+     */
+    public long getDiscord_channelId_rattingwarning() {
+        return discord_channelId_rattingwarning;
+    }
+
+    /**
+     * @param discord_channelId_rattingwarning the discord_channelId_rattingwarning to set
+     */
+    public void setDiscord_channelId_rattingwarning(long discord_channelId_rattingwarning) {
+        this.discord_channelId_rattingwarning = discord_channelId_rattingwarning;
+    }
+
+    /**
+     * @return the discord_channelId_alliance
+     */
+    public long getDiscord_channelId_alliance() {
+        return discord_channelId_alliance;
+    }
+
+    /**
+     * @param discord_channelId_alliance the discord_channelId_alliance to set
+     */
+    public void setDiscord_channelId_alliance(long discord_channelId_alliance) {
+        this.discord_channelId_alliance = discord_channelId_alliance;
+    }
+    
 }
