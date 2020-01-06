@@ -29,11 +29,15 @@ public class Api extends BaseController {
     
     @GetMapping("/version")
     public WebResponseProto version() {
+        if(AppDataCache.API_RESPONSE_CACHE.containsKey("/api/version"))
+            return AppDataCache.API_RESPONSE_CACHE.get("/api/version");
         List<VersionDTO> list = new ArrayList();
         AppDataCache.API_DATA_CACHE.values().forEach(data -> {
             list.add(new VersionDTO(data.getDataType(), data.getHash(), data.getTimestamp()));
         });
-        return GenResponse(BaseHttpStatus.SUCCESS, list);
+        WebResponseProto proto = GenResponse(BaseHttpStatus.SUCCESS, list);
+        AppDataCache.API_RESPONSE_CACHE.put("/api/version", proto);
+        return proto;
     }
     
 }
