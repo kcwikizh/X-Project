@@ -11,7 +11,9 @@ package kcwiki.akashi.web.entity.type;
  */
 public enum DataType {
     SHIP("ship"),
+    SLOTITEM("slotitem"),
     ;
+    
     private String name;
     
     DataType(String name){

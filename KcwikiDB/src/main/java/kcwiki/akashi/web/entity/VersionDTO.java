@@ -15,6 +15,15 @@ public class VersionDTO {
     private DataType type;
     private String hash;
     private long timestamp;
+    
+    public VersionDTO(){}
+    
+    public VersionDTO(DataType type, String hash, long timestamp){
+        this.type = type;
+        this.hash = hash;
+        this.timestamp = timestamp;
+    }
+    
 
     /**
      * @return the type

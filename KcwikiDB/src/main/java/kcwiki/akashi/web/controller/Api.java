@@ -7,8 +7,10 @@ package kcwiki.akashi.web.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import kcwiki.akashi.cache.inmem.AppDataCache;
 import kcwiki.akashi.web.entity.VersionDTO;
 import org.iharu.proto.web.WebResponseProto;
+import org.iharu.type.BaseHttpStatus;
 import org.iharu.web.BaseController;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -27,8 +29,11 @@ public class Api extends BaseController {
     
     @GetMapping("/version")
     public WebResponseProto version() {
-        List<String> list = new ArrayList();
-        return new WebResponseProto();
+        List<VersionDTO> list = new ArrayList();
+        AppDataCache.API_DATA_CACHE.values().forEach(data -> {
+            list.add(new VersionDTO(data.getDataType(), data.getHash(), data.getTimestamp()));
+        });
+        return GenResponse(BaseHttpStatus.SUCCESS, list);
     }
     
 }
