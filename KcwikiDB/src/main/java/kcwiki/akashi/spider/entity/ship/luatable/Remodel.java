@@ -5,6 +5,7 @@
  */
 package kcwiki.akashi.spider.entity.ship.luatable;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -12,18 +13,21 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @author iHaru
  */
 public class Remodel {
-    @JsonProperty("等级")
+    @JsonAlias("等级")
     private int level;
-    @JsonProperty("弹药")
+    @JsonAlias("弹药")
     private int ammo;
-    @JsonProperty("钢材")
+    @JsonAlias("钢材")
     private int steel;
-    @JsonProperty("改造前")
+    @JsonAlias("改造前")
+    @JsonProperty(value= "wiki_id_beford")
     private String wikiIdBefore;
-    @JsonProperty("改造后")
+    @JsonAlias("改造后")
+    @JsonProperty(value= "wiki_id_after")
     private String wikiIdAfter;
-    @JsonProperty("图纸")
-    private String extraItems;
+    @JsonAlias("图纸")
+    @JsonProperty(value= "extra_needs")
+    private String extraNeeds;
 
     /**
      * @return the level
@@ -96,17 +100,17 @@ public class Remodel {
     }
 
     /**
-     * @return the extraItems
+     * @return the extraNeeds
      */
-    public String getExtraItems() {
-        return extraItems;
+    public String getExtraNeeds() {
+        return extraNeeds;
     }
 
     /**
-     * @param extraItems the extraItems to set
+     * @param extraNeeds the extraNeeds to set
      */
-    public void setExtraItems(String extraItems) {
-        this.extraItems = extraItems;
+    public void setExtraNeeds(String extraNeeds) {
+        this.extraNeeds = extraNeeds;
     }
     
 }

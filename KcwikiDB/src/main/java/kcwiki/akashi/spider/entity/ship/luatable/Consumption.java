@@ -5,16 +5,16 @@
  */
 package kcwiki.akashi.spider.entity.ship.luatable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonAlias;
 
 /**
  *
  * @author iHaru
  */
 public class Consumption {
-    @JsonProperty("燃料")
+    @JsonAlias("燃料")
     private int fuel;
-    @JsonProperty("弹药")
+    @JsonAlias("弹药")
     private int ammo;
 
     /**

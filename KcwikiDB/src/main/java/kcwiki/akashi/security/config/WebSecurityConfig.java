@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package kcwiki.x.enshuhelper.security.config;
+package kcwiki.akashi.security.config;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +27,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED).and()
             .authorizeRequests().anyRequest().permitAll().and()
 //                .csrf().csrfTokenRepository(new CookieCsrfTokenRepository()).and()   //API服务器开启csrf验证会导致接口403错误
-            .csrf().ignoringAntMatchers("/actuator/**", "/enshuhelper/**")
+            .csrf().ignoringAntMatchers("/actuator/**", "/api/**")
 //            .csrf().disable()
             ;
     }

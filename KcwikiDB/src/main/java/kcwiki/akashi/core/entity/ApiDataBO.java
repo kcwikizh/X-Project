@@ -5,7 +5,11 @@
  */
 package kcwiki.akashi.core.entity;
 
+import com.google.common.hash.Hashing;
+import java.nio.charset.StandardCharsets;
+import java.util.Date;
 import kcwiki.akashi.web.entity.type.DataType;
+import org.iharu.util.JsonUtils;
 
 /**
  *
@@ -16,7 +20,18 @@ public class ApiDataBO<T> {
     private long timestamp;
     private String hash;
     private T data;
-
+    
+    public ApiDataBO() {}
+    
+    public ApiDataBO(DataType dataType, T data) {
+        this.dataType = dataType;
+        this.data = data;
+        this.timestamp = new Date().getTime();
+        this.hash = Hashing.sha256()
+                        .hashString(JsonUtils.object2json(data), StandardCharsets.UTF_8)
+                        .toString();
+    }
+    
     /**
      * @return the timestamp
      */

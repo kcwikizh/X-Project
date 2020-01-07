@@ -5,50 +5,50 @@
  */
 package kcwiki.akashi.core.entity;
 
-import kcwiki.akashi.spider.entity.ship.kcdata.KcDataShipDO;
-import kcwiki.akashi.spider.entity.ship.luatable.LuaShipDO;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import kcwiki.akashi.spider.entity.slotitem.kcdata.KcDataSlotitemDO;
+import kcwiki.akashi.spider.entity.slotitem.luatable.LuaSlotitemDO;
 
 /**
  *
  * @author iHaru
  */
-public class ShipBO extends LuaShipDO {
+public class SlotitemBO extends LuaSlotitemDO {
+    @JsonProperty(value= "wiki_id")
     private String wikiId;
-    private String voiceIntroduction;
-    private String voiceInfo;
+    @JsonProperty(value= "sort_no")
+    private int sort;
+    @JsonProperty(value= "item_info")
+    private String itemInfo;
 
-    public ShipBO(){}
+    public SlotitemBO(){}
     
-    public ShipBO(LuaShipDO luaData, KcDataShipDO kcData){
-        this.wikiId = kcData.getWikiId();
-        this.voiceIntroduction = kcData.getGetMsg();
-        this.voiceInfo = kcData.getBookShipInfo();
+    public SlotitemBO(LuaSlotitemDO luaData, KcDataSlotitemDO kcData){
+        this.itemInfo = kcData.getInfo();
+        this.sort = kcData.getSort();
         if(luaData != null){
             this.id = luaData.getId();
-            this.sort = luaData.getSort();
             this.nameJp = luaData.getNameJp();
-            this.yomi = luaData.getYomi();
             this.nameZh = luaData.getNameZh();
-            this.stype = luaData.getStype();
-            this.shipClass = luaData.getShipClass();
-            this.statistics = luaData.getStatistics();
-            this.equipment = luaData.getEquipment();
-            this.consumption = luaData.getConsumption();
+            this.type = luaData.getType();
+            this.rarity = luaData.getRarity();
             this.availability = luaData.getAvailability();
-            this.modernization = luaData.getModernization();
+            this.statistics = luaData.getStatistics();
             this.scrap = luaData.getScrap();
-            this.remodel = luaData.getRemodel();
-            this.artist = luaData.getArtist();
-            this.seiyuu = luaData.getSeiyuu();
+            this.refittable = luaData.getRefittable();
+            this.notes = luaData.getNotes();
+            this.bonuses = luaData.getBonuses();
+            this.improvement = luaData.getImprovement();
             this.wikiJp = luaData.getNameJp();
             this.wikiEn = luaData.getWikiEn();
         } else {
             this.id = kcData.getId();
             this.sort = kcData.getSort();
             this.nameJp = kcData.getName();
-            this.yomi = kcData.getYomi();
             this.nameZh = kcData.getChineseName();
-            this.stype = kcData.getStype();
+            kcData.getType().remove(kcData.getType().size()-1);
+            this.type = kcData.getType();
+            this.rarity = String.format("%"+kcData.getRare()+"s", "").replace(' ', '☆');
         }
     }
 
@@ -67,31 +67,31 @@ public class ShipBO extends LuaShipDO {
     }
 
     /**
-     * @return the voiceIntroduction
+     * @return the sort
      */
-    public String getVoiceIntroduction() {
-        return voiceIntroduction;
+    public int getSort() {
+        return sort;
     }
 
     /**
-     * @param voiceIntroduction the voiceIntroduction to set
+     * @param sort the sort to set
      */
-    public void setVoiceIntroduction(String voiceIntroduction) {
-        this.voiceIntroduction = voiceIntroduction;
+    public void setSort(int sort) {
+        this.sort = sort;
     }
 
     /**
-     * @return the voiceInfo
+     * @return the itemInfo
      */
-    public String getVoiceInfo() {
-        return voiceInfo;
+    public String getItemInfo() {
+        return itemInfo;
     }
 
     /**
-     * @param voiceInfo the voiceInfo to set
+     * @param itemInfo the itemInfo to set
      */
-    public void setVoiceInfo(String voiceInfo) {
-        this.voiceInfo = voiceInfo;
+    public void setItemInfo(String itemInfo) {
+        this.itemInfo = itemInfo;
     }
-    
+
 }

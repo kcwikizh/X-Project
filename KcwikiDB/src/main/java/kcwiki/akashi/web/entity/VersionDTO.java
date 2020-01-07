@@ -15,11 +15,13 @@ public class VersionDTO {
     private DataType type;
     private String hash;
     private long timestamp;
+    private String url;
     
     public VersionDTO(){}
     
     public VersionDTO(DataType type, String hash, long timestamp){
         this.type = type;
+        this.url = type.getUrl();
         this.hash = hash;
         this.timestamp = timestamp;
     }
@@ -65,6 +67,20 @@ public class VersionDTO {
      */
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
+    }
+
+    /**
+     * @return the url
+     */
+    public String getUrl() {
+        return url;
+    }
+
+    /**
+     * @param url the url to set
+     */
+    public void setUrl(String url) {
+        this.url = url;
     }
     
 }

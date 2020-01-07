@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package kcwiki.x.enshuhelper.initializer;
+package kcwiki.akashi.initializer;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -13,7 +13,6 @@ import org.springframework.context.annotation.Configuration;
  * @author iHaru
  */
 @Configuration
-//@PropertySource(value={"classpath:configuration/appconfig/appconfig.properties"})
 public class AppConfig {
     @Value("${myprops.application.root}")
     private String application_root;
@@ -25,14 +24,6 @@ public class AppConfig {
     private int proxy_port;
     @Value("${myprops.global.debug}")
     private boolean debug;
-    @Value("${myprops.discord.token}")
-    private String discord_token;
-    @Value("${myprops.discord.guildId}")
-    private long discord_guildId;
-    @Value("${myprops.discord.channelId.rattingwarning}")
-    private long discord_channelId_rattingwarning;
-    @Value("${myprops.discord.channelId.alliance}")
-    private long discord_channelId_alliance;
     @Value("${myprops.global.folder.webroot}")
     private String folder_webroot;
     @Value("${myprops.global.folder.privatedata}")
@@ -43,14 +34,6 @@ public class AppConfig {
     private String folder_workspace;
     @Value("${myprops.global.kcwiki.api.servers}")
     private String kcwiki_api_servers;
-    @Value("${myprops.database.name}")
-    private String database_name;
-    @Value("${myprops.database.tables.userdata}")
-    private String database_tables_userdata;
-    @Value("${myprops.database.tables.systemparams}")
-    private String database_tables_systemparams;
-    @Value("${myprops.database.tables.systemlog}")
-    private String database_tables_systemlog;
     @Value("${myprops.mail.from}")
     private String mail_sender;
     @Value("${myprops.mail.to}")
@@ -173,62 +156,6 @@ public class AppConfig {
     }
 
     /**
-     * @return the database_name
-     */
-    public String getDatabase_name() {
-        return database_name;
-    }
-
-    /**
-     * @param database_name the database_name to set
-     */
-    public void setDatabase_name(String database_name) {
-        this.database_name = database_name;
-    }
-
-    /**
-     * @return the database_tables_userdata
-     */
-    public String getDatabase_tables_userdata() {
-        return database_tables_userdata;
-    }
-
-    /**
-     * @param database_tables_userdata the database_tables_userdata to set
-     */
-    public void setDatabase_tables_userdata(String database_tables_userdata) {
-        this.database_tables_userdata = database_tables_userdata;
-    }
-
-    /**
-     * @return the database_tables_systemparams
-     */
-    public String getDatabase_tables_systemparams() {
-        return database_tables_systemparams;
-    }
-
-    /**
-     * @param database_tables_systemparams the database_tables_systemparams to set
-     */
-    public void setDatabase_tables_systemparams(String database_tables_systemparams) {
-        this.database_tables_systemparams = database_tables_systemparams;
-    }
-
-    /**
-     * @return the database_tables_systemlog
-     */
-    public String getDatabase_tables_systemlog() {
-        return database_tables_systemlog;
-    }
-
-    /**
-     * @param database_tables_systemlog the database_tables_systemlog to set
-     */
-    public void setDatabase_tables_systemlog(String database_tables_systemlog) {
-        this.database_tables_systemlog = database_tables_systemlog;
-    }
-
-    /**
      * @return the mail_sender
      */
     public String getMail_sender() {
@@ -310,62 +237,6 @@ public class AppConfig {
      */
     public void setFolder_webroot(String folder_webroot) {
         this.folder_webroot = folder_webroot;
-    }
-
-    /**
-     * @return the discord_token
-     */
-    public String getDiscord_token() {
-        return discord_token;
-    }
-
-    /**
-     * @param discord_token the discord_token to set
-     */
-    public void setDiscord_token(String discord_token) {
-        this.discord_token = discord_token;
-    }
-
-    /**
-     * @return the discord_guildId
-     */
-    public long getDiscord_guildId() {
-        return discord_guildId;
-    }
-
-    /**
-     * @param discord_guildId the discord_guildId to set
-     */
-    public void setDiscord_guildId(long discord_guildId) {
-        this.discord_guildId = discord_guildId;
-    }
-
-    /**
-     * @return the discord_channelId_rattingwarning
-     */
-    public long getDiscord_channelId_rattingwarning() {
-        return discord_channelId_rattingwarning;
-    }
-
-    /**
-     * @param discord_channelId_rattingwarning the discord_channelId_rattingwarning to set
-     */
-    public void setDiscord_channelId_rattingwarning(long discord_channelId_rattingwarning) {
-        this.discord_channelId_rattingwarning = discord_channelId_rattingwarning;
-    }
-
-    /**
-     * @return the discord_channelId_alliance
-     */
-    public long getDiscord_channelId_alliance() {
-        return discord_channelId_alliance;
-    }
-
-    /**
-     * @param discord_channelId_alliance the discord_channelId_alliance to set
-     */
-    public void setDiscord_channelId_alliance(long discord_channelId_alliance) {
-        this.discord_channelId_alliance = discord_channelId_alliance;
     }
     
 }

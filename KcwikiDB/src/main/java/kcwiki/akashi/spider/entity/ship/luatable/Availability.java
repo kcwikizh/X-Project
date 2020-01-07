@@ -5,20 +5,20 @@
  */
 package kcwiki.akashi.spider.entity.ship.luatable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonAlias;
 
 /**
  *
  * @author iHaru
  */
 public class Availability {
-    @JsonProperty("掉落")
+    @JsonAlias("掉落")
     private int drop;
-    @JsonProperty("改造")
-    private int implementation;
-    @JsonProperty("建造")
+    @JsonAlias("改造")
+    private int remodel;
+    @JsonAlias("建造")
     private int construction;
-    @JsonProperty("时间")
+    @JsonAlias("时间")
     private int time;
 
     /**
@@ -33,20 +33,6 @@ public class Availability {
      */
     public void setDrop(int drop) {
         this.drop = drop;
-    }
-
-    /**
-     * @return the implementation
-     */
-    public int getImplementation() {
-        return implementation;
-    }
-
-    /**
-     * @param implementation the implementation to set
-     */
-    public void setImplementation(int implementation) {
-        this.implementation = implementation;
     }
 
     /**
@@ -75,5 +61,19 @@ public class Availability {
      */
     public void setTime(int time) {
         this.time = time;
+    }
+
+    /**
+     * @return the remodel
+     */
+    public int getRemodel() {
+        return remodel;
+    }
+
+    /**
+     * @param remodel the remodel to set
+     */
+    public void setRemodel(int remodel) {
+        this.remodel = remodel;
     }
 }

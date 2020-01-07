@@ -5,6 +5,7 @@
  */
 package kcwiki.akashi.spider.entity.ship.luatable;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
@@ -13,41 +14,48 @@ import java.util.List;
  * @author iHaru
  */
 public class LuaShipDO {
-    @JsonProperty("ID")
+    @JsonProperty(value= "id")
+    @JsonAlias("ID")
     protected int id;
-    @JsonProperty("图鉴号")
+    @JsonProperty(value= "sort_no")	
+    @JsonAlias("图鉴号")
     protected int sort;
-    @JsonProperty("日文名")
+    @JsonProperty(value= "name_jp")
+    @JsonAlias("日文名")
     protected String nameJp;
-    @JsonProperty("假名")
+    @JsonAlias("假名")
     protected String yomi;
-    @JsonProperty("中文名")
+    @JsonProperty(value= "name_zh")
+    @JsonAlias("中文名")
     protected String nameZh;
-    @JsonProperty("舰种")
+    @JsonAlias("舰种")
     protected int stype;
-    @JsonProperty("级别")
+    @JsonProperty(value= "ship_class")
+    @JsonAlias("级别")
     protected List<Object> shipClass;
-    @JsonProperty("数据")
+    @JsonAlias("数据")
     protected Statistics statistics;
-    @JsonProperty("装备")
+    @JsonAlias("装备")
     protected Equipment equipment;
-    @JsonProperty("消耗")
+    @JsonAlias("消耗")
     protected Consumption consumption;
-    @JsonProperty("获得")
+    @JsonAlias("获得")
     protected Availability availability;
-    @JsonProperty("改修")
+    @JsonAlias("改修")
     protected Modernization modernization;
-    @JsonProperty("解体")
+    @JsonAlias("解体")
     protected Scrap scrap;
-    @JsonProperty("改造")
+    @JsonAlias("改造")
     protected Remodel remodel;
-    @JsonProperty("画师")
+    @JsonAlias("画师")
     protected String artist;
-    @JsonProperty("声优")
+    @JsonAlias("声优")
     protected String seiyuu;
-    @JsonProperty("英文WIKI")
+    @JsonProperty(value= "wiki_jp")
+    @JsonAlias("英文WIKI")
     protected String wikiJp;
-    @JsonProperty("日文WIKI")
+    @JsonProperty(value= "wiki_en")
+    @JsonAlias("日文WIKI")
     protected String wikiEn;
 
     /**

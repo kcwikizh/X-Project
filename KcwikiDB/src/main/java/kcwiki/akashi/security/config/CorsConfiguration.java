@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package kcwiki.x.enshuhelper.security.config;
+package kcwiki.akashi.security.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
@@ -24,9 +24,9 @@ public class CorsConfiguration implements WebMvcConfigurer {
             //重写父类提供的跨域请求处理的接口
             public void addCorsMappings(CorsRegistry registry) {
 //                添加映射路径
-                registry.addMapping("/enshuhelper/**")
+                registry.addMapping("/api/**")
 //                        .allowCredentials(true)
-                        .allowedOrigins("http://127.0.0.1", "https://api.senka.com.ru", "http://api.senka.com.ru", null)
+                        .allowedOrigins("http://127.0.0.1", "*", null)
                         .allowedHeaders("*")
                         .allowedMethods("OPTIONS", "HEAD", "GET", "PUT", "POST", "DELETE", "PATCH")
                         .exposedHeaders(HttpHeaders.LOCATION, "X-CSRF-TOKEN", "XSRF-TOKEN");

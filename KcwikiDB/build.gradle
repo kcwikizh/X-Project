@@ -19,13 +19,17 @@ repositories {
 //添加依赖
 dependencies {
     compile "org.iharu.bootstrap:SpringBoot"
-    compile project(':XControlledModule')
+//    compile project(':XControlledModule')
+    
+    compile group: 'com.flipkart.zjsonpatch', name: 'zjsonpatch', version: '0.4.9'
+
     
     def $springBootVersion = '2.1.5.RELEASE'
     
-//    compile group: 'org.postgresql', name: 'postgresql', version: '42.2.8'
-//    compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: $springBootVersion 
-//    compile group: 'org.springframework.boot', name: 'spring-boot-starter-jdbc', version: $springBootVersion 
+    compile group: 'org.postgresql', name: 'postgresql', version: '42.2.8'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: $springBootVersion 
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-jdbc', version: $springBootVersion 
+    compile group: 'com.vladmihalcea', name: 'hibernate-types-52', version: '2.7.1'
     
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-jdbc', version: $springBootVersion 
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version: $springBootVersion 

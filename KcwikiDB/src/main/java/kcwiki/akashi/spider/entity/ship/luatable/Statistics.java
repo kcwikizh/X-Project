@@ -5,7 +5,7 @@
  */
 package kcwiki.akashi.spider.entity.ship.luatable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonAlias;
 import java.util.List;
 
 /**
@@ -13,29 +13,29 @@ import java.util.List;
  * @author iHaru
  */
 public class Statistics {
-    @JsonProperty("耐久")
+    @JsonAlias("耐久")
     private List<Integer> hp;
-    @JsonProperty("火力")
+    @JsonAlias("火力")
     private List<Integer> firepower;
-    @JsonProperty("装甲")
+    @JsonAlias("装甲")
     private List<Integer> armor;
-    @JsonProperty("雷装")
+    @JsonAlias("雷装")
     private List<Integer> torpedo;
-    @JsonProperty("回避")
+    @JsonAlias("回避")
     private List<Integer> evasion;
-    @JsonProperty("对空")
+    @JsonAlias("对空")
     private List<Integer> aa;
-    @JsonProperty("对潜")
+    @JsonAlias("对潜")
     private List<Integer> asw;
-    @JsonProperty("索敌")
+    @JsonAlias("索敌")
     private List<Integer> los;
-    @JsonProperty("运")
+    @JsonAlias("运")
     private List<Integer> luck;
-    @JsonProperty("速力")
+    @JsonAlias("速力")
     private int speed;
-    @JsonProperty("射程")
+    @JsonAlias("射程")
     private int range;
-    @JsonProperty("稀有")
+    @JsonAlias("稀有")
     private int rarity;
 
     /**

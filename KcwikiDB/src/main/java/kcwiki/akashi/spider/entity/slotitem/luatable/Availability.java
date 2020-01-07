@@ -3,77 +3,79 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package kcwiki.akashi.spider.entity.ship.luatable;
+package kcwiki.akashi.spider.entity.slotitem.luatable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import kcwiki.akashi.spider.entity.ship.luatable.*;
+import com.fasterxml.jackson.annotation.JsonAlias;
 
 /**
  *
  * @author iHaru
  */
 public class Availability {
-    @JsonProperty("掉落")
-    private int drop;
-    @JsonProperty("改造")
-    private int implementation;
-    @JsonProperty("建造")
-    private int construction;
-    @JsonProperty("时间")
-    private int time;
+    @JsonAlias("开发")
+    private int build;
+    @JsonAlias("改修")
+    private int improvement;
+    @JsonAlias("更新")
+    private int remodel;
+    @JsonAlias("熟练")
+    private int skilled;
 
     /**
-     * @return the drop
+     * @return the build
      */
-    public int getDrop() {
-        return drop;
+    public int getBuild() {
+        return build;
     }
 
     /**
-     * @param drop the drop to set
+     * @param build the build to set
      */
-    public void setDrop(int drop) {
-        this.drop = drop;
+    public void setBuild(int build) {
+        this.build = build;
     }
 
     /**
-     * @return the implementation
+     * @return the improvement
      */
-    public int getImplementation() {
-        return implementation;
+    public int getImprovement() {
+        return improvement;
     }
 
     /**
-     * @param implementation the implementation to set
+     * @param improvement the improvement to set
      */
-    public void setImplementation(int implementation) {
-        this.implementation = implementation;
+    public void setImprovement(int improvement) {
+        this.improvement = improvement;
     }
 
     /**
-     * @return the construction
+     * @return the remodel
      */
-    public int getConstruction() {
-        return construction;
+    public int getRemodel() {
+        return remodel;
     }
 
     /**
-     * @param construction the construction to set
+     * @param remodel the remodel to set
      */
-    public void setConstruction(int construction) {
-        this.construction = construction;
+    public void setRemodel(int remodel) {
+        this.remodel = remodel;
     }
 
     /**
-     * @return the time
+     * @return the skilled
      */
-    public int getTime() {
-        return time;
+    public int getSkilled() {
+        return skilled;
     }
 
     /**
-     * @param time the time to set
+     * @param skilled the skilled to set
      */
-    public void setTime(int time) {
-        this.time = time;
+    public void setSkilled(int skilled) {
+        this.skilled = skilled;
     }
+
 }

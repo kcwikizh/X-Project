@@ -3,45 +3,48 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package kcwiki.akashi.spider.entity.ship.luatable;
+package kcwiki.akashi.spider.entity.slotitem.luatable.improvement;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  *
  * @author iHaru
  */
-public class Consumption {
-    @JsonProperty("燃料")
-    private int fuel;
-    @JsonProperty("弹药")
-    private int ammo;
+public class ItemAfterConsumption {
+    @JsonAlias("装备")
+    @JsonProperty("wiki_id")
+    private String wikiId;
+    @JsonAlias("等级")
+    private int level;
 
     /**
-     * @return the fuel
+     * @return the wikiId
      */
-    public int getFuel() {
-        return fuel;
+    public String getWikiId() {
+        return wikiId;
     }
 
     /**
-     * @param fuel the fuel to set
+     * @param wikiId the wikiId to set
      */
-    public void setFuel(int fuel) {
-        this.fuel = fuel;
+    public void setWikiId(String wikiId) {
+        this.wikiId = wikiId;
     }
 
     /**
-     * @return the ammo
+     * @return the level
      */
-    public int getAmmo() {
-        return ammo;
+    public int getLevel() {
+        return level;
     }
 
     /**
-     * @param ammo the ammo to set
+     * @param level the level to set
      */
-    public void setAmmo(int ammo) {
-        this.ammo = ammo;
+    public void setLevel(int level) {
+        this.level = level;
     }
+
 }

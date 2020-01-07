@@ -6,6 +6,7 @@
 package kcwiki.akashi;
 
 import java.io.IOException;
+import kcwiki.akashi.initializer.AppInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.Banner;
@@ -13,6 +14,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 /**
  *
@@ -20,6 +22,7 @@ import org.springframework.context.annotation.ComponentScan;
  */
 @SpringBootApplication
 @ComponentScan(basePackages = {"org.iharu", "kcwiki.akashi", "kcwiki.management.xcontrolled"})
+@EnableJpaAuditing
 //@EnableScheduling
 public class AkashiToolkitApplication {
     private static final Logger LOG = LoggerFactory.getLogger(AkashiToolkitApplication.class);
@@ -31,8 +34,8 @@ public class AkashiToolkitApplication {
         application.setRegisterShutdownHook(false);
         ApplicationContext ctx = application.run(args);
 
-//        AppInitializer appInitializer = (AppInitializer) ctx.getBean("appInitializer");
-//        appInitializer.init();
+        AppInitializer appInitializer = (AppInitializer) ctx.getBean("appInitializer");
+        appInitializer.init();
         LOG.info("ACTIVE...");
     }
 }

@@ -5,20 +5,20 @@
  */
 package kcwiki.akashi.spider.entity.ship.luatable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonAlias;
 
 /**
  *
  * @author iHaru
  */
 public class Scrap {
-    @JsonProperty("燃料")
+    @JsonAlias("燃料")
     private int fuel;
-    @JsonProperty("弹药")
+    @JsonAlias("弹药")
     private int ammo;
-    @JsonProperty("钢材")
+    @JsonAlias("钢材")
     private int steel;
-    @JsonProperty("铝")
+    @JsonAlias("铝")
     private int bauxite;
 
     /**

@@ -5,6 +5,7 @@
  */
 package kcwiki.akashi.core.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import kcwiki.akashi.spider.entity.ship.kcdata.KcDataShipDO;
 import kcwiki.akashi.spider.entity.ship.luatable.LuaShipDO;
 
@@ -13,8 +14,11 @@ import kcwiki.akashi.spider.entity.ship.luatable.LuaShipDO;
  * @author iHaru
  */
 public class ShipBO extends LuaShipDO {
+    @JsonProperty(value= "wiki_id")
     private String wikiId;
+    @JsonProperty(value= "voice_introduction")
     private String voiceIntroduction;
+    @JsonProperty(value= "voice_info")
     private String voiceInfo;
 
     public ShipBO(){}

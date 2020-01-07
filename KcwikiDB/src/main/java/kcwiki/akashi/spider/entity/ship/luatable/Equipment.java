@@ -5,7 +5,7 @@
  */
 package kcwiki.akashi.spider.entity.ship.luatable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonAlias;
 import java.util.List;
 
 /**
@@ -13,11 +13,11 @@ import java.util.List;
  * @author iHaru
  */
 public class Equipment {
-    @JsonProperty("格数")
+    @JsonAlias("格数")
     private int slot;
-    @JsonProperty("搭载")
+    @JsonAlias("搭载")
     private List<Integer> aircraft;
-    @JsonProperty("初期装备")
+    @JsonAlias("初期装备")
     private List<Object> stock;
 
     /**
