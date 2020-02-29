@@ -34,7 +34,7 @@ public class RuntimeValue {
         WEBROOT_FOLDER = appConfig.getFolder_webroot();
         APPROOT = appConfig.getApplication_root();
         PRIVATEDATA_FOLDER =
-            String.format("%s%s", CLASSPATH, appConfig.getFolder_privatedata());
+            String.format("%s%s", APPROOT, appConfig.getFolder_privatedata());
     
         PUBLISH_FOLDER =
             String.format("%s/%s", WEBROOT_FOLDER, appConfig.getFolder_publish());

@@ -6,6 +6,7 @@
 package kcwiki.management.controlcenter.web.controller;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import kcwiki.management.controlcenter.cache.inmem.AppDataCache;
 import kcwiki.management.controlcenter.database.service.ModuleUtilsService;
 import kcwiki.management.controlcenter.web.controller.entity.AuthVoucher;

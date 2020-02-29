@@ -8,6 +8,7 @@ package kcwiki.management.xcontrolled.core;
 import com.fasterxml.jackson.core.type.TypeReference;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.SocketTimeoutException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -68,13 +69,13 @@ public class XModuleController {
         try {
             publickey = HttpUtils.GetBody(xModuleConfig.getXtraffic_url_publickey());
         } catch (IOException ex) {
-            LOG.error("fetch public key error", ex);
-            handleConnectFailed();
+            LOG.error("fetch public key error");
+            handleConnectFailed(ex);
             return;
         }
         if(StringUtils.isNullOrWhiteSpace(publickey)){
             LOG.error("public key is blank");
-            handleConnectFailed();
+            handleConnectFailed(null);
             return;
         }
         byte[] symmetricKey = null;
@@ -82,8 +83,8 @@ public class XModuleController {
         try {
             symmetricKey = AesUtils.GenKey(RandomUtils.GenRandomString(16), RandomUtils.GenRandomString(16));
         } catch (NoSuchAlgorithmException | InvalidKeySpecException | UnsupportedEncodingException ex) {
-            LOG.error("generate encrypt key failed", ex);
-            handleConnectFailed();
+            LOG.error("generate encrypt key failed");
+            handleConnectFailed(ex);
             return;
         }
         
@@ -99,7 +100,7 @@ public class XModuleController {
             reqBody = Base64.getEncoder().encodeToString(RSAUtils.Encrypt(JsonUtils.object2bytes(authentication), RSAUtils.GetPublicKey(publickey)));
         } catch (InvalidKeyException | NoSuchAlgorithmException | BadPaddingException | IllegalBlockSizeException | NoSuchPaddingException ex) {
             LOG.error("XControlledModule: {} Encrypt data failed", getIdentity(), ex);
-            handleConnectFailed();
+            handleConnectFailed(ex);
             return;
         }
         String body;
@@ -107,29 +108,29 @@ public class XModuleController {
             body = HttpUtils.GetBody(xModuleConfig.getXtraffic_url_auth(), reqBody);
         } catch (IOException ex) {
             LOG.error("fetch voucher error", ex);
-            handleConnectFailed();
+            handleConnectFailed(ex);
             return;
         }
         if(StringUtils.isNullOrWhiteSpace(body)){
             LOG.error("voucher is blank");
-            handleConnectFailed();
+            handleConnectFailed(null);
             return;
         }
         WebResponseProto resp = JsonUtils.json2objectWithoutThrowException(body, new TypeReference<WebResponseProto>(){});
         if(resp == null){
             LOG.error("decode resp failed");
-            handleConnectFailed();
+            handleConnectFailed(null);
             return;
         }
         if(resp.getStatus() != BaseHttpStatus.SUCCESS) {
             LOG.warn("authentication failed with: {}", resp.getMsg());
-            handleConnectFailed();
+            handleConnectFailed(null);
             return;
         }
         String voucher = StringUtils.ByteArrayToString(AesUtils.DecryptWithoutException(Base64Utils.DecryptBase64((String) resp.getData()), symmetricKey));
         if(voucher == null) {
             LOG.warn("decrypt voucher failed");
-            handleConnectFailed();
+            handleConnectFailed(null);
             return;
         }
         HashMap<String, String> headers = new HashMap();
@@ -145,7 +146,7 @@ public class XModuleController {
             }
             return;
         }
-        handleConnectFailed();
+        handleConnectFailed(null);
     }
     
     public void send(String payload) {
@@ -164,7 +165,14 @@ public class XModuleController {
         websocketClient.send(proto);
     }
     
-    private void handleConnectFailed() throws XControlledModuleConnectFailException{
+    private void handleConnectFailed(Throwable ex) throws XControlledModuleConnectFailException{
+        if(ex != null){
+            if(ex instanceof IOException){
+                LOG.error(ex.getMessage());
+            } else {
+                LOG.error("", ex);
+            }
+        }
         LOG.warn("XControlledModule connect failed");
         if(websocketClient != null)
             websocketClient.close();

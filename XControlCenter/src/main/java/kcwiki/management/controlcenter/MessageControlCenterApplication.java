@@ -115,6 +115,7 @@ public class MessageControlCenterApplication
                 .antMatchers(adminContextPath + "/login").permitAll()
                 .antMatchers(adminContextPath + "/websocket/**").permitAll()
                 .antMatchers(adminContextPath + "/authentication/**").permitAll()
+                .antMatchers(adminContextPath + "/favicon.ico").permitAll()
                 .anyRequest().authenticated() 
                 .and()
             .formLogin().loginPage(adminContextPath + "/login").successHandler(successHandler).and() 

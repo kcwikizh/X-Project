@@ -30,14 +30,6 @@ public class AppConfig
   private String folder_download;
   @Value("${myprops.global.folder.publish}")
   private String folder_publish;
-  @Value("${myprops.websocket.token}")
-  private String websocket_token;
-  @Value("${myprops.websocket.url.retweet}")
-  private String websocket_url_retweet;
-  @Value("${myprops.websocket.url.enshuhelper}")
-  private String websocket_url_enshuhelper;
-  @Value("${myprops.websocket.url.senkamon}")
-  private String websocket_url_senkamon;
   @Value("${myprops.application.superuser.username}")
   private String application_superuser_username;
   @Value("${myprops.application.superuser.password}")
@@ -275,62 +267,6 @@ public class AppConfig
      */
     public void setMyprops_database_name(String myprops_database_name) {
         this.myprops_database_name = myprops_database_name;
-    }
-
-    /**
-     * @return the websocket_token
-     */
-    public String getWebsocket_token() {
-        return websocket_token;
-    }
-
-    /**
-     * @param websocket_token the websocket_token to set
-     */
-    public void setWebsocket_token(String websocket_token) {
-        this.websocket_token = websocket_token;
-    }
-
-    /**
-     * @return the websocket_url_retweet
-     */
-    public String getWebsocket_url_retweet() {
-        return websocket_url_retweet;
-    }
-
-    /**
-     * @param websocket_url_retweet the websocket_url_retweet to set
-     */
-    public void setWebsocket_url_retweet(String websocket_url_retweet) {
-        this.websocket_url_retweet = websocket_url_retweet;
-    }
-
-    /**
-     * @return the websocket_url_enshuhelper
-     */
-    public String getWebsocket_url_enshuhelper() {
-        return websocket_url_enshuhelper;
-    }
-
-    /**
-     * @param websocket_url_enshuhelper the websocket_url_enshuhelper to set
-     */
-    public void setWebsocket_url_enshuhelper(String websocket_url_enshuhelper) {
-        this.websocket_url_enshuhelper = websocket_url_enshuhelper;
-    }
-
-    /**
-     * @return the websocket_url_senkamon
-     */
-    public String getWebsocket_url_senkamon() {
-        return websocket_url_senkamon;
-    }
-
-    /**
-     * @param websocket_url_senkamon the websocket_url_senkamon to set
-     */
-    public void setWebsocket_url_senkamon(String websocket_url_senkamon) {
-        this.websocket_url_senkamon = websocket_url_senkamon;
     }
 
     /**

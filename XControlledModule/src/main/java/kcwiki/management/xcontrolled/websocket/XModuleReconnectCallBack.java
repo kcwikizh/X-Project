@@ -49,8 +49,11 @@ public class XModuleReconnectCallBack extends ReconnectCallback {
                         controller.connect(callback, this);
                         isShutdown = false;
                         break;
-                    } catch (XControlledModuleConnectFailException ex1){
-                        
+                    } catch (Exception ex1){
+                        LOG.info("XModuleReconnectCallBack reconnect failed: {} - Exception: {}", wsClient.getName(), ex.getMessage());
+                        if(ex instanceof XControlledModuleConnectFailException){
+                            
+                        }
                     }
                 }
             });

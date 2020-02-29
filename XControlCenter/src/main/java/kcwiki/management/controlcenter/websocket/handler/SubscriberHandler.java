@@ -175,6 +175,10 @@ public class SubscriberHandler extends DefaultWebsocketHandler {
         WebsocketProto proto = null;
         byte[] key = null;
         String identity = (String) session.getAttributes().get(IDENTITY);
+        if(StringUtils.isNullOrWhiteSpace(identity)){
+            handleClose(session);
+            return;
+        }
         if(!message.getPayload().hasArray()){
             LOG.warn("Payload array is empty");
             return;

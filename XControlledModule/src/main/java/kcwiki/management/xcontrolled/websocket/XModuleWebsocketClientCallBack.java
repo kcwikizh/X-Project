@@ -14,6 +14,7 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import kcwiki.management.xcontrolled.core.XModuleController;
+import kcwiki.management.xcontrolled.exception.XControlledModuleConnectFailException;
 import org.iharu.crypto.aes.AesUtils;
 import org.iharu.crypto.rsa.RSAUtils;
 import kcwiki.management.xtraffic.protobuf.ProtobufUtils;
@@ -49,6 +50,7 @@ public abstract class XModuleWebsocketClientCallBack extends WebsocketClientCall
     @Override
     protected void callback(TextMessage paramTextMessage) {
         getImplLogger().info("websocket client {} received: {}", getWebsocketClient().getName(), paramTextMessage.getPayload());
+        throw new XControlledModuleConnectFailException(ErrorType.OPERATION_ERROR, paramTextMessage.getPayload());
     }
 
     @Override

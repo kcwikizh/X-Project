@@ -24,7 +24,12 @@ public class ModuleUtilsService {
     private ModuleUtilsMapper moduleUtilsMapper;
     
     public String getIdentification(String token) {
-        return moduleUtilsMapper.getIdentification(token);
+        try{
+            return moduleUtilsMapper.getIdentification(token);
+        } catch (Exception ex) {
+            LOG.error("", ex);
+        }
+        return null;
     }
     
     public List<ModuleAuthorization> getAuthorizations(String token) {
